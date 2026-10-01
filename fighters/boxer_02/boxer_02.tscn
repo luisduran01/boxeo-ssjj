@@ -22,6 +22,8 @@
 [ext_resource type="Animation" path="res://fighters/boxer_02/animations/step_left.res" id="20_step_left"]
 [ext_resource type="Animation" path="res://fighters/boxer_02/animations/step_right.res" id="21_step_right"]
 [ext_resource type="Animation" path="res://fighters/boxer_02/animations/uppercut.res" id="22_uppercut"]
+[ext_resource type="Animation" path="res://fighters/boxer_02/animations/step_short.res" id="23_step_short"]
+[ext_resource type="Animation" path="res://fighters/boxer_02/animations/medium_step.res" id="24_medium_step"]
 
 [sub_resource type="AnimationLibrary" id="AnimationLibrary_boxing"]
 _data = {
@@ -44,6 +46,8 @@ _data = {
 &"step_forward": ExtResource("19_step_forward"),
 &"step_left": ExtResource("20_step_left"),
 &"step_right": ExtResource("21_step_right"),
+&"step_short": ExtResource("23_step_short"),
+&"medium_step": ExtResource("24_medium_step"),
 &"uppercut": ExtResource("22_uppercut")
 }
 
@@ -70,6 +74,18 @@ animation = &"Boxing/step_right"
 [sub_resource type="AnimationNodeAnimation" id="AnimationNode_forward"]
 animation = &"Boxing/step_forward"
 
+[sub_resource type="AnimationNodeAnimation" id="AnimationNode_short"]
+animation = &"Boxing/step_short"
+
+[sub_resource type="AnimationNodeAnimation" id="AnimationNode_medium"]
+animation = &"Boxing/medium_step"
+
+[sub_resource type="AnimationNodeAnimation" id="AnimationNode_pivot_left"]
+animation = &"Boxing/pivot_left"
+
+[sub_resource type="AnimationNodeAnimation" id="AnimationNode_pivot_right"]
+animation = &"Boxing/pivot_right"
+
 [sub_resource type="AnimationNodeBlendSpace2D" id="BlendSpace_footwork"]
 blend_point_0/node = SubResource("AnimationNode_idle")
 blend_point_0/pos = Vector2(0, 0)
@@ -83,13 +99,26 @@ blend_point_2/name = &"Boxing_step_left"
 blend_point_3/node = SubResource("AnimationNode_right")
 blend_point_3/pos = Vector2(1, 0)
 blend_point_3/name = &"Boxing_step_right"
-blend_point_4/node = SubResource("AnimationNode_forward")
-blend_point_4/pos = Vector2(0, 1)
-blend_point_4/name = &"Boxing_step_forward"
+blend_point_4/node = SubResource("AnimationNode_short")
+blend_point_4/pos = Vector2(0, 0.35)
+blend_point_4/name = &"Boxing_step_short"
+blend_point_5/node = SubResource("AnimationNode_medium")
+blend_point_5/pos = Vector2(0, 0.7)
+blend_point_5/name = &"Boxing_medium_step"
+blend_point_6/node = SubResource("AnimationNode_forward")
+blend_point_6/pos = Vector2(0, 1)
+blend_point_6/name = &"Boxing_step_forward"
 
 [sub_resource type="AnimationNodeStateMachineTransition" id="Transition_enter"]
 
 [sub_resource type="AnimationNodeStateMachineTransition" id="Transition_footwork"]
+advance_mode = 2
+
+[sub_resource type="AnimationNodeStateMachineTransition" id="Transition_to_pivot"]
+xfade_time = 0.08
+
+[sub_resource type="AnimationNodeStateMachineTransition" id="Transition_from_pivot"]
+xfade_time = 0.1
 advance_mode = 2
 
 [sub_resource type="AnimationNodeStateMachine" id="StateMachine_boxer02"]
@@ -98,8 +127,12 @@ states/Boxing_fight_enter/position = Vector2(317, 9)
 states/End/position = Vector2(549, 131)
 states/Footwork/node = SubResource("BlendSpace_footwork")
 states/Footwork/position = Vector2(526, 9)
+states/PivotLeft/node = SubResource("AnimationNode_pivot_left")
+states/PivotLeft/position = Vector2(526, -105)
+states/PivotRight/node = SubResource("AnimationNode_pivot_right")
+states/PivotRight/position = Vector2(526, 115)
 states/Start/position = Vector2(126, 9)
-transitions = ["Start", "Boxing_fight_enter", SubResource("Transition_enter"), "Boxing_fight_enter", "Footwork", SubResource("Transition_footwork")]
+transitions = ["Start", "Boxing_fight_enter", SubResource("Transition_enter"), "Boxing_fight_enter", "Footwork", SubResource("Transition_footwork"), "Footwork", "PivotLeft", SubResource("Transition_to_pivot"), "PivotLeft", "Footwork", SubResource("Transition_from_pivot"), "Footwork", "PivotRight", SubResource("Transition_to_pivot"), "PivotRight", "Footwork", SubResource("Transition_from_pivot")]
 
 [node name="Boxer02" type="CharacterBody3D"]
 transform = Transform3D(1.82, 0, 0, 0, 1.82, 0, 0, 0, 1.82, 0, 0, 0)

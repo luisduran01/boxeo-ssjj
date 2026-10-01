@@ -30,6 +30,9 @@ signal knockdown_requested(fighter: BoxerController)
 @export_range(1.0, 20.0, 0.5) var acceleration := 7.0
 @export_range(1.0, 24.0, 0.5) var deceleration := 10.0
 @export_range(1.0, 20.0, 0.5) var turn_responsiveness := 9.0
+@export_range(0.25, 1.2, 0.01) var pivot_duration := 0.52
+@export_range(0.4, 3.0, 0.05) var pivot_speed := 1.25
+@export_range(0.8, 2.8, 0.05) var pivot_max_range := 2.10
 @export_group("Boxing Distance")
 @export_range(1.8, 4.0, 0.05) var outside_range_distance := 2.80
 @export_range(1.2, 3.0, 0.05) var long_range_distance := 2.10
@@ -88,6 +91,8 @@ var _long_step_armed := true
 var _long_step_time := 0.0
 var _long_step_cooldown := 0.0
 var _pivot_request := 0.0
+var _pivot_time := 0.0
+var _pivot_input_armed := true
 var _stable_separation_direction := Vector3.RIGHT
 var _separation_correction := Vector3.ZERO
 var _target_speed := 0.0
@@ -109,9 +114,6 @@ func _ready() -> void:
 	_configure_body_collider()
 	_configure_combat_areas()
 	animation_tree.active = true
-	var playback = animation_tree.get("parameters/playback")
-	if playback:
-		playback.travel("Footwork")
 	stats_changed.emit(self)
 
 
@@ -141,6 +143,9 @@ func _physics_process(delta: float) -> void:
 	if _current_attack != "":
 		_update_attack(delta)
 		return
+	if _pivot_time > 0.0:
+		_update_pivot_movement(delta)
+		return
 	if not fight_enabled:
 		_movement_intent = _prepare_movement_intent(Vector2.ZERO)
 		velocity = _body_separation_velocity(velocity.move_toward(Vector3.ZERO, deceleration * delta))
@@ -149,6 +154,10 @@ func _physics_process(delta: float) -> void:
 		return
 	var raw_input := _player_input() if is_player else _ai_input(delta)
 	var input_vector := _prepare_movement_intent(raw_input)
+	_maybe_request_input_pivot(input_vector)
+	if _pivot_time > 0.0:
+		_update_pivot_movement(delta)
+		return
 	_update_defense()
 	_move_relative_to_opponent(input_vector, delta)
 	_handle_attack_input()
@@ -166,12 +175,44 @@ func set_movement_intent(intent: Vector2) -> void:
 
 
 func request_pivot(direction: float) -> bool:
-	if is_zero_approx(direction) or _pivot_cooldown > 0.0 or _current_attack != "" or _reaction_time > 0.0 or _knocked_down:
+	if is_zero_approx(direction) or _pivot_cooldown > 0.0 or _current_attack != "" or _reaction_time > 0.0 or _knocked_down or _distance_to_opponent > pivot_max_range:
 		return false
 	_pivot_request = signf(direction)
+	_pivot_time = pivot_duration
 	_pivot_cooldown = 0.85
 	locomotion_state = "PIVOT_RIGHT" if _pivot_request > 0.0 else "PIVOT_LEFT"
+	var state_machine := animation_tree.tree_root as AnimationNodeStateMachine
+	var playback := animation_tree.get("parameters/playback") as AnimationNodeStateMachinePlayback
+	var state_name := "PivotRight" if _pivot_request > 0.0 else "PivotLeft"
+	if animation_tree.active and state_machine != null and state_machine.has_node(state_name) and playback != null:
+		playback.travel(state_name)
 	return true
+
+
+func _maybe_request_input_pivot(input_vector: Vector2) -> void:
+	if absf(input_vector.x) < 0.35:
+		_pivot_input_armed = true
+	if not _pivot_input_armed or absf(input_vector.x) < 0.78 or movement_intensity < medium_step_threshold:
+		return
+	if request_pivot(input_vector.x):
+		_pivot_input_armed = false
+
+
+func _update_pivot_movement(delta: float) -> void:
+	_pivot_time = maxf(0.0, _pivot_time - delta)
+	var basis: Dictionary = FootworkModel.combat_basis(global_position, opponent.global_position if is_instance_valid(opponent) else global_position + _last_forward, _last_forward)
+	var tangent: Vector3 = basis.right * _pivot_request
+	var target := _body_separation_velocity(tangent * pivot_speed)
+	_smoothed_velocity = _smoothed_velocity.move_toward(target, acceleration * delta)
+	velocity = _body_separation_velocity(_smoothed_velocity)
+	_target_speed = target.length()
+	move_and_slide()
+	if _pivot_time <= 0.0:
+		_pivot_request = 0.0
+		locomotion_state = "IDLE"
+		var playback := animation_tree.get("parameters/playback") as AnimationNodeStateMachinePlayback
+		if playback != null:
+			playback.travel("Footwork")
 
 
 func _prepare_movement_intent(raw_input: Vector2) -> Vector2:

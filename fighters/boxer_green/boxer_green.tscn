@@ -14,14 +14,16 @@
 [ext_resource type="Animation" uid="uid://wwchu0r0tq2n" path="res://fighters/boxer_green/animations/hit_uppercut.res" id="12_81uqo"]
 [ext_resource type="Animation" uid="uid://dbqaybe2w0cak" path="res://fighters/boxer_green/animations/jab.res" id="13_7of4h"]
 [ext_resource type="Animation" uid="uid://8rpu0dr26qmy" path="res://fighters/boxer_green/animations/left_hook.res" id="14_invno"]
-[ext_resource type="Animation" uid="uid://bq4kl8s81xrem" path="res://fighters/boxer_green/animations/pivot_left.res" id="15_ssau1"]
-[ext_resource type="Animation" uid="uid://bcahypflhjc13" path="res://fighters/boxer_green/animations/pivot_right.res" id="16_wqn7a"]
+[ext_resource type="Animation" path="res://fighters/boxer_green/animations/pivot_left.res" id="15_ssau1"]
+[ext_resource type="Animation" path="res://fighters/boxer_green/animations/pivot_right.res" id="16_wqn7a"]
 [ext_resource type="Animation" uid="uid://5n1527arwjg1" path="res://fighters/boxer_green/animations/right_hook.res" id="17_uwpq7"]
-[ext_resource type="Animation" uid="uid://chwi2477ufwos" path="res://fighters/boxer_green/animations/step_backward.res" id="18_cfxe0"]
-[ext_resource type="Animation" uid="uid://dq54vifefomgr" path="res://fighters/boxer_green/animations/step_forward.res" id="19_37sbb"]
-[ext_resource type="Animation" uid="uid://b55glbx1cql61" path="res://fighters/boxer_green/animations/step_left.res" id="20_sfimh"]
-[ext_resource type="Animation" uid="uid://cnxcxckhl33k7" path="res://fighters/boxer_green/animations/step_right.res" id="21_dh6jg"]
+[ext_resource type="Animation" path="res://fighters/boxer_green/animations/step_backward.res" id="18_cfxe0"]
+[ext_resource type="Animation" path="res://fighters/boxer_green/animations/step_forward.res" id="19_37sbb"]
+[ext_resource type="Animation" path="res://fighters/boxer_green/animations/step_left.res" id="20_sfimh"]
+[ext_resource type="Animation" path="res://fighters/boxer_green/animations/step_right.res" id="21_dh6jg"]
 [ext_resource type="Animation" uid="uid://k86l75ne023r" path="res://fighters/boxer_green/animations/uppercut.res" id="22_ugbdp"]
+[ext_resource type="Animation" path="res://fighters/boxer_green/animations/step_short.res" id="23_step_short"]
+[ext_resource type="Animation" path="res://fighters/boxer_green/animations/medium_step.res" id="24_medium_step"]
 
 [sub_resource type="AnimationLibrary" id="AnimationLibrary_lnwug"]
 _data = {
@@ -44,6 +46,8 @@ _data = {
 &"step_forward": ExtResource("19_37sbb"),
 &"step_left": ExtResource("20_sfimh"),
 &"step_right": ExtResource("21_dh6jg"),
+&"step_short": ExtResource("23_step_short"),
+&"medium_step": ExtResource("24_medium_step"),
 &"uppercut": ExtResource("22_ugbdp")
 }
 
@@ -70,6 +74,18 @@ animation = &"Boxing/step_right"
 [sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_ec7g4"]
 animation = &"Boxing/step_forward"
 
+[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_short"]
+animation = &"Boxing/step_short"
+
+[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_medium"]
+animation = &"Boxing/medium_step"
+
+[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_pivot_left"]
+animation = &"Boxing/pivot_left"
+
+[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_pivot_right"]
+animation = &"Boxing/pivot_right"
+
 [sub_resource type="AnimationNodeBlendSpace2D" id="AnimationNodeBlendSpace2D_vmh7s"]
 blend_point_0/node = SubResource("AnimationNodeAnimation_fsvu5")
 blend_point_0/pos = Vector2(0, 0)
@@ -83,13 +99,26 @@ blend_point_2/name = &"Boxing_step_left"
 blend_point_3/node = SubResource("AnimationNodeAnimation_74lke")
 blend_point_3/pos = Vector2(1, 0)
 blend_point_3/name = &"Boxing_step_right"
-blend_point_4/node = SubResource("AnimationNodeAnimation_ec7g4")
-blend_point_4/pos = Vector2(0, 1)
-blend_point_4/name = &"Boxing_step_forward"
+blend_point_4/node = SubResource("AnimationNodeAnimation_short")
+blend_point_4/pos = Vector2(0, 0.35)
+blend_point_4/name = &"Boxing_step_short"
+blend_point_5/node = SubResource("AnimationNodeAnimation_medium")
+blend_point_5/pos = Vector2(0, 0.7)
+blend_point_5/name = &"Boxing_medium_step"
+blend_point_6/node = SubResource("AnimationNodeAnimation_ec7g4")
+blend_point_6/pos = Vector2(0, 1)
+blend_point_6/name = &"Boxing_step_forward"
 
 [sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_gdg25"]
 
 [sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_rwnsv"]
+advance_mode = 2
+
+[sub_resource type="AnimationNodeStateMachineTransition" id="Transition_to_pivot"]
+xfade_time = 0.08
+
+[sub_resource type="AnimationNodeStateMachineTransition" id="Transition_from_pivot"]
+xfade_time = 0.1
 advance_mode = 2
 
 [sub_resource type="AnimationNodeStateMachine" id="AnimationNodeStateMachine_a3jwv"]
@@ -98,8 +127,12 @@ states/Boxing_fight_enter/position = Vector2(316.88065, 9.313808)
 states/End/position = Vector2(549, 131.31381)
 states/Footwork/node = SubResource("AnimationNodeBlendSpace2D_vmh7s")
 states/Footwork/position = Vector2(525.8806, 9.313812)
+states/PivotLeft/node = SubResource("AnimationNodeAnimation_pivot_left")
+states/PivotLeft/position = Vector2(525, -105)
+states/PivotRight/node = SubResource("AnimationNodeAnimation_pivot_right")
+states/PivotRight/position = Vector2(525, 115)
 states/Start/position = Vector2(126, 9.313808)
-transitions = ["Start", "Boxing_fight_enter", SubResource("AnimationNodeStateMachineTransition_gdg25"), "Boxing_fight_enter", "Footwork", SubResource("AnimationNodeStateMachineTransition_rwnsv")]
+transitions = ["Start", "Boxing_fight_enter", SubResource("AnimationNodeStateMachineTransition_gdg25"), "Boxing_fight_enter", "Footwork", SubResource("AnimationNodeStateMachineTransition_rwnsv"), "Footwork", "PivotLeft", SubResource("Transition_to_pivot"), "PivotLeft", "Footwork", SubResource("Transition_from_pivot"), "Footwork", "PivotRight", SubResource("Transition_to_pivot"), "PivotRight", "Footwork", SubResource("Transition_from_pivot")]
 graph_offset = Vector2(-86.119354, -49.68619)
 
 [node name="BoxerGreen" type="CharacterBody3D" unique_id=1796320952]

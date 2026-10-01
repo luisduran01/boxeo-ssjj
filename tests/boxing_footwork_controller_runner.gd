@@ -41,6 +41,7 @@ func _run() -> void:
 	enemy.fight_enabled = true
 	_test_public_contract()
 	if player.has_method("set_movement_intent") and _has_property(player, "range_state"):
+		_test_animation_tree_contract()
 		_test_target_lock_and_ranges()
 		_test_player_only_input_and_relative_motion()
 		_test_acceleration_and_long_latch()
@@ -71,6 +72,65 @@ func _test_public_contract() -> void:
 	_expect(player.has_method("set_movement_intent"), "controller must expose set_movement_intent")
 	_expect(player.has_method("request_pivot"), "controller must expose request_pivot")
 	_expect(player.has_method("get_boxing_movement_debug"), "controller must expose movement debug snapshot")
+
+
+func _test_animation_tree_contract() -> void:
+	for fighter in [player, enemy]:
+		var tree: AnimationTree = fighter.animation_tree
+		var state_machine := tree.tree_root as AnimationNodeStateMachine
+		_expect(tree.active, "%s AnimationTree must be active" % fighter.name)
+		_expect(state_machine != null, "%s must retain its root state machine" % fighter.name)
+		if state_machine == null:
+			continue
+		for state_name in ["Boxing_fight_enter", "Footwork", "PivotLeft", "PivotRight"]:
+			_expect(state_machine.has_node(state_name), "%s state machine must contain %s" % [fighter.name, state_name])
+		var footwork := state_machine.get_node("Footwork") as AnimationNodeBlendSpace2D
+		_expect(footwork != null, "%s Footwork must remain a BlendSpace2D" % fighter.name)
+		if footwork == null:
+			continue
+		var animation_names := {}
+		var has_idle := false
+		var has_left := false
+		var has_right := false
+		for point_index in range(footwork.get_blend_point_count()):
+			var point_position: Vector2 = footwork.get_blend_point_position(point_index)
+			var animation_node := footwork.get_blend_point_node(point_index) as AnimationNodeAnimation
+			if animation_node != null:
+				animation_names[str(animation_node.animation)] = true
+			has_idle = has_idle or point_position.is_equal_approx(Vector2.ZERO)
+			has_left = has_left or point_position.x < -0.2
+			has_right = has_right or point_position.x > 0.2
+		_expect(has_idle and has_left and has_right, "%s blend must keep idle and both lateral signs" % fighter.name)
+		for animation_name in ["Boxing/step_short", "Boxing/medium_step", "Boxing/step_forward"]:
+			_expect(animation_names.has(animation_name), "%s blend must reference %s" % [fighter.name, animation_name])
+		for forbidden_name in animation_names.keys():
+			_expect(not str(forbidden_name).contains("Zombie Punching"), "%s must never reference Zombie Punching" % fighter.name)
+		for library_name in ["step_short", "medium_step", "step_forward", "pivot_left", "pivot_right"]:
+			_expect(fighter.animation_player.has_animation("Boxing/" + library_name), "%s library must expose %s" % [fighter.name, library_name])
+		for locomotion_name in ["step_short", "medium_step", "step_forward", "step_backward", "step_left", "step_right"]:
+			var locomotion: Animation = fighter.animation_player.get_animation("Boxing/" + locomotion_name)
+			_expect(locomotion != null and locomotion.loop_mode != Animation.LOOP_NONE, "%s %s must loop in Footwork" % [fighter.name, locomotion_name])
+			_expect(_animation_has_no_horizontal_hips_drift(locomotion), "%s %s must be in-place on the horizontal hips track" % [fighter.name, locomotion_name])
+		for pivot_name in ["pivot_left", "pivot_right"]:
+			var pivot: Animation = fighter.animation_player.get_animation("Boxing/" + pivot_name)
+			_expect(pivot != null and pivot.loop_mode == Animation.LOOP_NONE, "%s %s must remain a one-shot" % [fighter.name, pivot_name])
+			_expect(_animation_has_no_horizontal_hips_drift(pivot), "%s %s must not add root-like horizontal displacement" % [fighter.name, pivot_name])
+
+
+func _animation_has_no_horizontal_hips_drift(animation: Animation) -> bool:
+	if animation == null:
+		return false
+	for track_index in range(animation.get_track_count()):
+		if animation.track_get_type(track_index) != Animation.TYPE_POSITION_3D or not str(animation.track_get_path(track_index)).to_lower().contains("hips"):
+			continue
+		if animation.track_get_key_count(track_index) < 1:
+			continue
+		var origin: Vector3 = animation.track_get_key_value(track_index, 0)
+		for key_index in range(1, animation.track_get_key_count(track_index)):
+			var value: Vector3 = animation.track_get_key_value(track_index, key_index)
+			if absf(value.x - origin.x) > 0.001 or absf(value.z - origin.z) > 0.001:
+				return false
+	return true
 
 
 func _reset_positions() -> void:
