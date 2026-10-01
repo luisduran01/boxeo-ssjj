@@ -1,0 +1,160 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+ERROR: Failed to read the root certificate store.
+   at: get_system_ca_certificates (platform/windows/os_windows.cpp:2582)
+SCRIPT ERROR: Invalid access to property or key 'hand' on a base object of type 'Dictionary'.
+   at: BoxerController._set_fist_active (res://fighters/boxer_green/boxer_controller.gd:631)
+   GDScript backtrace (most recent call first):
+       [0] _set_fist_active (res://fighters/boxer_green/boxer_controller.gd:631)
+       [1] _finish_action (res://fighters/boxer_green/boxer_controller.gd:510)
+       [2] _reset (res://tests/punch_system_runner.gd:38)
+       [3] _test_mobile_jab (res://tests/punch_system_runner.gd:61)
+       [4] _run (res://tests/punch_system_runner.gd:25)
+SCRIPT ERROR: Invalid access to property or key 'hand' on a base object of type 'Dictionary'.
+   at: BoxerController._set_fist_active (res://fighters/boxer_green/boxer_controller.gd:631)
+   GDScript backtrace (most recent call first):
+       [0] _set_fist_active (res://fighters/boxer_green/boxer_controller.gd:631)
+       [1] _finish_action (res://fighters/boxer_green/boxer_controller.gd:510)
+       [2] _reset (res://tests/punch_system_runner.gd:39)
+       [3] _test_mobile_jab (res://tests/punch_system_runner.gd:61)
+       [4] _run (res://tests/punch_system_runner.gd:25)
+SCRIPT ERROR: Invalid access to property or key 'hand' on a base object of type 'Dictionary'.
+   at: BoxerController._set_fist_active (res://fighters/boxer_green/boxer_controller.gd:631)
+   GDScript backtrace (most recent call first):
+       [0] _set_fist_active (res://fighters/boxer_green/boxer_controller.gd:631)
+       [1] _finish_action (res://fighters/boxer_green/boxer_controller.gd:510)
+       [2] _reset (res://tests/punch_system_runner.gd:39)
+       [3] _test_mobile_jab (res://tests/punch_system_runner.gd:61)
+       [4] _run (res://tests/punch_system_runner.gd:25)
+ERROR: PUNCH SYSTEM: jab must remain mobile with move_backward
+   at: push_error (core/variant/variant_utility.cpp:1023)
+   GDScript backtrace (most recent call first):
+       [0] _expect (res://tests/punch_system_runner.gd:14)
+       [1] _test_mobile_jab (res://tests/punch_system_runner.gd:68)
+       [2] _run (res://tests/punch_system_runner.gd:25)
+SCRIPT ERROR: Invalid access to property or key 'hand' on a base object of type 'Dictionary'.
+   at: BoxerController._set_fist_active (res://fighters/boxer_green/boxer_controller.gd:631)
+   GDScript backtrace (most recent call first):
+       [0] _set_fist_active (res://fighters/boxer_green/boxer_controller.gd:631)
+       [1] _finish_action (res://fighters/boxer_green/boxer_controller.gd:510)
+       [2] _reset (res://tests/punch_system_runner.gd:39)
+       [3] _test_mobile_jab (res://tests/punch_system_runner.gd:61)
+       [4] _run (res://tests/punch_system_runner.gd:25)
+SCRIPT ERROR: Invalid access to property or key 'hand' on a base object of type 'Dictionary'.
+   at: BoxerController._set_fist_active (res://fighters/boxer_green/boxer_controller.gd:631)
+   GDScript backtrace (most recent call first):
+       [0] _set_fist_active (res://fighters/boxer_green/boxer_controller.gd:631)
+       [1] _finish_action (res://fighters/boxer_green/boxer_controller.gd:510)
+       [2] _reset (res://tests/punch_system_runner.gd:39)
+       [3] _test_mobile_jab (res://tests/punch_system_runner.gd:61)
+       [4] _run (res://tests/punch_system_runner.gd:25)
+ERROR: PUNCH SYSTEM: jab must remain mobile with move_right
+   at: push_error (core/variant/variant_utility.cpp:1023)
+   GDScript backtrace (most recent call first):
+       [0] _expect (res://tests/punch_system_runner.gd:14)
+       [1] _test_mobile_jab (res://tests/punch_system_runner.gd:68)
+       [2] _run (res://tests/punch_system_runner.gd:25)
+SCRIPT ERROR: Invalid access to property or key 'hand' on a base object of type 'Dictionary'.
+   at: BoxerController._set_fist_active (res://fighters/boxer_green/boxer_controller.gd:631)
+   GDScript backtrace (most recent call first):
+       [0] _set_fist_active (res://fighters/boxer_green/boxer_controller.gd:631)
+       [1] _finish_action (res://fighters/boxer_green/boxer_controller.gd:510)
+       [2] _reset (res://tests/punch_system_runner.gd:39)
+       [3] _test_ranges_and_results (res://tests/punch_system_runner.gd:73)
+       [4] _run (res://tests/punch_system_runner.gd:26)
+SCRIPT ERROR: Invalid access to property or key 'hand' on a base object of type 'Dictionary'.
+   at: BoxerController._set_fist_active (res://fighters/boxer_green/boxer_controller.gd:631)
+   GDScript backtrace (most recent call first):
+       [0] _set_fist_active (res://fighters/boxer_green/boxer_controller.gd:631)
+       [1] _finish_action (res://fighters/boxer_green/boxer_controller.gd:510)
+       [2] _reset (res://tests/punch_system_runner.gd:39)
+       [3] _test_ranges_and_results (res://tests/punch_system_runner.gd:73)
+       [4] _run (res://tests/punch_system_runner.gd:26)
+SCRIPT ERROR: Invalid access to property or key 'hand' on a base object of type 'Dictionary'.
+   at: BoxerController._set_fist_active (res://fighters/boxer_green/boxer_controller.gd:631)
+   GDScript backtrace (most recent call first):
+       [0] _set_fist_active (res://fighters/boxer_green/boxer_controller.gd:631)
+       [1] _finish_action (res://fighters/boxer_green/boxer_controller.gd:510)
+       [2] _reset (res://tests/punch_system_runner.gd:39)
+       [3] _test_ranges_and_results (res://tests/punch_system_runner.gd:73)
+       [4] _run (res://tests/punch_system_runner.gd:26)
+SCRIPT ERROR: Invalid access to property or key 'hand' on a base object of type 'Dictionary'.
+   at: BoxerController._set_fist_active (res://fighters/boxer_green/boxer_controller.gd:631)
+   GDScript backtrace (most recent call first):
+       [0] _set_fist_active (res://fighters/boxer_green/boxer_controller.gd:631)
+       [1] _finish_action (res://fighters/boxer_green/boxer_controller.gd:510)
+       [2] _reset (res://tests/punch_system_runner.gd:39)
+       [3] _test_ranges_and_results (res://tests/punch_system_runner.gd:73)
+       [4] _run (res://tests/punch_system_runner.gd:26)
+SCRIPT ERROR: Invalid access to property or key 'hand' on a base object of type 'Dictionary'.
+   at: BoxerController._set_fist_active (res://fighters/boxer_green/boxer_controller.gd:631)
+   GDScript backtrace (most recent call first):
+       [0] _set_fist_active (res://fighters/boxer_green/boxer_controller.gd:631)
+       [1] _finish_action (res://fighters/boxer_green/boxer_controller.gd:510)
+       [2] _reset (res://tests/punch_system_runner.gd:39)
+       [3] _test_ranges_and_results (res://tests/punch_system_runner.gd:73)
+       [4] _run (res://tests/punch_system_runner.gd:26)
+SCRIPT ERROR: Invalid access to property or key 'hand' on a base object of type 'Dictionary'.
+   at: BoxerController._set_fist_active (res://fighters/boxer_green/boxer_controller.gd:631)
+   GDScript backtrace (most recent call first):
+       [0] _set_fist_active (res://fighters/boxer_green/boxer_controller.gd:631)
+       [1] _finish_action (res://fighters/boxer_green/boxer_controller.gd:510)
+       [2] _reset (res://tests/punch_system_runner.gd:39)
+       [3] _test_ranges_and_results (res://tests/punch_system_runner.gd:73)
+       [4] _run (res://tests/punch_system_runner.gd:26)
+SCRIPT ERROR: Invalid access to property or key 'hand' on a base object of type 'Dictionary'.
+   at: BoxerController._set_fist_active (res://fighters/boxer_green/boxer_controller.gd:631)
+   GDScript backtrace (most recent call first):
+       [0] _set_fist_active (res://fighters/boxer_green/boxer_controller.gd:631)
+       [1] _finish_action (res://fighters/boxer_green/boxer_controller.gd:510)
+       [2] _reset (res://tests/punch_system_runner.gd:39)
+       [3] _test_ranges_and_results (res://tests/punch_system_runner.gd:78)
+       [4] _run (res://tests/punch_system_runner.gd:26)
+SCRIPT ERROR: Invalid access to property or key 'hand' on a base object of type 'Dictionary'.
+   at: BoxerController._set_fist_active (res://fighters/boxer_green/boxer_controller.gd:631)
+   GDScript backtrace (most recent call first):
+       [0] _set_fist_active (res://fighters/boxer_green/boxer_controller.gd:631)
+       [1] _finish_action (res://fighters/boxer_green/boxer_controller.gd:510)
+       [2] _reset (res://tests/punch_system_runner.gd:38)
+       [3] _test_ranges_and_results (res://tests/punch_system_runner.gd:82)
+       [4] _run (res://tests/punch_system_runner.gd:26)
+SCRIPT ERROR: Invalid access to property or key 'hand' on a base object of type 'Dictionary'.
+   at: BoxerController._set_fist_active (res://fighters/boxer_green/boxer_controller.gd:631)
+   GDScript backtrace (most recent call first):
+       [0] _set_fist_active (res://fighters/boxer_green/boxer_controller.gd:631)
+       [1] _finish_action (res://fighters/boxer_green/boxer_controller.gd:510)
+       [2] _reset (res://tests/punch_system_runner.gd:39)
+       [3] _test_ranges_and_results (res://tests/punch_system_runner.gd:82)
+       [4] _run (res://tests/punch_system_runner.gd:26)
+SCRIPT ERROR: Invalid access to property or key 'hand' on a base object of type 'Dictionary'.
+   at: BoxerController._set_fist_active (res://fighters/boxer_green/boxer_controller.gd:631)
+   GDScript backtrace (most recent call first):
+       [0] _set_fist_active (res://fighters/boxer_green/boxer_controller.gd:631)
+       [1] _finish_action (res://fighters/boxer_green/boxer_controller.gd:510)
+       [2] _reset (res://tests/punch_system_runner.gd:38)
+       [3] _test_phases_buffer_and_unique_hit (res://tests/punch_system_runner.gd:89)
+       [4] _run (res://tests/punch_system_runner.gd:27)
+SCRIPT ERROR: Invalid access to property or key 'hand' on a base object of type 'Dictionary'.
+   at: BoxerController._set_fist_active (res://fighters/boxer_green/boxer_controller.gd:631)
+   GDScript backtrace (most recent call first):
+       [0] _set_fist_active (res://fighters/boxer_green/boxer_controller.gd:631)
+       [1] _finish_action (res://fighters/boxer_green/boxer_controller.gd:510)
+       [2] _reset (res://tests/punch_system_runner.gd:39)
+       [3] _test_phases_buffer_and_unique_hit (res://tests/punch_system_runner.gd:89)
+       [4] _run (res://tests/punch_system_runner.gd:27)
+ERROR: PUNCH SYSTEM: startup advances to ACTIVE
+   at: push_error (core/variant/variant_utility.cpp:1023)
+   GDScript backtrace (most recent call first):
+       [0] _expect (res://tests/punch_system_runner.gd:14)
+       [1] _test_phases_buffer_and_unique_hit (res://tests/punch_system_runner.gd:96)
+       [2] _run (res://tests/punch_system_runner.gd:27)
+ERROR: PUNCH SYSTEM: same attack instance cannot hit twice
+   at: push_error (core/variant/variant_utility.cpp:1023)
+   GDScript backtrace (most recent call first):
+       [0] _expect (res://tests/punch_system_runner.gd:14)
+       [1] _test_phases_buffer_and_unique_hit (res://tests/punch_system_runner.gd:99)
+       [2] _run (res://tests/punch_system_runner.gd:27)
+ERROR: PUNCH_SYSTEM_TESTS_FAILED: 4
+   at: push_error (core/variant/variant_utility.cpp:1023)
+   GDScript backtrace (most recent call first):
+       [0] _run (res://tests/punch_system_runner.gd:33)

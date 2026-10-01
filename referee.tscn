@@ -1,0 +1,51 @@
+[gd_scene format=3 uid="uid://belqqwwiv1qy4"]
+
+[ext_resource type="PackedScene" uid="uid://cqjtq4gclj0vg" path="res://referee/model/arbitro (1).fbx" id="1_ye3i7"]
+[ext_resource type="Animation" uid="uid://ce36uycqc5o5g" path="res://referee/animations/ref_count.res" id="2_l4irq"]
+[ext_resource type="Animation" uid="uid://e5jskfxi1hq1" path="res://referee/animations/ref_idle.res" id="3_8avdf"]
+[ext_resource type="Animation" uid="uid://bltvdjyx3gnmq" path="res://referee/animations/ref_intercept.res" id="4_16fx0"]
+[ext_resource type="Animation" uid="uid://d00w0qgvul4ro" path="res://referee/animations/ref_kneel_point.res" id="5_6mem8"]
+[ext_resource type="Animation" uid="uid://xbe7g2jnbbeg" path="res://referee/animations/ref_look_down.res" id="6_nqf4r"]
+[ext_resource type="Animation" uid="uid://cq8p3gn5sovxs" path="res://referee/animations/ref_point.res" id="7_r6oyf"]
+[ext_resource type="Animation" uid="uid://dnaymhi7uimgw" path="res://referee/animations/ref_point_gesture.res" id="8_bnqv1"]
+[ext_resource type="Animation" uid="uid://dmkqinuywkhuc" path="res://referee/animations/ref_stop_fight.res" id="9_ndu43"]
+[ext_resource type="Animation" uid="uid://d11gudn6yqmve" path="res://referee/animations/ref_walk.res" id="10_m4cmp"]
+[ext_resource type="Animation" uid="uid://bsjhjcyu567rc" path="res://referee/animations/ref_walk_backward.res" id="11_1nq5x"]
+[ext_resource type="Animation" uid="uid://crur20gcqo66i" path="res://referee/animations/ref_walk_stop.res" id="12_506s5"]
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_8y1i1"]
+_data = {
+&"ref_count": ExtResource("2_l4irq"),
+&"ref_idle": ExtResource("3_8avdf"),
+&"ref_intercept": ExtResource("4_16fx0"),
+&"ref_kneel_point": ExtResource("5_6mem8"),
+&"ref_look_down": ExtResource("6_nqf4r"),
+&"ref_point": ExtResource("7_r6oyf"),
+&"ref_point_gesture": ExtResource("8_bnqv1"),
+&"ref_stop_fight": ExtResource("9_ndu43"),
+&"ref_walk": ExtResource("10_m4cmp"),
+&"ref_walk_backward": ExtResource("11_1nq5x"),
+&"ref_walk_stop": ExtResource("12_506s5")
+}
+
+[sub_resource type="AnimationNodeStateMachine" id="AnimationNodeStateMachine_y0h4o"]
+
+[node name="Referee" type="CharacterBody3D" unique_id=1334895432]
+
+[node name="arbitro (1)" parent="." unique_id=1183741062 instance=ExtResource("1_ye3i7")]
+
+[node name="Skeleton3D2" type="Skeleton3D" parent="arbitro (1)" unique_id=1638502345]
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="arbitro (1)" unique_id=1222276670]
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="." unique_id=199507592]
+libraries/referee = SubResource("AnimationLibrary_8y1i1")
+
+[node name="AnimationTree" type="AnimationTree" parent="." unique_id=1676544951]
+tree_root = SubResource("AnimationNodeStateMachine_y0h4o")
+advance_expression_base_node = NodePath("../AnimationPlayer")
+anim_player = NodePath("../AnimationPlayer")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="." unique_id=369043374]
+
+[node name="Marker3D" type="Marker3D" parent="." unique_id=1412332211]

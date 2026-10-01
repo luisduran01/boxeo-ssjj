@@ -1,0 +1,472 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+ERROR: Failed to read the root certificate store.
+   at: get_system_ca_certificates (platform/windows/os_windows.cpp:2582)
+ERROR: PUNCH SYSTEM: jab missing attack_name
+   at: push_error (core/variant/variant_utility.cpp:1023)
+   GDScript backtrace (most recent call first):
+       [0] _expect (res://tests/punch_system_runner.gd:14)
+       [1] _test_catalog (res://tests/punch_system_runner.gd:53)
+       [2] _run (res://tests/punch_system_runner.gd:24)
+ERROR: PUNCH SYSTEM: jab missing animation_name
+   at: push_error (core/variant/variant_utility.cpp:1023)
+   GDScript backtrace (most recent call first):
+       [0] _expect (res://tests/punch_system_runner.gd:14)
+       [1] _test_catalog (res://tests/punch_system_runner.gd:53)
+       [2] _run (res://tests/punch_system_runner.gd:24)
+ERROR: PUNCH SYSTEM: jab missing attack_type
+   at: push_error (core/variant/variant_utility.cpp:1023)
+   GDScript backtrace (most recent call first):
+       [0] _expect (res://tests/punch_system_runner.gd:14)
+       [1] _test_catalog (res://tests/punch_system_runner.gd:53)
+       [2] _run (res://tests/punch_system_runner.gd:24)
+ERROR: PUNCH SYSTEM: jab missing target_level
+   at: push_error (core/variant/variant_utility.cpp:1023)
+   GDScript backtrace (most recent call first):
+       [0] _expect (res://tests/punch_system_runner.gd:14)
+       [1] _test_catalog (res://tests/punch_system_runner.gd:53)
+       [2] _run (res://tests/punch_system_runner.gd:24)
+ERROR: PUNCH SYSTEM: jab missing active_time
+   at: push_error (core/variant/variant_utility.cpp:1023)
+   GDScript backtrace (most recent call first):
+       [0] _expect (res://tests/punch_system_runner.gd:14)
+       [1] _test_catalog (res://tests/punch_system_runner.gd:53)
+       [2] _run (res://tests/punch_system_runner.gd:24)
+ERROR: PUNCH SYSTEM: jab missing stamina_cost
+   at: push_error (core/variant/variant_utility.cpp:1023)
+   GDScript backtrace (most recent call first):
+       [0] _expect (res://tests/punch_system_runner.gd:14)
+       [1] _test_catalog (res://tests/punch_system_runner.gd:53)
+       [2] _run (res://tests/punch_system_runner.gd:24)
+ERROR: PUNCH SYSTEM: jab missing min_range
+   at: push_error (core/variant/variant_utility.cpp:1023)
+   GDScript backtrace (most recent call first):
+       [0] _expect (res://tests/punch_system_runner.gd:14)
+       [1] _test_catalog (res://tests/punch_system_runner.gd:53)
+       [2] _run (res://tests/punch_system_runner.gd:24)
+ERROR: PUNCH SYSTEM: jab missing power
+   at: push_error (core/variant/variant_utility.cpp:1023)
+   GDScript backtrace (most recent call first):
+       [0] _expect (res://tests/punch_system_runner.gd:14)
+       [1] _test_catalog (res://tests/punch_system_runner.gd:53)
+       [2] _run (res://tests/punch_system_runner.gd:24)
+ERROR: PUNCH SYSTEM: jab missing counter_bonus
+   at: push_error (core/variant/variant_utility.cpp:1023)
+   GDScript backtrace (most recent call first):
+       [0] _expect (res://tests/punch_system_runner.gd:14)
+       [1] _test_catalog (res://tests/punch_system_runner.gd:53)
+       [2] _run (res://tests/punch_system_runner.gd:24)
+ERROR: PUNCH SYSTEM: jab missing movement_allowed
+   at: push_error (core/variant/variant_utility.cpp:1023)
+   GDScript backtrace (most recent call first):
+       [0] _expect (res://tests/punch_system_runner.gd:14)
+       [1] _test_catalog (res://tests/punch_system_runner.gd:53)
+       [2] _run (res://tests/punch_system_runner.gd:24)
+ERROR: PUNCH SYSTEM: jab missing tracking_strength
+   at: push_error (core/variant/variant_utility.cpp:1023)
+   GDScript backtrace (most recent call first):
+       [0] _expect (res://tests/punch_system_runner.gd:14)
+       [1] _test_catalog (res://tests/punch_system_runner.gd:53)
+       [2] _run (res://tests/punch_system_runner.gd:24)
+ERROR: PUNCH SYSTEM: jab missing hit_stop
+   at: push_error (core/variant/variant_utility.cpp:1023)
+   GDScript backtrace (most recent call first):
+       [0] _expect (res://tests/punch_system_runner.gd:14)
+       [1] _test_catalog (res://tests/punch_system_runner.gd:53)
+       [2] _run (res://tests/punch_system_runner.gd:24)
+ERROR: PUNCH SYSTEM: jab missing camera_feedback
+   at: push_error (core/variant/variant_utility.cpp:1023)
+   GDScript backtrace (most recent call first):
+       [0] _expect (res://tests/punch_system_runner.gd:14)
+       [1] _test_catalog (res://tests/punch_system_runner.gd:53)
+       [2] _run (res://tests/punch_system_runner.gd:24)
+ERROR: PUNCH SYSTEM: jab missing animation_speed
+   at: push_error (core/variant/variant_utility.cpp:1023)
+   GDScript backtrace (most recent call first):
+       [0] _expect (res://tests/punch_system_runner.gd:14)
+       [1] _test_catalog (res://tests/punch_system_runner.gd:53)
+       [2] _run (res://tests/punch_system_runner.gd:24)
+ERROR: PUNCH SYSTEM: jab missing cancel_window
+   at: push_error (core/variant/variant_utility.cpp:1023)
+   GDScript backtrace (most recent call first):
+       [0] _expect (res://tests/punch_system_runner.gd:14)
+       [1] _test_catalog (res://tests/punch_system_runner.gd:53)
+       [2] _run (res://tests/punch_system_runner.gd:24)
+ERROR: PUNCH SYSTEM: left_hook missing attack_name
+   at: push_error (core/variant/variant_utility.cpp:1023)
+   GDScript backtrace (most recent call first):
+       [0] _expect (res://tests/punch_system_runner.gd:14)
+       [1] _test_catalog (res://tests/punch_system_runner.gd:53)
+       [2] _run (res://tests/punch_system_runner.gd:24)
+ERROR: PUNCH SYSTEM: left_hook missing animation_name
+   at: push_error (core/variant/variant_utility.cpp:1023)
+   GDScript backtrace (most recent call first):
+       [0] _expect (res://tests/punch_system_runner.gd:14)
+       [1] _test_catalog (res://tests/punch_system_runner.gd:53)
+       [2] _run (res://tests/punch_system_runner.gd:24)
+ERROR: PUNCH SYSTEM: left_hook missing attack_type
+   at: push_error (core/variant/variant_utility.cpp:1023)
+   GDScript backtrace (most recent call first):
+       [0] _expect (res://tests/punch_system_runner.gd:14)
+       [1] _test_catalog (res://tests/punch_system_runner.gd:53)
+       [2] _run (res://tests/punch_system_runner.gd:24)
+ERROR: PUNCH SYSTEM: left_hook missing target_level
+   at: push_error (core/variant/variant_utility.cpp:1023)
+   GDScript backtrace (most recent call first):
+       [0] _expect (res://tests/punch_system_runner.gd:14)
+       [1] _test_catalog (res://tests/punch_system_runner.gd:53)
+       [2] _run (res://tests/punch_system_runner.gd:24)
+ERROR: PUNCH SYSTEM: left_hook missing active_time
+   at: push_error (core/variant/variant_utility.cpp:1023)
+   GDScript backtrace (most recent call first):
+       [0] _expect (res://tests/punch_system_runner.gd:14)
+       [1] _test_catalog (res://tests/punch_system_runner.gd:53)
+       [2] _run (res://tests/punch_system_runner.gd:24)
+ERROR: PUNCH SYSTEM: left_hook missing stamina_cost
+   at: push_error (core/variant/variant_utility.cpp:1023)
+   GDScript backtrace (most recent call first):
+       [0] _expect (res://tests/punch_system_runner.gd:14)
+       [1] _test_catalog (res://tests/punch_system_runner.gd:53)
+       [2] _run (res://tests/punch_system_runner.gd:24)
+ERROR: PUNCH SYSTEM: left_hook missing min_range
+   at: push_error (core/variant/variant_utility.cpp:1023)
+   GDScript backtrace (most recent call first):
+       [0] _expect (res://tests/punch_system_runner.gd:14)
+       [1] _test_catalog (res://tests/punch_system_runner.gd:53)
+       [2] _run (res://tests/punch_system_runner.gd:24)
+ERROR: PUNCH SYSTEM: left_hook missing power
+   at: push_error (core/variant/variant_utility.cpp:1023)
+   GDScript backtrace (most recent call first):
+       [0] _expect (res://tests/punch_system_runner.gd:14)
+       [1] _test_catalog (res://tests/punch_system_runner.gd:53)
+       [2] _run (res://tests/punch_system_runner.gd:24)
+ERROR: PUNCH SYSTEM: left_hook missing counter_bonus
+   at: push_error (core/variant/variant_utility.cpp:1023)
+   GDScript backtrace (most recent call first):
+       [0] _expect (res://tests/punch_system_runner.gd:14)
+       [1] _test_catalog (res://tests/punch_system_runner.gd:53)
+       [2] _run (res://tests/punch_system_runner.gd:24)
+ERROR: PUNCH SYSTEM: left_hook missing movement_allowed
+   at: push_error (core/variant/variant_utility.cpp:1023)
+   GDScript backtrace (most recent call first):
+       [0] _expect (res://tests/punch_system_runner.gd:14)
+       [1] _test_catalog (res://tests/punch_system_runner.gd:53)
+       [2] _run (res://tests/punch_system_runner.gd:24)
+ERROR: PUNCH SYSTEM: left_hook missing tracking_strength
+   at: push_error (core/variant/variant_utility.cpp:1023)
+   GDScript backtrace (most recent call first):
+       [0] _expect (res://tests/punch_system_runner.gd:14)
+       [1] _test_catalog (res://tests/punch_system_runner.gd:53)
+       [2] _run (res://tests/punch_system_runner.gd:24)
+ERROR: PUNCH SYSTEM: left_hook missing hit_stop
+   at: push_error (core/variant/variant_utility.cpp:1023)
+   GDScript backtrace (most recent call first):
+       [0] _expect (res://tests/punch_system_runner.gd:14)
+       [1] _test_catalog (res://tests/punch_system_runner.gd:53)
+       [2] _run (res://tests/punch_system_runner.gd:24)
+ERROR: PUNCH SYSTEM: left_hook missing camera_feedback
+   at: push_error (core/variant/variant_utility.cpp:1023)
+   GDScript backtrace (most recent call first):
+       [0] _expect (res://tests/punch_system_runner.gd:14)
+       [1] _test_catalog (res://tests/punch_system_runner.gd:53)
+       [2] _run (res://tests/punch_system_runner.gd:24)
+ERROR: PUNCH SYSTEM: left_hook missing animation_speed
+   at: push_error (core/variant/variant_utility.cpp:1023)
+   GDScript backtrace (most recent call first):
+       [0] _expect (res://tests/punch_system_runner.gd:14)
+       [1] _test_catalog (res://tests/punch_system_runner.gd:53)
+       [2] _run (res://tests/punch_system_runner.gd:24)
+ERROR: PUNCH SYSTEM: left_hook missing cancel_window
+   at: push_error (core/variant/variant_utility.cpp:1023)
+   GDScript backtrace (most recent call first):
+       [0] _expect (res://tests/punch_system_runner.gd:14)
+       [1] _test_catalog (res://tests/punch_system_runner.gd:53)
+       [2] _run (res://tests/punch_system_runner.gd:24)
+ERROR: PUNCH SYSTEM: right_hook missing attack_name
+   at: push_error (core/variant/variant_utility.cpp:1023)
+   GDScript backtrace (most recent call first):
+       [0] _expect (res://tests/punch_system_runner.gd:14)
+       [1] _test_catalog (res://tests/punch_system_runner.gd:53)
+       [2] _run (res://tests/punch_system_runner.gd:24)
+ERROR: PUNCH SYSTEM: right_hook missing animation_name
+   at: push_error (core/variant/variant_utility.cpp:1023)
+   GDScript backtrace (most recent call first):
+       [0] _expect (res://tests/punch_system_runner.gd:14)
+       [1] _test_catalog (res://tests/punch_system_runner.gd:53)
+       [2] _run (res://tests/punch_system_runner.gd:24)
+ERROR: PUNCH SYSTEM: right_hook missing attack_type
+   at: push_error (core/variant/variant_utility.cpp:1023)
+   GDScript backtrace (most recent call first):
+       [0] _expect (res://tests/punch_system_runner.gd:14)
+       [1] _test_catalog (res://tests/punch_system_runner.gd:53)
+       [2] _run (res://tests/punch_system_runner.gd:24)
+ERROR: PUNCH SYSTEM: right_hook missing target_level
+   at: push_error (core/variant/variant_utility.cpp:1023)
+   GDScript backtrace (most recent call first):
+       [0] _expect (res://tests/punch_system_runner.gd:14)
+       [1] _test_catalog (res://tests/punch_system_runner.gd:53)
+       [2] _run (res://tests/punch_system_runner.gd:24)
+ERROR: PUNCH SYSTEM: right_hook missing active_time
+   at: push_error (core/variant/variant_utility.cpp:1023)
+   GDScript backtrace (most recent call first):
+       [0] _expect (res://tests/punch_system_runner.gd:14)
+       [1] _test_catalog (res://tests/punch_system_runner.gd:53)
+       [2] _run (res://tests/punch_system_runner.gd:24)
+ERROR: PUNCH SYSTEM: right_hook missing stamina_cost
+   at: push_error (core/variant/variant_utility.cpp:1023)
+   GDScript backtrace (most recent call first):
+       [0] _expect (res://tests/punch_system_runner.gd:14)
+       [1] _test_catalog (res://tests/punch_system_runner.gd:53)
+       [2] _run (res://tests/punch_system_runner.gd:24)
+ERROR: PUNCH SYSTEM: right_hook missing min_range
+   at: push_error (core/variant/variant_utility.cpp:1023)
+   GDScript backtrace (most recent call first):
+       [0] _expect (res://tests/punch_system_runner.gd:14)
+       [1] _test_catalog (res://tests/punch_system_runner.gd:53)
+       [2] _run (res://tests/punch_system_runner.gd:24)
+ERROR: PUNCH SYSTEM: right_hook missing power
+   at: push_error (core/variant/variant_utility.cpp:1023)
+   GDScript backtrace (most recent call first):
+       [0] _expect (res://tests/punch_system_runner.gd:14)
+       [1] _test_catalog (res://tests/punch_system_runner.gd:53)
+       [2] _run (res://tests/punch_system_runner.gd:24)
+ERROR: PUNCH SYSTEM: right_hook missing counter_bonus
+   at: push_error (core/variant/variant_utility.cpp:1023)
+   GDScript backtrace (most recent call first):
+       [0] _expect (res://tests/punch_system_runner.gd:14)
+       [1] _test_catalog (res://tests/punch_system_runner.gd:53)
+       [2] _run (res://tests/punch_system_runner.gd:24)
+ERROR: PUNCH SYSTEM: right_hook missing movement_allowed
+   at: push_error (core/variant/variant_utility.cpp:1023)
+   GDScript backtrace (most recent call first):
+       [0] _expect (res://tests/punch_system_runner.gd:14)
+       [1] _test_catalog (res://tests/punch_system_runner.gd:53)
+       [2] _run (res://tests/punch_system_runner.gd:24)
+ERROR: PUNCH SYSTEM: right_hook missing tracking_strength
+   at: push_error (core/variant/variant_utility.cpp:1023)
+   GDScript backtrace (most recent call first):
+       [0] _expect (res://tests/punch_system_runner.gd:14)
+       [1] _test_catalog (res://tests/punch_system_runner.gd:53)
+       [2] _run (res://tests/punch_system_runner.gd:24)
+ERROR: PUNCH SYSTEM: right_hook missing hit_stop
+   at: push_error (core/variant/variant_utility.cpp:1023)
+   GDScript backtrace (most recent call first):
+       [0] _expect (res://tests/punch_system_runner.gd:14)
+       [1] _test_catalog (res://tests/punch_system_runner.gd:53)
+       [2] _run (res://tests/punch_system_runner.gd:24)
+ERROR: PUNCH SYSTEM: right_hook missing camera_feedback
+   at: push_error (core/variant/variant_utility.cpp:1023)
+   GDScript backtrace (most recent call first):
+       [0] _expect (res://tests/punch_system_runner.gd:14)
+       [1] _test_catalog (res://tests/punch_system_runner.gd:53)
+       [2] _run (res://tests/punch_system_runner.gd:24)
+ERROR: PUNCH SYSTEM: right_hook missing animation_speed
+   at: push_error (core/variant/variant_utility.cpp:1023)
+   GDScript backtrace (most recent call first):
+       [0] _expect (res://tests/punch_system_runner.gd:14)
+       [1] _test_catalog (res://tests/punch_system_runner.gd:53)
+       [2] _run (res://tests/punch_system_runner.gd:24)
+ERROR: PUNCH SYSTEM: right_hook missing cancel_window
+   at: push_error (core/variant/variant_utility.cpp:1023)
+   GDScript backtrace (most recent call first):
+       [0] _expect (res://tests/punch_system_runner.gd:14)
+       [1] _test_catalog (res://tests/punch_system_runner.gd:53)
+       [2] _run (res://tests/punch_system_runner.gd:24)
+ERROR: PUNCH SYSTEM: uppercut missing attack_name
+   at: push_error (core/variant/variant_utility.cpp:1023)
+   GDScript backtrace (most recent call first):
+       [0] _expect (res://tests/punch_system_runner.gd:14)
+       [1] _test_catalog (res://tests/punch_system_runner.gd:53)
+       [2] _run (res://tests/punch_system_runner.gd:24)
+ERROR: PUNCH SYSTEM: uppercut missing animation_name
+   at: push_error (core/variant/variant_utility.cpp:1023)
+   GDScript backtrace (most recent call first):
+       [0] _expect (res://tests/punch_system_runner.gd:14)
+       [1] _test_catalog (res://tests/punch_system_runner.gd:53)
+       [2] _run (res://tests/punch_system_runner.gd:24)
+ERROR: PUNCH SYSTEM: uppercut missing attack_type
+   at: push_error (core/variant/variant_utility.cpp:1023)
+   GDScript backtrace (most recent call first):
+       [0] _expect (res://tests/punch_system_runner.gd:14)
+       [1] _test_catalog (res://tests/punch_system_runner.gd:53)
+       [2] _run (res://tests/punch_system_runner.gd:24)
+ERROR: PUNCH SYSTEM: uppercut missing target_level
+   at: push_error (core/variant/variant_utility.cpp:1023)
+   GDScript backtrace (most recent call first):
+       [0] _expect (res://tests/punch_system_runner.gd:14)
+       [1] _test_catalog (res://tests/punch_system_runner.gd:53)
+       [2] _run (res://tests/punch_system_runner.gd:24)
+ERROR: PUNCH SYSTEM: uppercut missing active_time
+   at: push_error (core/variant/variant_utility.cpp:1023)
+   GDScript backtrace (most recent call first):
+       [0] _expect (res://tests/punch_system_runner.gd:14)
+       [1] _test_catalog (res://tests/punch_system_runner.gd:53)
+       [2] _run (res://tests/punch_system_runner.gd:24)
+ERROR: PUNCH SYSTEM: uppercut missing stamina_cost
+   at: push_error (core/variant/variant_utility.cpp:1023)
+   GDScript backtrace (most recent call first):
+       [0] _expect (res://tests/punch_system_runner.gd:14)
+       [1] _test_catalog (res://tests/punch_system_runner.gd:53)
+       [2] _run (res://tests/punch_system_runner.gd:24)
+ERROR: PUNCH SYSTEM: uppercut missing min_range
+   at: push_error (core/variant/variant_utility.cpp:1023)
+   GDScript backtrace (most recent call first):
+       [0] _expect (res://tests/punch_system_runner.gd:14)
+       [1] _test_catalog (res://tests/punch_system_runner.gd:53)
+       [2] _run (res://tests/punch_system_runner.gd:24)
+ERROR: PUNCH SYSTEM: uppercut missing power
+   at: push_error (core/variant/variant_utility.cpp:1023)
+   GDScript backtrace (most recent call first):
+       [0] _expect (res://tests/punch_system_runner.gd:14)
+       [1] _test_catalog (res://tests/punch_system_runner.gd:53)
+       [2] _run (res://tests/punch_system_runner.gd:24)
+ERROR: PUNCH SYSTEM: uppercut missing counter_bonus
+   at: push_error (core/variant/variant_utility.cpp:1023)
+   GDScript backtrace (most recent call first):
+       [0] _expect (res://tests/punch_system_runner.gd:14)
+       [1] _test_catalog (res://tests/punch_system_runner.gd:53)
+       [2] _run (res://tests/punch_system_runner.gd:24)
+ERROR: PUNCH SYSTEM: uppercut missing movement_allowed
+   at: push_error (core/variant/variant_utility.cpp:1023)
+   GDScript backtrace (most recent call first):
+       [0] _expect (res://tests/punch_system_runner.gd:14)
+       [1] _test_catalog (res://tests/punch_system_runner.gd:53)
+       [2] _run (res://tests/punch_system_runner.gd:24)
+ERROR: PUNCH SYSTEM: uppercut missing tracking_strength
+   at: push_error (core/variant/variant_utility.cpp:1023)
+   GDScript backtrace (most recent call first):
+       [0] _expect (res://tests/punch_system_runner.gd:14)
+       [1] _test_catalog (res://tests/punch_system_runner.gd:53)
+       [2] _run (res://tests/punch_system_runner.gd:24)
+ERROR: PUNCH SYSTEM: uppercut missing hit_stop
+   at: push_error (core/variant/variant_utility.cpp:1023)
+   GDScript backtrace (most recent call first):
+       [0] _expect (res://tests/punch_system_runner.gd:14)
+       [1] _test_catalog (res://tests/punch_system_runner.gd:53)
+       [2] _run (res://tests/punch_system_runner.gd:24)
+ERROR: PUNCH SYSTEM: uppercut missing camera_feedback
+   at: push_error (core/variant/variant_utility.cpp:1023)
+   GDScript backtrace (most recent call first):
+       [0] _expect (res://tests/punch_system_runner.gd:14)
+       [1] _test_catalog (res://tests/punch_system_runner.gd:53)
+       [2] _run (res://tests/punch_system_runner.gd:24)
+ERROR: PUNCH SYSTEM: uppercut missing animation_speed
+   at: push_error (core/variant/variant_utility.cpp:1023)
+   GDScript backtrace (most recent call first):
+       [0] _expect (res://tests/punch_system_runner.gd:14)
+       [1] _test_catalog (res://tests/punch_system_runner.gd:53)
+       [2] _run (res://tests/punch_system_runner.gd:24)
+ERROR: PUNCH SYSTEM: uppercut missing cancel_window
+   at: push_error (core/variant/variant_utility.cpp:1023)
+   GDScript backtrace (most recent call first):
+       [0] _expect (res://tests/punch_system_runner.gd:14)
+       [1] _test_catalog (res://tests/punch_system_runner.gd:53)
+       [2] _run (res://tests/punch_system_runner.gd:24)
+ERROR: PUNCH SYSTEM: cross must remain reserved without a fake animation
+   at: push_error (core/variant/variant_utility.cpp:1023)
+   GDScript backtrace (most recent call first):
+       [0] _expect (res://tests/punch_system_runner.gd:14)
+       [1] _test_catalog (res://tests/punch_system_runner.gd:54)
+       [2] _run (res://tests/punch_system_runner.gd:24)
+SCRIPT ERROR: Invalid access to property or key 'movement_allowed' on a base object of type 'Dictionary'.
+   at: _test_catalog (res://tests/punch_system_runner.gd:55)
+   GDScript backtrace (most recent call first):
+       [0] _test_catalog (res://tests/punch_system_runner.gd:55)
+       [1] _run (res://tests/punch_system_runner.gd:24)
+ERROR: PUNCH SYSTEM: jab must remain mobile with move_forward
+   at: push_error (core/variant/variant_utility.cpp:1023)
+   GDScript backtrace (most recent call first):
+       [0] _expect (res://tests/punch_system_runner.gd:14)
+       [1] _test_mobile_jab (res://tests/punch_system_runner.gd:68)
+       [2] _run (res://tests/punch_system_runner.gd:25)
+ERROR: PUNCH SYSTEM: jab must remain mobile with move_backward
+   at: push_error (core/variant/variant_utility.cpp:1023)
+   GDScript backtrace (most recent call first):
+       [0] _expect (res://tests/punch_system_runner.gd:14)
+       [1] _test_mobile_jab (res://tests/punch_system_runner.gd:68)
+       [2] _run (res://tests/punch_system_runner.gd:25)
+ERROR: PUNCH SYSTEM: jab must remain mobile with move_left
+   at: push_error (core/variant/variant_utility.cpp:1023)
+   GDScript backtrace (most recent call first):
+       [0] _expect (res://tests/punch_system_runner.gd:14)
+       [1] _test_mobile_jab (res://tests/punch_system_runner.gd:68)
+       [2] _run (res://tests/punch_system_runner.gd:25)
+ERROR: PUNCH SYSTEM: jab must remain mobile with move_right
+   at: push_error (core/variant/variant_utility.cpp:1023)
+   GDScript backtrace (most recent call first):
+       [0] _expect (res://tests/punch_system_runner.gd:14)
+       [1] _test_mobile_jab (res://tests/punch_system_runner.gd:68)
+       [2] _run (res://tests/punch_system_runner.gd:25)
+SCRIPT ERROR: Invalid call. Nonexistent function 'preview_hit' in base 'CharacterBody3D (BoxerController)'.
+   at: _test_ranges_and_results (res://tests/punch_system_runner.gd:80)
+   GDScript backtrace (most recent call first):
+       [0] _test_ranges_and_results (res://tests/punch_system_runner.gd:80)
+       [1] _run (res://tests/punch_system_runner.gd:26)
+SCRIPT ERROR: Invalid access to property or key '_attack_instance_id' on a base object of type 'CharacterBody3D (BoxerController)'.
+   at: _test_phases_buffer_and_unique_hit (res://tests/punch_system_runner.gd:91)
+   GDScript backtrace (most recent call first):
+       [0] _test_phases_buffer_and_unique_hit (res://tests/punch_system_runner.gd:91)
+       [1] _run (res://tests/punch_system_runner.gd:27)
+ERROR: PUNCH SYSTEM: AI close range selection uses close punches
+   at: push_error (core/variant/variant_utility.cpp:1023)
+   GDScript backtrace (most recent call first):
+       [0] _expect (res://tests/punch_system_runner.gd:14)
+       [1] _test_shared_ai_and_debug (res://tests/punch_system_runner.gd:108)
+       [2] _run (res://tests/punch_system_runner.gd:28)
+ERROR: PUNCH SYSTEM: AI close range selection uses close punches
+   at: push_error (core/variant/variant_utility.cpp:1023)
+   GDScript backtrace (most recent call first):
+       [0] _expect (res://tests/punch_system_runner.gd:14)
+       [1] _test_shared_ai_and_debug (res://tests/punch_system_runner.gd:108)
+       [2] _run (res://tests/punch_system_runner.gd:28)
+ERROR: PUNCH SYSTEM: AI close range selection uses close punches
+   at: push_error (core/variant/variant_utility.cpp:1023)
+   GDScript backtrace (most recent call first):
+       [0] _expect (res://tests/punch_system_runner.gd:14)
+       [1] _test_shared_ai_and_debug (res://tests/punch_system_runner.gd:108)
+       [2] _run (res://tests/punch_system_runner.gd:28)
+ERROR: PUNCH SYSTEM: AI close range selection uses close punches
+   at: push_error (core/variant/variant_utility.cpp:1023)
+   GDScript backtrace (most recent call first):
+       [0] _expect (res://tests/punch_system_runner.gd:14)
+       [1] _test_shared_ai_and_debug (res://tests/punch_system_runner.gd:108)
+       [2] _run (res://tests/punch_system_runner.gd:28)
+ERROR: PUNCH SYSTEM: AI close range selection uses close punches
+   at: push_error (core/variant/variant_utility.cpp:1023)
+   GDScript backtrace (most recent call first):
+       [0] _expect (res://tests/punch_system_runner.gd:14)
+       [1] _test_shared_ai_and_debug (res://tests/punch_system_runner.gd:108)
+       [2] _run (res://tests/punch_system_runner.gd:28)
+ERROR: PUNCH SYSTEM: AI close range selection uses close punches
+   at: push_error (core/variant/variant_utility.cpp:1023)
+   GDScript backtrace (most recent call first):
+       [0] _expect (res://tests/punch_system_runner.gd:14)
+       [1] _test_shared_ai_and_debug (res://tests/punch_system_runner.gd:108)
+       [2] _run (res://tests/punch_system_runner.gd:28)
+ERROR: PUNCH SYSTEM: AI close range selection uses close punches
+   at: push_error (core/variant/variant_utility.cpp:1023)
+   GDScript backtrace (most recent call first):
+       [0] _expect (res://tests/punch_system_runner.gd:14)
+       [1] _test_shared_ai_and_debug (res://tests/punch_system_runner.gd:108)
+       [2] _run (res://tests/punch_system_runner.gd:28)
+ERROR: PUNCH SYSTEM: AI close range selection uses close punches
+   at: push_error (core/variant/variant_utility.cpp:1023)
+   GDScript backtrace (most recent call first):
+       [0] _expect (res://tests/punch_system_runner.gd:14)
+       [1] _test_shared_ai_and_debug (res://tests/punch_system_runner.gd:108)
+       [2] _run (res://tests/punch_system_runner.gd:28)
+ERROR: PUNCH SYSTEM: AI close range selection uses close punches
+   at: push_error (core/variant/variant_utility.cpp:1023)
+   GDScript backtrace (most recent call first):
+       [0] _expect (res://tests/punch_system_runner.gd:14)
+       [1] _test_shared_ai_and_debug (res://tests/punch_system_runner.gd:108)
+       [2] _run (res://tests/punch_system_runner.gd:28)
+SCRIPT ERROR: Invalid access to property or key 'punch_debug_enabled' on a base object of type 'CharacterBody3D (BoxerController)'.
+   at: _test_shared_ai_and_debug (res://tests/punch_system_runner.gd:109)
+   GDScript backtrace (most recent call first):
+       [0] _test_shared_ai_and_debug (res://tests/punch_system_runner.gd:109)
+       [1] _run (res://tests/punch_system_runner.gd:28)
+ERROR: PUNCH_SYSTEM_TESTS_FAILED: 74
+   at: push_error (core/variant/variant_utility.cpp:1023)
+   GDScript backtrace (most recent call first):
+       [0] _run (res://tests/punch_system_runner.gd:33)

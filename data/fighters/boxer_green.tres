@@ -1,0 +1,17 @@
+[gd_resource type="Resource" script_class="FighterData" load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://scripts/data/fighter_data.gd" id="1"]
+[ext_resource type="PackedScene" path="res://fighters/boxer_green/boxer_green.tscn" id="2"]
+
+[resource]
+script = ExtResource("1")
+display_name = "SANTIAGO GREEN"
+height_cm = 178
+weight_kg = 75
+reach_cm = 180
+stance = "Ortodoxa"
+power = 78
+speed = 82
+stamina = 80
+defense = 76
+scene = ExtResource("2")

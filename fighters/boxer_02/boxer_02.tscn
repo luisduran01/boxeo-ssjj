@@ -1,0 +1,143 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://fighters/boxer_green/boxer_controller.gd" id="1_script"]
+[ext_resource type="PackedScene" path="res://fighters/boxer_02/boxer_02.fbx" id="2_model"]
+[ext_resource type="Animation" path="res://fighters/boxer_02/animations/block_body.res" id="3_block_body"]
+[ext_resource type="Animation" path="res://fighters/boxer_02/animations/block_left.res" id="4_block_left"]
+[ext_resource type="Animation" path="res://fighters/boxer_02/animations/block_right.res" id="5_block_right"]
+[ext_resource type="Animation" path="res://fighters/boxer_02/animations/boxing_idle.res" id="6_idle"]
+[ext_resource type="Animation" path="res://fighters/boxer_02/animations/fight_enter.res" id="7_enter"]
+[ext_resource type="Animation" path="res://fighters/boxer_02/animations/get_up.res" id="8_get_up"]
+[ext_resource type="Animation" path="res://fighters/boxer_02/animations/hit_kidney.res" id="9_hit_kidney"]
+[ext_resource type="Animation" path="res://fighters/boxer_02/animations/hit_reaction.res" id="10_hit_reaction"]
+[ext_resource type="Animation" path="res://fighters/boxer_02/animations/hit_rib.res" id="11_hit_rib"]
+[ext_resource type="Animation" path="res://fighters/boxer_02/animations/hit_uppercut.res" id="12_hit_uppercut"]
+[ext_resource type="Animation" path="res://fighters/boxer_02/animations/jab.res" id="13_jab"]
+[ext_resource type="Animation" path="res://fighters/boxer_02/animations/left_hook.res" id="14_left_hook"]
+[ext_resource type="Animation" path="res://fighters/boxer_02/animations/pivot_left.res" id="15_pivot_left"]
+[ext_resource type="Animation" path="res://fighters/boxer_02/animations/pivot_right.res" id="16_pivot_right"]
+[ext_resource type="Animation" path="res://fighters/boxer_02/animations/right_hook.res" id="17_right_hook"]
+[ext_resource type="Animation" path="res://fighters/boxer_02/animations/step_backward.res" id="18_step_backward"]
+[ext_resource type="Animation" path="res://fighters/boxer_02/animations/step_forward.res" id="19_step_forward"]
+[ext_resource type="Animation" path="res://fighters/boxer_02/animations/step_left.res" id="20_step_left"]
+[ext_resource type="Animation" path="res://fighters/boxer_02/animations/step_right.res" id="21_step_right"]
+[ext_resource type="Animation" path="res://fighters/boxer_02/animations/uppercut.res" id="22_uppercut"]
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_boxing"]
+_data = {
+&"block_body": ExtResource("3_block_body"),
+&"block_left": ExtResource("4_block_left"),
+&"block_right": ExtResource("5_block_right"),
+&"boxing_idle": ExtResource("6_idle"),
+&"fight_enter": ExtResource("7_enter"),
+&"get_up": ExtResource("8_get_up"),
+&"hit_kidney": ExtResource("9_hit_kidney"),
+&"hit_reaction": ExtResource("10_hit_reaction"),
+&"hit_rib": ExtResource("11_hit_rib"),
+&"hit_uppercut": ExtResource("12_hit_uppercut"),
+&"jab": ExtResource("13_jab"),
+&"left_hook": ExtResource("14_left_hook"),
+&"pivot_left": ExtResource("15_pivot_left"),
+&"pivot_right": ExtResource("16_pivot_right"),
+&"right_hook": ExtResource("17_right_hook"),
+&"step_backward": ExtResource("18_step_backward"),
+&"step_forward": ExtResource("19_step_forward"),
+&"step_left": ExtResource("20_step_left"),
+&"step_right": ExtResource("21_step_right"),
+&"uppercut": ExtResource("22_uppercut")
+}
+
+[sub_resource type="CapsuleShape3D" id="CapsuleShape_boxer02"]
+radius = 0.25
+height = 1.0
+
+[sub_resource type="AnimationNodeAnimation" id="AnimationNode_enter"]
+animation = &"Boxing/fight_enter"
+play_mode = 1
+
+[sub_resource type="AnimationNodeAnimation" id="AnimationNode_idle"]
+animation = &"Boxing/boxing_idle"
+
+[sub_resource type="AnimationNodeAnimation" id="AnimationNode_backward"]
+animation = &"Boxing/step_backward"
+
+[sub_resource type="AnimationNodeAnimation" id="AnimationNode_left"]
+animation = &"Boxing/step_left"
+
+[sub_resource type="AnimationNodeAnimation" id="AnimationNode_right"]
+animation = &"Boxing/step_right"
+
+[sub_resource type="AnimationNodeAnimation" id="AnimationNode_forward"]
+animation = &"Boxing/step_forward"
+
+[sub_resource type="AnimationNodeBlendSpace2D" id="BlendSpace_footwork"]
+blend_point_0/node = SubResource("AnimationNode_idle")
+blend_point_0/pos = Vector2(0, 0)
+blend_point_0/name = &"Boxing_boxing_idle"
+blend_point_1/node = SubResource("AnimationNode_backward")
+blend_point_1/pos = Vector2(0, -1)
+blend_point_1/name = &"Boxing_step_backward"
+blend_point_2/node = SubResource("AnimationNode_left")
+blend_point_2/pos = Vector2(-1, 0)
+blend_point_2/name = &"Boxing_step_left"
+blend_point_3/node = SubResource("AnimationNode_right")
+blend_point_3/pos = Vector2(1, 0)
+blend_point_3/name = &"Boxing_step_right"
+blend_point_4/node = SubResource("AnimationNode_forward")
+blend_point_4/pos = Vector2(0, 1)
+blend_point_4/name = &"Boxing_step_forward"
+
+[sub_resource type="AnimationNodeStateMachineTransition" id="Transition_enter"]
+
+[sub_resource type="AnimationNodeStateMachineTransition" id="Transition_footwork"]
+advance_mode = 2
+
+[sub_resource type="AnimationNodeStateMachine" id="StateMachine_boxer02"]
+states/Boxing_fight_enter/node = SubResource("AnimationNode_enter")
+states/Boxing_fight_enter/position = Vector2(317, 9)
+states/End/position = Vector2(549, 131)
+states/Footwork/node = SubResource("BlendSpace_footwork")
+states/Footwork/position = Vector2(526, 9)
+states/Start/position = Vector2(126, 9)
+transitions = ["Start", "Boxing_fight_enter", SubResource("Transition_enter"), "Boxing_fight_enter", "Footwork", SubResource("Transition_footwork")]
+
+[node name="Boxer02" type="CharacterBody3D"]
+transform = Transform3D(1.82, 0, 0, 0, 1.82, 0, 0, 0, 1.82, 0, 0, 0)
+script = ExtResource("1_script")
+animation_player_path = NodePath("boxer_02/AnimationPlayer2")
+skeleton_path = NodePath("boxer_02/Skeleton3D")
+fighter_name = "BOXER 02"
+is_player = false
+
+[node name="boxer_02" parent="." instance=ExtResource("2_model")]
+transform = Transform3D(-1, 0, 0, 0, 1, 0, 0, 0, -1, 0, 0, 0)
+
+[node name="AnimationPlayer2" type="AnimationPlayer" parent="boxer_02"]
+libraries/Boxing = SubResource("AnimationLibrary_boxing")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+position = Vector3(0, 0.5, 0)
+shape = SubResource("CapsuleShape_boxer02")
+
+[node name="AnimationTree" type="AnimationTree" parent="."]
+root_node = NodePath("../boxer_02")
+tree_root = SubResource("StateMachine_boxer02")
+advance_expression_base_node = NodePath("../boxer_02/AnimationPlayer2")
+anim_player = NodePath("../boxer_02/AnimationPlayer2")
+parameters/Footwork/blend_position = Vector2(0, 0)
+
+[node name="Hitboxes" type="Node3D" parent="."]
+
+[node name="LeftFist" type="Area3D" parent="Hitboxes"]
+
+[node name="RightFist" type="Area3D" parent="Hitboxes"]
+
+[node name="Head" type="Area3D" parent="Hitboxes"]
+
+[node name="Body" type="Area3D" parent="Hitboxes"]
+
+[node name="Hurtboxes" type="Node3D" parent="."]
+
+[node name="Head" type="Area3D" parent="Hurtboxes"]
+
+[node name="Body" type="Area3D" parent="Hurtboxes"]

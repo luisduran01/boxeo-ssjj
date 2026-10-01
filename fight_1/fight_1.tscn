@@ -1,0 +1,36 @@
+[gd_scene format=3 uid="uid://bau140het2kd4"]
+
+[ext_resource type="PackedScene" uid="uid://bfuot8vefhbep" path="res://fighters/boxer_green/boxer_green.tscn" id="1_cfawv"]
+[ext_resource type="PackedScene" uid="uid://dr662tubx32t0" path="res://fighters/boxer_02/boxer_02.tscn" id="2_2da3y"]
+
+[sub_resource type="BoxMesh" id="BoxMesh_y0h4o"]
+size = Vector3(12, 0.2, 12)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_fmm0o"]
+size = Vector3(12, 0.2, 12)
+
+[node name="Fight1" type="Node3D" unique_id=1924224769]
+
+[node name="Floor" type="StaticBody3D" parent="." unique_id=1033417846]
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="Floor" unique_id=644627749]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.13415527, 0)
+mesh = SubResource("BoxMesh_y0h4o")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Floor" unique_id=978433273]
+shape = SubResource("BoxShape3D_fmm0o")
+
+[node name="CameraRig" type="Node3D" parent="." unique_id=1799717417]
+
+[node name="Camera3D" type="Camera3D" parent="CameraRig" unique_id=1021912904]
+transform = Transform3D(0.6467898, 0, 0.7626684, 0, 1, 0, -0.7626684, 0, 0.6467898, 7, 3, 7)
+current = true
+
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="." unique_id=1274925321]
+transform = Transform3D(0.8660254, 0.38302222, -0.32139382, 0, 0.64278764, 0.76604444, 0.5, -0.66341394, 0.5566704, 0, 0, 0)
+
+[node name="Player" parent="." unique_id=1796320952 instance=ExtResource("1_cfawv")]
+transform = Transform3D(1.78, 0, 0, 0, 1.78, 0, 0, 0, 1.78, 0, 0, 2)
+
+[node name="Boxer02" parent="." unique_id=1952404247 instance=ExtResource("2_2da3y")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.103128195, 0)

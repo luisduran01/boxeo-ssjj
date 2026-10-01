@@ -1,0 +1,147 @@
+[gd_scene format=3 uid="uid://bfuot8vefhbep"]
+
+[ext_resource type="Script" uid="uid://mwm4h76rvuta" path="res://fighters/boxer_green/boxer_controller.gd" id="1_146d0"]
+[ext_resource type="PackedScene" uid="uid://0gdxyigc1bda" path="res://fighters/boxer_green/model/boxer.green.fbx" id="1_jv57k"]
+[ext_resource type="Animation" uid="uid://cbdhvoym0arfr" path="res://fighters/boxer_green/animations/fight_enter.res" id="2_by8fw"]
+[ext_resource type="Animation" uid="uid://5wcrllklod4" path="res://fighters/boxer_green/animations/block_body.res" id="3_yymr5"]
+[ext_resource type="Animation" uid="uid://bc0uv4nkfof7o" path="res://fighters/boxer_green/animations/block_left.res" id="4_l6jrn"]
+[ext_resource type="Animation" uid="uid://br0kkunyr8n4t" path="res://fighters/boxer_green/animations/block_right.res" id="5_y4qos"]
+[ext_resource type="Animation" uid="uid://cxnl3fhdrbtpm" path="res://fighters/boxer_green/animations/boxing_idle.res" id="6_ij022"]
+[ext_resource type="Animation" uid="uid://cnuu6oq3id51w" path="res://fighters/boxer_green/animations/get_up.res" id="8_ygd8q"]
+[ext_resource type="Animation" uid="uid://bcv7d63pfh1w5" path="res://fighters/boxer_green/animations/hit_kidney.res" id="9_wtxl2"]
+[ext_resource type="Animation" uid="uid://q60c74g1tm3a" path="res://fighters/boxer_green/animations/hit_reaction.res" id="10_ryywx"]
+[ext_resource type="Animation" uid="uid://w0uyldds5acv" path="res://fighters/boxer_green/animations/hit_rib.res" id="11_yku7u"]
+[ext_resource type="Animation" uid="uid://wwchu0r0tq2n" path="res://fighters/boxer_green/animations/hit_uppercut.res" id="12_81uqo"]
+[ext_resource type="Animation" uid="uid://dbqaybe2w0cak" path="res://fighters/boxer_green/animations/jab.res" id="13_7of4h"]
+[ext_resource type="Animation" uid="uid://8rpu0dr26qmy" path="res://fighters/boxer_green/animations/left_hook.res" id="14_invno"]
+[ext_resource type="Animation" uid="uid://bq4kl8s81xrem" path="res://fighters/boxer_green/animations/pivot_left.res" id="15_ssau1"]
+[ext_resource type="Animation" uid="uid://bcahypflhjc13" path="res://fighters/boxer_green/animations/pivot_right.res" id="16_wqn7a"]
+[ext_resource type="Animation" uid="uid://5n1527arwjg1" path="res://fighters/boxer_green/animations/right_hook.res" id="17_uwpq7"]
+[ext_resource type="Animation" uid="uid://chwi2477ufwos" path="res://fighters/boxer_green/animations/step_backward.res" id="18_cfxe0"]
+[ext_resource type="Animation" uid="uid://dq54vifefomgr" path="res://fighters/boxer_green/animations/step_forward.res" id="19_37sbb"]
+[ext_resource type="Animation" uid="uid://b55glbx1cql61" path="res://fighters/boxer_green/animations/step_left.res" id="20_sfimh"]
+[ext_resource type="Animation" uid="uid://cnxcxckhl33k7" path="res://fighters/boxer_green/animations/step_right.res" id="21_dh6jg"]
+[ext_resource type="Animation" uid="uid://k86l75ne023r" path="res://fighters/boxer_green/animations/uppercut.res" id="22_ugbdp"]
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_lnwug"]
+_data = {
+&"block_body": ExtResource("3_yymr5"),
+&"block_left": ExtResource("4_l6jrn"),
+&"block_right": ExtResource("5_y4qos"),
+&"boxing_idle": ExtResource("6_ij022"),
+&"fight_enter": ExtResource("2_by8fw"),
+&"get_up": ExtResource("8_ygd8q"),
+&"hit_kidney": ExtResource("9_wtxl2"),
+&"hit_reaction": ExtResource("10_ryywx"),
+&"hit_rib": ExtResource("11_yku7u"),
+&"hit_uppercut": ExtResource("12_81uqo"),
+&"jab": ExtResource("13_7of4h"),
+&"left_hook": ExtResource("14_invno"),
+&"pivot_left": ExtResource("15_ssau1"),
+&"pivot_right": ExtResource("16_wqn7a"),
+&"right_hook": ExtResource("17_uwpq7"),
+&"step_backward": ExtResource("18_cfxe0"),
+&"step_forward": ExtResource("19_37sbb"),
+&"step_left": ExtResource("20_sfimh"),
+&"step_right": ExtResource("21_dh6jg"),
+&"uppercut": ExtResource("22_ugbdp")
+}
+
+[sub_resource type="CapsuleShape3D" id="CapsuleShape3D_8k5m8"]
+radius = 0.25
+height = 1.0
+
+[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_l4teu"]
+animation = &"Boxing/fight_enter"
+play_mode = 1
+
+[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_fsvu5"]
+animation = &"Boxing/boxing_idle"
+
+[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_bbrap"]
+animation = &"Boxing/step_backward"
+
+[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_bcuah"]
+animation = &"Boxing/step_left"
+
+[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_74lke"]
+animation = &"Boxing/step_right"
+
+[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_ec7g4"]
+animation = &"Boxing/step_forward"
+
+[sub_resource type="AnimationNodeBlendSpace2D" id="AnimationNodeBlendSpace2D_vmh7s"]
+blend_point_0/node = SubResource("AnimationNodeAnimation_fsvu5")
+blend_point_0/pos = Vector2(0, 0)
+blend_point_0/name = &"Boxing_boxing_idle"
+blend_point_1/node = SubResource("AnimationNodeAnimation_bbrap")
+blend_point_1/pos = Vector2(0, -1)
+blend_point_1/name = &"Boxing_step_backward"
+blend_point_2/node = SubResource("AnimationNodeAnimation_bcuah")
+blend_point_2/pos = Vector2(-1, 0)
+blend_point_2/name = &"Boxing_step_left"
+blend_point_3/node = SubResource("AnimationNodeAnimation_74lke")
+blend_point_3/pos = Vector2(1, 0)
+blend_point_3/name = &"Boxing_step_right"
+blend_point_4/node = SubResource("AnimationNodeAnimation_ec7g4")
+blend_point_4/pos = Vector2(0, 1)
+blend_point_4/name = &"Boxing_step_forward"
+
+[sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_gdg25"]
+
+[sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_rwnsv"]
+advance_mode = 2
+
+[sub_resource type="AnimationNodeStateMachine" id="AnimationNodeStateMachine_a3jwv"]
+states/Boxing_fight_enter/node = SubResource("AnimationNodeAnimation_l4teu")
+states/Boxing_fight_enter/position = Vector2(316.88065, 9.313808)
+states/End/position = Vector2(549, 131.31381)
+states/Footwork/node = SubResource("AnimationNodeBlendSpace2D_vmh7s")
+states/Footwork/position = Vector2(525.8806, 9.313812)
+states/Start/position = Vector2(126, 9.313808)
+transitions = ["Start", "Boxing_fight_enter", SubResource("AnimationNodeStateMachineTransition_gdg25"), "Boxing_fight_enter", "Footwork", SubResource("AnimationNodeStateMachineTransition_rwnsv")]
+graph_offset = Vector2(-86.119354, -49.68619)
+
+[node name="BoxerGreen" type="CharacterBody3D" unique_id=1796320952]
+transform = Transform3D(1.78, 0, 0, 0, 1.78, 0, 0, 0, 1.78, 0, 0, 0)
+script = ExtResource("1_146d0")
+
+[node name="boxer_green" parent="." unique_id=1678702938 instance=ExtResource("1_jv57k")]
+transform = Transform3D(-1, 0, 0, 0, 1, 0, 0, 0, -1, 0, 0, 0)
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="boxer_green" unique_id=761864438]
+
+[node name="AnimationPlayer2" type="AnimationPlayer" parent="boxer_green" unique_id=592846595]
+libraries/Boxing = SubResource("AnimationLibrary_lnwug")
+
+[node name="Skeleton3D2" type="Skeleton3D" parent="boxer_green" unique_id=1006988579]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="." unique_id=1859362294]
+transform = Transform3D(0.99999994, 0, 0, 0, 0.99999994, 0, 0, 0, 0.99999994, 0.003639031, 0.4945644, -0.018467)
+shape = SubResource("CapsuleShape3D_8k5m8")
+
+[node name="AnimationTree" type="AnimationTree" parent="." unique_id=1971171356]
+root_node = NodePath("../boxer_green")
+tree_root = SubResource("AnimationNodeStateMachine_a3jwv")
+advance_expression_base_node = NodePath("../boxer_green/AnimationPlayer2")
+anim_player = NodePath("../boxer_green/AnimationPlayer2")
+parameters/Footwork/blend_position = Vector2(0, 0)
+
+[node name="Hitboxes" type="Node3D" parent="." unique_id=689369311]
+
+[node name="LeftFist" type="Area3D" parent="Hitboxes" unique_id=1853154891]
+
+[node name="RightFist" type="Area3D" parent="Hitboxes" unique_id=1489864973]
+
+[node name="Head" type="Area3D" parent="Hitboxes" unique_id=335508456]
+
+[node name="Body" type="Area3D" parent="Hitboxes" unique_id=374015047]
+
+[node name="Hurtboxes" type="Node3D" parent="." unique_id=1196830430]
+
+[node name="Head" type="Area3D" parent="Hurtboxes" unique_id=46344858]
+
+[node name="Body" type="Area3D" parent="Hurtboxes" unique_id=1739100066]
+
+[node name="Marker3D" type="Marker3D" parent="." unique_id=761774390]
+transform = Transform3D(0.9999999, 0, 0, 0, 0.9999999, 0, 0, 0, 0.9999999, 0, 0.3762644, 0.0025783693)

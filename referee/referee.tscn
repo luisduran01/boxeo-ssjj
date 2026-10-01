@@ -1,0 +1,48 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://referee/referee_controller.gd" id="1_script"]
+[ext_resource type="PackedScene" path="res://referee/model/arbitro (1).fbx" id="2_model"]
+[ext_resource type="Animation" path="res://referee/animations/ref_idle.res" id="3_idle"]
+[ext_resource type="Animation" path="res://referee/animations/ref_walk.res" id="4_walk"]
+[ext_resource type="Animation" path="res://referee/animations/ref_walk_backward.res" id="5_walk_back"]
+[ext_resource type="Animation" path="res://referee/animations/ref_walk_stop.res" id="6_walk_stop"]
+[ext_resource type="Animation" path="res://referee/animations/ref_intercept.res" id="7_intercept"]
+[ext_resource type="Animation" path="res://referee/animations/ref_count.res" id="8_count"]
+[ext_resource type="Animation" path="res://referee/animations/ref_look_down.res" id="9_look_down"]
+[ext_resource type="Animation" path="res://referee/animations/ref_kneel_point.res" id="10_kneel"]
+[ext_resource type="Animation" path="res://referee/animations/ref_point.res" id="11_point"]
+[ext_resource type="Animation" path="res://referee/animations/ref_point_gesture.res" id="12_gesture"]
+[ext_resource type="Animation" path="res://referee/animations/ref_stop_fight.res" id="13_stop"]
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_referee"]
+_data = {
+&"ref_count": ExtResource("8_count"),
+&"ref_idle": ExtResource("3_idle"),
+&"ref_intercept": ExtResource("7_intercept"),
+&"ref_kneel_point": ExtResource("10_kneel"),
+&"ref_look_down": ExtResource("9_look_down"),
+&"ref_point": ExtResource("11_point"),
+&"ref_point_gesture": ExtResource("12_gesture"),
+&"ref_stop_fight": ExtResource("13_stop"),
+&"ref_walk": ExtResource("4_walk"),
+&"ref_walk_backward": ExtResource("5_walk_back"),
+&"ref_walk_stop": ExtResource("6_walk_stop")
+}
+
+[sub_resource type="CapsuleShape3D" id="CapsuleShape_referee"]
+radius = 0.22
+height = 1.0
+
+[node name="Referee" type="CharacterBody3D"]
+transform = Transform3D(1.85, 0, 0, 0, 1.85, 0, 0, 0, 1.85, 0, 0, 0)
+script = ExtResource("1_script")
+
+[node name="referee_model" parent="." instance=ExtResource("2_model")]
+transform = Transform3D(-1, 0, 0, 0, 1, 0, 0, 0, -1, 0, 0, 0)
+
+[node name="AnimationPlayer2" type="AnimationPlayer" parent="referee_model"]
+libraries/Referee = SubResource("AnimationLibrary_referee")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+position = Vector3(0, 0.5, 0)
+shape = SubResource("CapsuleShape_referee")
