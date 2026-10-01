@@ -412,7 +412,7 @@ func _update_defense() -> void:
 func _handle_attack_input() -> void:
 	if not is_player:
 		return
-	for action in ["jab", "left_hook", "right_hook", "uppercut"]:
+	for action in ["jab", "cross", "left_hook", "right_hook", "uppercut"]:
 		if Input.is_action_just_pressed(action):
 			request_attack(action)
 			return
@@ -430,7 +430,8 @@ func _handle_attack_input() -> void:
 			request_attack("right_hook")
 		elif Input.is_action_pressed("uppercut_modifier"):
 			request_attack("uppercut")
-		# A straight-cross animation is intentionally not substituted: the action stays ready.
+		else:
+			request_attack("cross")
 		return
 
 

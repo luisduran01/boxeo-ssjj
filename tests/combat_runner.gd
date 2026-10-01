@@ -80,7 +80,7 @@ func _test_movement_and_footwork() -> void:
 
 
 func _test_all_attacks_damage_with_animation() -> void:
-	for attack_name in ["jab", "left_hook", "right_hook", "uppercut"]:
+	for attack_name in ["jab", "cross", "left_hook", "right_hook", "uppercut"]:
 		fight.player._finish_action()
 		fight.player.global_position = Vector3(0, 0, 0.95)
 		fight.enemy.global_position = Vector3(0, 0, 0)
@@ -94,6 +94,8 @@ func _test_all_attacks_damage_with_animation() -> void:
 		fight.player.request_attack(attack_name)
 		_expect(fight.player.animation_player.current_animation == "Boxing/" + attack_name, attack_name + " must play its animation")
 		var attack := CombatRules.attack_data(attack_name)
+		if attack.is_empty():
+			continue
 		fight.player._update_attack(float(attack.startup) + 0.01)
 		fight.player._update_attack(float(attack.active) + 0.01)
 		fight.player._update_attack(float(attack.recovery) + 0.01)
@@ -118,7 +120,7 @@ func _test_visual_camera_and_collision_resources() -> void:
 		if node is Skeleton3D and (node as Skeleton3D).get_bone_count() > 0: has_rig = true
 	_expect(has_mesh, "Player must contain a visible mesh resource")
 	_expect(has_rig, "Player must contain a populated Skeleton3D")
-	for animation_name in ["boxing_idle", "step_forward", "step_backward", "step_left", "step_right", "jab", "left_hook", "right_hook", "uppercut", "block_left", "block_right", "block_body", "get_up"]:
+	for animation_name in ["boxing_idle", "step_short", "medium_step", "step_forward", "step_backward", "step_left", "step_right", "jab", "cross", "left_hook", "right_hook", "uppercut", "block_left", "block_right", "block_body", "get_up"]:
 		_expect(fight.player.animation_player.has_animation("Boxing/" + animation_name), "Animation library must expose " + animation_name)
 	fight.player.global_position = Vector3(0, 0, 2.0)
 	fight.enemy.global_position = Vector3(0, 0, -2.0)

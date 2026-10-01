@@ -22,6 +22,7 @@ func _run() -> void:
 	fight.player.fight_enabled = true
 	fight.enemy.fight_enabled = false
 	_test_catalog()
+	_test_cross_animation_and_input()
 	_test_mobile_jab()
 	_test_ranges_and_results()
 	_test_phases_buffer_and_unique_hit()
@@ -53,13 +54,40 @@ func _reset(distance: float) -> void:
 
 
 func _test_catalog() -> void:
-	for attack_name in ["jab", "left_hook", "right_hook", "uppercut"]:
+	for attack_name in ["jab", "cross", "left_hook", "right_hook", "uppercut"]:
 		var data := CombatRules.attack_data(attack_name)
 		for field in ["attack_name", "animation_name", "hand", "attack_type", "target_level", "startup", "active_time", "recovery", "damage", "stamina_cost", "min_range", "range", "power", "stun", "counter_bonus", "movement_allowed", "tracking_strength", "hit_stop", "camera_feedback", "animation_speed", "cancel_window"]:
 			_expect(data.has(field), "%s missing %s" % [attack_name, field])
-	_expect(CombatRules.attack_data("cross").is_empty(), "cross must remain reserved without a fake animation")
+	var cross: Dictionary = CombatRules.attack_data("cross")
+	var jab: Dictionary = CombatRules.attack_data("jab")
+	var right_hook: Dictionary = CombatRules.attack_data("right_hook")
+	_expect(not cross.is_empty() and str(cross.animation_name) == "cross" and str(cross.hand) == "right" and str(cross.attack_type) == "straight", "cross must use its real right-straight animation")
+	if not cross.is_empty():
+		_expect(float(cross.damage) > float(jab.damage) and float(cross.damage) < float(right_hook.damage), "cross damage must sit between jab and right hook")
+		_expect(float(cross.stamina_cost) > float(jab.stamina_cost) and float(cross.stamina_cost) < float(right_hook.stamina_cost), "cross stamina cost must sit between jab and right hook")
+		_expect(float(cross.recovery) > float(jab.recovery) and float(cross.recovery) < float(right_hook.recovery), "cross recovery must sit between jab and right hook")
 	_expect(float(CombatRules.attack_data("jab").movement_allowed) > float(CombatRules.attack_data("uppercut").movement_allowed), "jab must retain more footwork than uppercut")
 	_expect(float(CombatRules.attack_data("jab").range) > float(CombatRules.attack_data("uppercut").range), "jab must outrange uppercut")
+
+
+func _test_cross_animation_and_input() -> void:
+	for fighter in [fight.player, fight.enemy]:
+		_expect(fighter.animation_player.has_animation("Boxing/cross"), "%s must expose the real Cross animation" % fighter.name)
+	_reset(1.25)
+	Input.action_press("punch_right")
+	fight.player._handle_attack_input()
+	Input.action_release("punch_right")
+	_expect(fight.player._current_attack == "cross", "unmodified right punch input must request Cross")
+	_expect(fight.player.animation_player.current_animation == "Boxing/cross", "Cross input must play Boxing/cross")
+	if fight.player._current_attack != "cross":
+		return
+	var before: Vector3 = fight.player.global_position
+	Input.action_press("move_forward")
+	fight.player._update_attack(0.05)
+	Input.action_release("move_forward")
+	_expect(fight.player.global_position.distance_to(before) > 0.001, "Cross startup must preserve allowed footwork")
+	fight.player._update_attack(1.0)
+	_expect(fight.player.animation_tree.active, "Cross recovery must return to active Footwork")
 
 
 func _test_mobile_jab() -> void:

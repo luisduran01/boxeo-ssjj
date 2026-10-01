@@ -24,6 +24,7 @@
 [ext_resource type="Animation" path="res://fighters/boxer_02/animations/uppercut.res" id="22_uppercut"]
 [ext_resource type="Animation" path="res://fighters/boxer_02/animations/step_short.res" id="23_step_short"]
 [ext_resource type="Animation" path="res://fighters/boxer_02/animations/medium_step.res" id="24_medium_step"]
+[ext_resource type="Animation" path="res://fighters/boxer_02/animations/cross.res" id="25_cross"]
 
 [sub_resource type="AnimationLibrary" id="AnimationLibrary_boxing"]
 _data = {
@@ -31,6 +32,7 @@ _data = {
 &"block_left": ExtResource("4_block_left"),
 &"block_right": ExtResource("5_block_right"),
 &"boxing_idle": ExtResource("6_idle"),
+&"cross": ExtResource("25_cross"),
 &"fight_enter": ExtResource("7_enter"),
 &"get_up": ExtResource("8_get_up"),
 &"hit_kidney": ExtResource("9_hit_kidney"),
