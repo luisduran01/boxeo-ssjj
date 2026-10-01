@@ -1,7 +1,7 @@
 class_name CombatRules
 extends RefCounted
 
-## Central tuning for the four real imported punch clips. Cross stays reserved.
+## Central tuning for the five real imported punch clips.
 const ATTACKS := {
 	"jab": {"attack_name":"jab", "animation_name":"jab", "hand":"left", "attack_type":"straight", "target_level":"head", "startup":0.12, "active_time":0.09, "recovery":0.23, "damage":6.5, "stamina_cost":5.5, "min_range":0.72, "range":1.58, "power":0.82, "stun":5.5, "counter_bonus":1.18, "movement_allowed":0.78, "tracking_strength":0.72, "step_in":0.16, "hit_stop":0.014, "camera_feedback":0.002, "animation_speed":1.04, "cancel_window":0.11},
 	"cross": {"attack_name":"cross", "animation_name":"cross", "hand":"right", "attack_type":"straight", "target_level":"head", "startup":0.16, "active_time":0.09, "recovery":0.28, "damage":8.8, "stamina_cost":7.4, "min_range":0.68, "range":1.52, "power":0.96, "stun":8.0, "counter_bonus":1.20, "movement_allowed":0.65, "tracking_strength":0.62, "step_in":0.12, "hit_stop":0.019, "camera_feedback":0.004, "animation_speed":1.03, "cancel_window":0.12},
