@@ -782,12 +782,14 @@ func _body_separation_velocity(base_velocity: Vector3) -> Vector3:
 		_stable_separation_direction = offset.normalized()
 	else:
 		_stable_separation_direction = Vector3.RIGHT if get_instance_id() < boxer_opponent.get_instance_id() else Vector3.LEFT
+	var effective_hard_distance := maxf(hard_separation_distance, body_radius + boxer_opponent.body_radius)
+	var effective_minimum_distance := maxf(minimum_fighter_distance, effective_hard_distance + separation_soft_zone)
 	var result: Dictionary = FootworkModel.separation_velocity(
 		base_velocity,
 		offset,
 		_stable_separation_direction,
-		minimum_fighter_distance,
-		hard_separation_distance,
+		effective_minimum_distance,
+		effective_hard_distance,
 		soft_separation_strength,
 		maximum_separation_speed
 	)
