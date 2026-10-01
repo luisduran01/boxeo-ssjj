@@ -151,6 +151,8 @@ func _physics_process(delta: float) -> void:
 		velocity = _body_separation_velocity(velocity.move_toward(Vector3.ZERO, deceleration * delta))
 		_update_footwork(Vector2.ZERO, delta)
 		move_and_slide()
+		velocity = Vector3(velocity.x, 0.0, velocity.z).limit_length(maximum_separation_speed)
+		_smoothed_velocity = velocity
 		return
 	var raw_input := _player_input() if is_player else _ai_input(delta)
 	var input_vector := _prepare_movement_intent(raw_input)

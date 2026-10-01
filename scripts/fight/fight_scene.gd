@@ -64,7 +64,10 @@ func _open_settings() -> void:
 func _process(delta: float) -> void:
 	if is_instance_valid(referee) and is_instance_valid(player) and is_instance_valid(enemy):
 		var distance := player.global_position.distance_to(enemy.global_position)
-		if player.punch_debug_enabled:
+		if player.debug_boxing_movement:
+			var movement := player.get_boxing_movement_debug()
+			hud.set_debug("FOOTWORK %s  RANGE %s\nDISTANCE %.2f  INTENSITY %.2f\nINPUT %s  SPEED %.2f / %.2f\nTARGET %s  FACING %.2f\nSEPARATION %s  AI %s" % [movement.locomotion_state, movement.range_state, movement.distance, movement.movement_intensity, movement.input_vector, movement.speed, movement.target_speed, movement.target, movement.facing_alignment, movement.separation_correction, enemy.ai_state])
+		elif player.punch_debug_enabled:
 			var punch := player.get_punch_debug()
 			hud.set_debug("ATTACK %s  PHASE %s  HAND %s\nRANGE %.2f  TARGET %s  ACTIVE %s\nRESULT %s  DAMAGE %.1f  COST %.1f\nCOUNTER %s  DISTANCE %.2f\nAI %s  REF %s" % [punch.attack, punch.phase, punch.hand, punch.range, punch.target, punch.hitbox_active, punch.hit_result, punch.damage, punch.stamina_cost, punch.counter, punch.distance, enemy.ai_state, RefereeController.State.keys()[referee.state]])
 		else:
