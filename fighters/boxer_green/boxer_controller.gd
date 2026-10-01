@@ -1,6 +1,8 @@
 class_name BoxerController
 extends CharacterBody3D
 
+const FootworkModel = preload("res://scripts/combat/boxing_footwork_model.gd")
+
 signal stats_changed(fighter: BoxerController)
 signal punch_landed(attacker: BoxerController, defender: BoxerController, result: Dictionary)
 signal knockdown_requested(fighter: BoxerController)
@@ -13,6 +15,32 @@ signal knockdown_requested(fighter: BoxerController)
 @export_range(1.30, 1.65, 0.01) var body_height := 1.48
 @export_range(0.04, 0.16, 0.01) var separation_soft_zone := 0.10
 @export var punch_debug_enabled := false
+@export var debug_boxing_movement := false
+@export_group("Boxing Footwork")
+@export_range(0.0, 0.5, 0.01) var input_deadzone := 0.20
+@export_range(0.0, 1.0, 0.01) var short_step_threshold := 0.25
+@export_range(0.0, 1.0, 0.01) var medium_step_threshold := 0.65
+@export_range(0.0, 1.0, 0.01) var long_step_threshold := 0.90
+@export_range(0.0, 1.0, 0.01) var long_step_rearm_threshold := 0.55
+@export_range(0.1, 0.6, 0.01) var long_step_duration := 0.30
+@export_range(0.2, 2.0, 0.05) var long_step_cooldown := 0.85
+@export_range(0.5, 4.0, 0.05) var forward_speed := 2.35
+@export_range(0.5, 4.0, 0.05) var backward_speed := 1.80
+@export_range(0.5, 4.0, 0.05) var lateral_speed := 2.00
+@export_range(1.0, 20.0, 0.5) var acceleration := 7.0
+@export_range(1.0, 24.0, 0.5) var deceleration := 10.0
+@export_range(1.0, 20.0, 0.5) var turn_responsiveness := 9.0
+@export_group("Boxing Distance")
+@export_range(1.8, 4.0, 0.05) var outside_range_distance := 2.80
+@export_range(1.2, 3.0, 0.05) var long_range_distance := 2.10
+@export_range(0.8, 2.0, 0.05) var mid_range_distance := 1.35
+@export_range(0.4, 1.2, 0.02) var too_close_distance := 0.78
+@export_group("Fighter Separation")
+@export_range(0.5, 1.5, 0.01) var minimum_fighter_distance := 0.82
+@export_range(0.35, 1.0, 0.01) var hard_separation_distance := 0.66
+@export_range(0.5, 12.0, 0.25) var soft_separation_strength := 6.0
+@export_range(0.1, 2.0, 0.05) var maximum_separation_speed := 0.80
+@export_group("")
 @export_node_path("AnimationPlayer") var animation_player_path := NodePath("boxer_green/AnimationPlayer2")
 @export_node_path("Skeleton3D") var skeleton_path := NodePath("boxer_green/Skeleton3D")
 
@@ -51,6 +79,20 @@ var _last_hit_result := "MISS"
 var _last_hit_damage := 0.0
 var _last_hit_distance := 0.0
 var _last_counter := false
+var range_state: int = FootworkModel.RangeState.OUTSIDE
+var movement_intensity := 0.0
+var locomotion_state := "IDLE"
+var _movement_intent := Vector2.ZERO
+var _raw_movement_input := Vector2.ZERO
+var _long_step_armed := true
+var _long_step_time := 0.0
+var _long_step_cooldown := 0.0
+var _pivot_request := 0.0
+var _stable_separation_direction := Vector3.RIGHT
+var _separation_correction := Vector3.ZERO
+var _target_speed := 0.0
+var _distance_to_opponent := INF
+var _ai_lateral_direction := 1.0
 
 @onready var animation_tree: AnimationTree = $AnimationTree
 @onready var animation_player: AnimationPlayer = get_node(animation_player_path)
@@ -75,6 +117,8 @@ func _ready() -> void:
 
 func _physics_process(delta: float) -> void:
 	_pivot_cooldown = maxf(0.0, _pivot_cooldown - delta)
+	_long_step_time = maxf(0.0, _long_step_time - delta)
+	_long_step_cooldown = maxf(0.0, _long_step_cooldown - delta)
 	_buffer_time = maxf(0.0, _buffer_time - delta)
 	if _buffer_time <= 0.0:
 		_buffered_attack = ""
@@ -82,6 +126,7 @@ func _physics_process(delta: float) -> void:
 	if _knocked_down:
 		velocity = Vector3.ZERO
 		return
+	_update_range_state()
 	_face_opponent(delta)
 	if _moving_to_neutral:
 		_move_to_neutral(delta)
@@ -97,11 +142,13 @@ func _physics_process(delta: float) -> void:
 		_update_attack(delta)
 		return
 	if not fight_enabled:
-		velocity = _body_separation_velocity(velocity.move_toward(Vector3.ZERO, 8.0 * delta))
+		_movement_intent = _prepare_movement_intent(Vector2.ZERO)
+		velocity = _body_separation_velocity(velocity.move_toward(Vector3.ZERO, deceleration * delta))
 		_update_footwork(Vector2.ZERO, delta)
 		move_and_slide()
 		return
-	var input_vector := _player_input() if is_player else _ai_input(delta)
+	var raw_input := _player_input() if is_player else _ai_input(delta)
+	var input_vector := _prepare_movement_intent(raw_input)
 	_update_defense()
 	_move_relative_to_opponent(input_vector, delta)
 	_handle_attack_input()
@@ -111,13 +158,48 @@ func _player_input() -> Vector2:
 	return Input.get_vector("move_left", "move_right", "move_backward", "move_forward")
 
 
+func set_movement_intent(intent: Vector2) -> void:
+	_movement_intent = intent.limit_length(1.0)
+	if not is_player:
+		_ai_move = _movement_intent
+		_ai_think_time = maxf(_ai_think_time, 0.10)
+
+
+func request_pivot(direction: float) -> bool:
+	if is_zero_approx(direction) or _pivot_cooldown > 0.0 or _current_attack != "" or _reaction_time > 0.0 or _knocked_down:
+		return false
+	_pivot_request = signf(direction)
+	_pivot_cooldown = 0.85
+	locomotion_state = "PIVOT_RIGHT" if _pivot_request > 0.0 else "PIVOT_LEFT"
+	return true
+
+
+func _prepare_movement_intent(raw_input: Vector2) -> Vector2:
+	_raw_movement_input = raw_input.limit_length(1.0)
+	var filtered: Vector2 = FootworkModel.apply_radial_deadzone(_raw_movement_input, input_deadzone)
+	movement_intensity = filtered.length()
+	var latch: Dictionary = FootworkModel.update_long_step_latch(
+		movement_intensity,
+		_long_step_armed,
+		_long_step_cooldown,
+		long_step_threshold,
+		long_step_rearm_threshold
+	)
+	_long_step_armed = bool(latch.armed)
+	if bool(latch.triggered) and filtered.y > 0.25:
+		_long_step_time = long_step_duration
+		_long_step_cooldown = long_step_cooldown
+	_movement_intent = filtered
+	return _movement_intent
+
+
 func _ai_input(delta: float) -> Vector2:
 	_ai_think_time -= delta
 	if _ai_think_time > 0.0:
 		return _ai_move
-	_ai_think_time = {"Easy": 0.62, "Medium": 0.38, "Hard": 0.24}.get(difficulty, 0.38) + randf_range(-0.06, 0.12)
-	var distance := global_position.distance_to(opponent.global_position) if is_instance_valid(opponent) else 3.0
-	var combat_range := _combat_range(distance)
+	_update_range_state()
+	_ai_think_time = {"Easy": 0.68, "Medium": 0.46, "Hard": 0.32}.get(difficulty, 0.46) + randf_range(-0.05, 0.12)
+	var distance := _distance_to_opponent
 	var ring_radius := maxf(absf(global_position.x), absf(global_position.z))
 	block_state = ""
 	if ring_radius > 3.08:
@@ -129,18 +211,23 @@ func _ai_input(delta: float) -> Vector2:
 		_ai_move = Vector2.ZERO
 	elif stats.stamina < 22.0:
 		ai_state = "RETREAT"
-		_ai_move = Vector2(randf_range(-0.5, 0.5), -1.0)
-	elif combat_range == "OUT_OF_RANGE":
+		_ai_move = Vector2(_ai_lateral_direction * 0.35, -0.85)
+	elif range_state == FootworkModel.RangeState.OUTSIDE:
 		ai_state = "APPROACH"
-		_ai_move = Vector2(randf_range(-0.28, 0.28), 1.0)
-	elif combat_range == "CLOSE_RANGE":
+		_ai_move = Vector2(_ai_lateral_direction * randf_range(0.05, 0.22), randf_range(0.78, 0.92))
+	elif range_state == FootworkModel.RangeState.TOO_CLOSE:
+		ai_state = "RETREAT"
+		_ai_move = Vector2(_ai_lateral_direction * 0.45, -0.82)
+		if randf() < 0.22:
+			request_pivot(_ai_lateral_direction)
+	elif range_state == FootworkModel.RangeState.POCKET:
 		if stats.stamina > 32.0 and randf() < 0.52:
 			ai_state = "ATTACK"
 			request_attack(["left_hook", "right_hook", "uppercut"].pick_random())
 			_ai_move = Vector2.ZERO
 		else:
 			ai_state = "RETREAT"
-			_ai_move = Vector2([-0.7, 0.7].pick_random(), -0.8)
+			_ai_move = Vector2(_ai_lateral_direction * 0.62, -0.45)
 	else:
 		var roll := randf()
 		var defense_chance: float = {"Easy": 0.10, "Medium": 0.19, "Hard": 0.27}.get(difficulty, 0.19)
@@ -155,22 +242,40 @@ func _ai_input(delta: float) -> Vector2:
 			_ai_move = Vector2.ZERO
 		elif roll < 0.82:
 			ai_state = "RANGE_CONTROL"
-			_ai_move = Vector2(randf_range(-0.65, 0.65), clampf((distance - 1.65) * -0.55, -0.3, 0.3))
+			_ai_move = Vector2(_ai_lateral_direction * randf_range(0.18, 0.52), clampf((distance - 1.70) * 0.45, -0.28, 0.28))
 		else:
-			var circle_direction: float = [-0.85, 0.85].pick_random()
+			if randf() < 0.34:
+				_ai_lateral_direction *= -1.0
 			ai_state = "CIRCLE"
-			_ai_move = Vector2(circle_direction, randf_range(-0.2, 0.25))
+			_ai_move = Vector2(_ai_lateral_direction * randf_range(0.55, 0.82), randf_range(-0.12, 0.18))
+	set_movement_intent(_ai_move)
 	return _ai_move
 
 
 func _combat_range(distance: float) -> String:
-	if distance > 2.55:
-		return "OUT_OF_RANGE"
-	if distance > 1.72:
-		return "LONG_RANGE"
-	if distance >= 1.05:
-		return "PUNCH_RANGE"
-	return "CLOSE_RANGE"
+	var state: int = FootworkModel.classify_range(distance, outside_range_distance, long_range_distance, mid_range_distance, too_close_distance)
+	return FootworkModel.RangeState.keys()[state]
+
+
+func _update_range_state() -> void:
+	if not is_instance_valid(opponent):
+		_distance_to_opponent = INF
+		range_state = FootworkModel.RangeState.OUTSIDE
+		return
+	var offset := opponent.global_position - global_position
+	offset.y = 0.0
+	_distance_to_opponent = offset.length()
+	range_state = FootworkModel.classify_range(
+		_distance_to_opponent,
+		outside_range_distance,
+		long_range_distance,
+		mid_range_distance,
+		too_close_distance
+	)
+
+
+func get_range_state_name() -> String:
+	return FootworkModel.RangeState.keys()[range_state]
 
 
 func _world_direction_to_input(world_direction: Vector3) -> Vector2:
@@ -188,23 +293,25 @@ func _choose_ai_attack(distance: float) -> String:
 
 
 func _move_relative_to_opponent(input_vector: Vector2, delta: float) -> void:
-	var forward := _horizontal_direction_to_opponent()
-	var right := Vector3.UP.cross(forward).normalized()
-	var desired := (right * input_vector.x + forward * input_vector.y).limit_length(1.0)
-	var speed: float = stats.movement_speed * lerpf(0.86, 1.0, stats.stamina / stats.max_stamina)
-	if input_vector.y < 0.0:
-		speed *= 0.82
-	elif absf(input_vector.x) > 0.1:
-		speed *= 0.9
-	var target_velocity := _body_separation_velocity(desired * speed)
-	_smoothed_velocity = _smoothed_velocity.move_toward(target_velocity, (7.0 if desired != Vector3.ZERO else 10.0) * delta)
+	var basis: Dictionary = FootworkModel.combat_basis(global_position, opponent.global_position if is_instance_valid(opponent) else global_position + _last_forward, _last_forward)
+	var stamina_scale: float = lerpf(0.86, 1.0, stats.stamina / stats.max_stamina)
+	var long_multiplier := 1.18 if _long_step_time > 0.0 and input_vector.y > 0.0 else 1.0
+	var target_velocity: Vector3 = FootworkModel.relative_velocity(
+		input_vector,
+		basis.forward,
+		basis.right,
+		forward_speed * stamina_scale * long_multiplier,
+		backward_speed * stamina_scale,
+		lateral_speed * stamina_scale
+	)
+	target_velocity = _body_separation_velocity(target_velocity)
+	_target_speed = target_velocity.length()
+	var rate := acceleration if target_velocity.length_squared() > 0.0001 else deceleration
+	_smoothed_velocity = _smoothed_velocity.move_toward(target_velocity, rate * delta)
 	_smoothed_velocity = _body_separation_velocity(_smoothed_velocity)
 	velocity = Vector3(_smoothed_velocity.x, 0.0, _smoothed_velocity.z)
 	move_and_slide()
-	global_position.x = clampf(global_position.x, -3.38, 3.38)
-	global_position.z = clampf(global_position.z, -3.38, 3.38)
-	_move_blend = _move_blend.lerp(input_vector, 1.0 - exp(-7.5 * delta))
-	animation_tree.set("parameters/Footwork/blend_position", _move_blend)
+	_update_footwork(input_vector, delta)
 	if input_vector.length() > 0.75:
 		var stamina_before: float = stats.stamina
 		stats.stamina = maxf(0.0, stats.stamina - 0.7 * delta)
@@ -215,6 +322,15 @@ func _move_relative_to_opponent(input_vector: Vector2, delta: float) -> void:
 func _update_footwork(input_vector: Vector2, delta: float) -> void:
 	_move_blend = _move_blend.lerp(input_vector, 1.0 - exp(-7.5 * delta))
 	animation_tree.set("parameters/Footwork/blend_position", _move_blend)
+	var tier: int = FootworkModel.movement_tier(movement_intensity, short_step_threshold, medium_step_threshold, long_step_threshold)
+	if _long_step_time > 0.0 and input_vector.y > 0.0:
+		tier = FootworkModel.TIER_LONG
+	elif tier == FootworkModel.TIER_LONG:
+		tier = FootworkModel.TIER_MEDIUM
+	locomotion_state = ["IDLE", "SHORT", "MEDIUM", "LONG"][tier]
+	if animation_tree.active:
+		var speed_ratio := velocity.length() / maxf(_target_speed, 0.01) if _target_speed > 0.01 else 1.0
+		animation_player.speed_scale = clampf(speed_ratio, 0.86, 1.16)
 
 
 func _face_opponent(delta: float) -> void:
@@ -224,19 +340,17 @@ func _face_opponent(delta: float) -> void:
 	if forward.length_squared() < 0.001:
 		return
 	var desired_yaw := atan2(-forward.x, -forward.z)
-	rotation.y = lerp_angle(rotation.y, desired_yaw, 1.0 - exp(-9.0 * delta))
-	var angle_delta := _last_forward.signed_angle_to(forward, Vector3.UP)
-	if absf(angle_delta) > 0.34 and _pivot_cooldown <= 0.0 and _current_attack == "":
-		_pivot_cooldown = 1.1
-		_play_brief_animation("pivot_right" if angle_delta > 0.0 else "pivot_left", 0.34)
+	rotation.y = lerp_angle(rotation.y, desired_yaw, 1.0 - exp(-turn_responsiveness * delta))
 	_last_forward = forward
 
 
 func _horizontal_direction_to_opponent() -> Vector3:
 	if not is_instance_valid(opponent):
-		return -global_basis.z.normalized()
+		return _last_forward
 	var direction := opponent.global_position - global_position
 	direction.y = 0.0
+	if direction.length_squared() < 0.000001:
+		return _last_forward
 	return direction.normalized()
 
 
@@ -349,19 +463,21 @@ func _update_attack(delta: float) -> void:
 
 
 func _update_attack_movement(delta: float, attack: Dictionary) -> void:
-	var command := _player_input() if is_player else _attack_input
-	var forward := _horizontal_direction_to_opponent()
-	var right := Vector3.UP.cross(forward).normalized()
-	var desired := (right * command.x + forward * command.y).limit_length(1.0)
+	var raw_command := _player_input() if is_player else _attack_input
+	var command: Vector2 = FootworkModel.apply_radial_deadzone(raw_command, input_deadzone)
+	_raw_movement_input = raw_command
+	_movement_intent = command
+	movement_intensity = command.length()
+	var basis: Dictionary = FootworkModel.combat_basis(global_position, opponent.global_position if is_instance_valid(opponent) else global_position + _last_forward, _last_forward)
 	var allowed_speed: float = stats.movement_speed * float(attack.movement_allowed)
+	var target: Vector3 = FootworkModel.relative_velocity(command, basis.forward, basis.right, allowed_speed, allowed_speed * 0.82, allowed_speed * 0.9)
 	if combat_state == "STARTUP" and command.y > 0.05:
-		allowed_speed += float(attack.step_in)
-	var target := _body_separation_velocity(desired * allowed_speed)
+		target += basis.forward * float(attack.step_in) * command.y
+	target = _body_separation_velocity(target)
+	_target_speed = target.length()
 	_smoothed_velocity = _smoothed_velocity.move_toward(target, 8.0 * delta)
 	velocity = _body_separation_velocity(Vector3(_smoothed_velocity.x, 0.0, _smoothed_velocity.z))
 	move_and_slide()
-	global_position.x = clampf(global_position.x, -3.38, 3.38)
-	global_position.z = clampf(global_position.z, -3.38, 3.38)
 	_update_footwork(command, delta)
 
 
@@ -531,6 +647,26 @@ func get_punch_debug() -> Dictionary:
 	return {"attack":_current_attack if _current_attack != "" else "NONE", "phase":combat_state, "hand":str(data.get("hand", "NONE")), "range":float(data.get("range", 0.0)), "target":str(data.get("target_level", "NONE")), "hitbox_active":left_fist.monitoring or right_fist.monitoring, "hit_result":_last_hit_result, "damage":_last_hit_damage, "stamina_cost":float(data.get("stamina_cost", 0.0)), "counter":_last_counter, "distance":_last_hit_distance}
 
 
+func get_boxing_movement_debug() -> Dictionary:
+	if not debug_boxing_movement:
+		return {}
+	var facing_alignment := 0.0
+	if is_instance_valid(opponent) and _distance_to_opponent > 0.0001:
+		facing_alignment = -global_basis.z.dot(_horizontal_direction_to_opponent())
+	return {
+		"distance": _distance_to_opponent,
+		"range_state": get_range_state_name(),
+		"input_vector": _raw_movement_input,
+		"movement_intensity": movement_intensity,
+		"locomotion_state": locomotion_state,
+		"target": opponent.name if is_instance_valid(opponent) else "NONE",
+		"speed": Vector2(velocity.x, velocity.z).length(),
+		"target_speed": _target_speed,
+		"facing_alignment": facing_alignment,
+		"separation_correction": _separation_correction,
+	}
+
+
 func _play_brief_animation(animation_name: String, duration: float) -> void:
 	if _current_attack != "" or _reaction_time > 0.0: return
 	animation_tree.active = false
@@ -594,26 +730,25 @@ func _configure_body_collider() -> void:
 func _body_separation_velocity(base_velocity: Vector3) -> Vector3:
 	var boxer_opponent := opponent as BoxerController
 	if not is_instance_valid(boxer_opponent):
+		_separation_correction = Vector3.ZERO
 		return base_velocity
 	var offset := global_position - boxer_opponent.global_position
 	offset.y = 0.0
-	var distance := offset.length()
-	if distance < 0.0001:
-		offset = global_basis.x
-		distance = 0.0001
-	var outward := offset / distance
-	var opponent_radius: float = boxer_opponent.body_radius
-	var minimum_distance := body_radius + opponent_radius
-	var soft_distance := minimum_distance + separation_soft_zone
-	var result := base_velocity
-	if distance < soft_distance:
-		var inward_speed := minf(result.dot(outward), 0.0)
-		var damping := clampf((soft_distance - distance) / separation_soft_zone, 0.0, 1.0)
-		result -= outward * inward_speed * damping
-	if distance < minimum_distance:
-		var penetration := minimum_distance - distance
-		result += outward * minf(penetration * 7.5, 0.85)
-	return result
+	if offset.length_squared() > 0.000001:
+		_stable_separation_direction = offset.normalized()
+	else:
+		_stable_separation_direction = Vector3.RIGHT if get_instance_id() < boxer_opponent.get_instance_id() else Vector3.LEFT
+	var result: Dictionary = FootworkModel.separation_velocity(
+		base_velocity,
+		offset,
+		_stable_separation_direction,
+		minimum_fighter_distance,
+		hard_separation_distance,
+		soft_separation_strength,
+		maximum_separation_speed
+	)
+	_separation_correction = result.correction
+	return result.velocity
 
 
 func _attach_area_to_bone(area: Area3D, bone_name: String, local_offset: Vector3) -> void:
