@@ -27,6 +27,13 @@ func _all_of_type(node: Node, type_name: StringName) -> Array[Node]:
 	return result
 
 
+func _all_boxers(node: Node) -> Array[BoxerController]:
+	var result: Array[BoxerController] = []
+	if node is BoxerController: result.append(node as BoxerController)
+	for child in node.get_children(): result.append_array(_all_boxers(child))
+	return result
+
+
 func _button(text_value: String) -> Button:
 	for node in _all_of_type(current_scene, &"Button"):
 		var button := node as Button
@@ -65,18 +72,22 @@ func _test_main_menu_and_quick_fight() -> void:
 	await process_frame
 	await process_frame
 	_expect(current_scene.scene_file_path == "res://scenes/menus/fighter_select.tscn", "Quick Fight must open Fighter Select")
-	_expect(current_scene.find_child("PlayerSelect", true, false) is OptionButton, "Fighter Select must expose Player selection")
-	_expect(current_scene.find_child("EnemySelect", true, false) is OptionButton, "Fighter Select must expose Enemy selection")
-	_assert_button("INICIAR PELEA")
-	_assert_button("VOLVER")
-	_expect(SaveSystem.session.has("player_scene") and SaveSystem.session.has("enemy_scene"), "fighter choices must transfer through session")
+	_expect(current_scene.find_children("FighterCard*", "Button", true, false).size() == 3, "Fighter Select must expose three fighter cards")
+	_expect(current_scene.find_child("ConfirmButton", true, false) is Button, "Fighter Select must expose fight confirmation")
+	_expect(current_scene.find_child("BackButton", true, false) is Button, "Fighter Select must expose Back")
 
 
 func _test_fight_runtime_and_result_controls() -> void:
 	await _goto("res://fight/fight.tscn")
 	await create_timer(0.15).timeout
 	var fight = current_scene
+	_expect(fight.get_node_or_null("BoxingRing") != null, "Fight must use the BoxingRing scene")
+	var old_rings := fight.get_children().filter(func(child: Node) -> bool: return child is RingBuilder)
+	_expect(old_rings.is_empty(), "Fight must not build the legacy RingBuilder arena")
+	_expect(_all_boxers(fight).size() == 2, "Fight must contain exactly two boxers")
 	_expect(fight.player is BoxerController and fight.enemy is BoxerController, "Fight must spawn Player and Enemy")
+	_expect(fight.player.scale.is_equal_approx(Vector3.ONE * 1.55), "Player must use the corrected 1.55 ring scale")
+	_expect(fight.enemy.scale.is_equal_approx(Vector3.ONE * 1.55), "Enemy must use the corrected 1.55 ring scale")
 	_expect(fight.player.opponent == fight.enemy and fight.enemy.opponent == fight.player, "fighters must reference each other")
 	_expect(fight.camera_rig.camera.current, "boxing camera must be current")
 	_expect(fight.hud.player_health.value == fight.player.stats.health, "HUD player health must use real stats")

@@ -28,6 +28,7 @@ func _run() -> void:
 	await _test_broadcast_hud(fight)
 	_test_soft_separation(fight)
 	_test_referee_priority(fight)
+	_test_referee_stays_at_observation_post(fight)
 	if failures.is_empty():
 		print("PROFESSIONAL_POLISH_TESTS_OK")
 		quit(0)
@@ -60,7 +61,7 @@ func _test_soft_separation(fight) -> void:
 		_pressure_scenario(player, enemy, Vector3(0, 0, 0.42), Vector3(0, 0, -0.42), Vector2(0, 1), Vector2(0, 1)),
 		_pressure_scenario(player, enemy, Vector3(0, 0, 0.42), Vector3(0, 0, -0.42), Vector2(0, 1), Vector2.ZERO),
 		_pressure_scenario(player, enemy, Vector3(0, 0, 0.42), Vector3(0, 0, -0.42), Vector2.ZERO, Vector2(0, 1)),
-		_pressure_scenario(player, enemy, Vector3(3.05, 0, 3.05), Vector3(3.05, 0, 2.21), Vector2(0, 1), Vector2(0, 1)),
+		_pressure_scenario(player, enemy, Vector3(2.65, 0, 2.65), Vector3(2.65, 0, 1.81), Vector2(0, 1), Vector2(0, 1)),
 	]
 	for index in range(scenarios.size()):
 		var result: Dictionary = scenarios[index]
@@ -100,6 +101,20 @@ func _test_referee_priority(fight) -> void:
 	away.y = 0.0
 	var avoidance: Vector3 = referee._avoid_fighters(Vector3.ZERO)
 	_expect(avoidance.dot(away.normalized()) > 0.0, "Referee must move away and yield right-of-way to an approaching fighter")
+
+
+func _test_referee_stays_at_observation_post(fight) -> void:
+	var referee = fight.referee
+	fight.player.global_position = Vector3(1.0, 0, 1.0)
+	fight.enemy.global_position = Vector3(1.0, 0, -1.0)
+	referee.state = RefereeController.State.OBSERVING
+	referee.global_position = Vector3(-2.7, 0, 0)
+	referee.velocity = Vector3.ZERO
+	var start: Vector3 = referee.global_position
+	for frame in range(12):
+		referee._physics_process(1.0 / 60.0)
+	_expect(referee.global_position.distance_to(start) < 0.001, "Referee must remain at his observation post during normal fighting")
+	_expect(referee.velocity.length() < 0.001, "Observing referee must not carry movement velocity toward the fighters")
 
 
 func _test_broadcast_hud(fight) -> void:

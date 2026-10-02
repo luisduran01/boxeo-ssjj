@@ -1,8 +1,8 @@
 extends Node3D
 
-const PLAYER_BOXER_SCENE := preload("res://fighters/boxer_green/boxer_green.tscn")
-const ENEMY_BOXER_SCENE := preload("res://fighters/boxer_02/boxer_02.tscn")
+const BOXING_RING_SCENE := preload("res://ring/boxing_ring.tscn")
 const REFEREE_SCENE := preload("res://referee/referee.tscn")
+const FIGHTER_DATABASE := preload("res://scripts/data/fighter_database.gd")
 
 var player: BoxerController
 var enemy: BoxerController
@@ -14,21 +14,35 @@ var referee: RefereeController
 
 func _ready() -> void:
 	SaveSystem.load_all()
-	var ring := RingBuilder.new()
+	var ring := BOXING_RING_SCENE.instantiate()
 	add_child(ring)
-	player = PLAYER_BOXER_SCENE.instantiate() as BoxerController
+	var default_player := ring.get_node_or_null("Player")
+	var default_enemy := ring.get_node_or_null("Boxer02")
+	if default_player:
+		ring.remove_child(default_player)
+		default_player.queue_free()
+	if default_enemy:
+		ring.remove_child(default_enemy)
+		default_enemy.queue_free()
+	var player_data := _selected_fighter("selected_player", &"fighter_1")
+	var enemy_data := _selected_fighter("selected_opponent", &"fighter_2")
+	if enemy_data == player_data:
+		enemy_data = FIGHTER_DATABASE.by_id(&"fighter_2" if player_data.id != &"fighter_2" else &"fighter_1")
+	player = player_data.scene.instantiate() as BoxerController
 	player.name = "Player"
-	player.is_player = true
-	player.fighter_name = str(SaveSystem.career.name)
+	player.scale = Vector3.ONE * 1.55
 	player.position = Vector3(0, 0, 1.9)
-	add_child(player)
-	enemy = ENEMY_BOXER_SCENE.instantiate() as BoxerController
+	ring.add_child(player)
+	player.is_player = true
+	player.fighter_name = player_data.display_name
+	enemy = enemy_data.scene.instantiate() as BoxerController
 	enemy.name = "Enemy"
-	enemy.is_player = false
-	enemy.fighter_name = "MARCO ROJAS"
-	enemy.difficulty = str(SaveSystem.settings.difficulty)
+	enemy.scale = Vector3.ONE * 1.55
 	enemy.position = Vector3(0, 0, -1.9)
-	add_child(enemy)
+	ring.add_child(enemy)
+	enemy.is_player = false
+	enemy.fighter_name = enemy_data.display_name
+	enemy.difficulty = str(SaveSystem.settings.difficulty)
 	player.opponent = enemy
 	enemy.opponent = player
 	camera_rig = BoxingCamera.new()
@@ -53,6 +67,14 @@ func _ready() -> void:
 	add_child(referee)
 	referee.setup(player, enemy)
 	manager.setup(player, enemy, hud, audio, referee)
+
+
+func _selected_fighter(session_key: String, fallback_id: StringName) -> FighterData:
+	var id := StringName(str(SaveSystem.session.get(session_key, fallback_id)))
+	var data: FighterData = FIGHTER_DATABASE.by_id(id)
+	if data == null:
+		data = FIGHTER_DATABASE.by_id(fallback_id)
+	return data
 
 
 func _open_settings() -> void:
