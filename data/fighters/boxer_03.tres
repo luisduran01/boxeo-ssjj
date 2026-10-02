@@ -1,0 +1,22 @@
+[gd_resource type="Resource" script_class="FighterData" load_steps=4 format=3]
+
+[ext_resource type="Script" path="res://scripts/data/fighter_data.gd" id="1"]
+[ext_resource type="PackedScene" path="res://fighters/boxer_03/boxer_03.tscn" id="2"]
+[ext_resource type="Texture2D" path="res://fighters/boxer_03/boxer_03_0.png" id="3"]
+
+[resource]
+script = ExtResource("1")
+id = &"fighter_3"
+display_name = "FIGHTER 3"
+height_cm = 170
+weight_kg = 60
+reach_cm = 55
+stance = "Zurda"
+style = "ESTILISTA"
+power = 76
+speed = 88
+stamina = 75
+defense = 78
+technique = 90
+scene = ExtResource("2")
+portrait = ExtResource("3")

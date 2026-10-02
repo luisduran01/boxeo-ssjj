@@ -1,5 +1,7 @@
 extends SceneTree
 
+const FighterDatabaseScript = preload("res://scripts/data/fighter_database.gd")
+
 var failures: Array[String] = []
 
 
@@ -83,5 +85,7 @@ func _test_referee_scene() -> void:
 
 func _test_fight_scene_wiring() -> void:
 	var source := FileAccess.get_file_as_string("res://scripts/fight/fight_scene.gd")
-	_expect("res://fighters/boxer_02/boxer_02.tscn" in source, "Fight must explicitly spawn Boxer02 as the AI opponent")
+	var boxer_02: FighterData = FighterDatabaseScript.by_id(&"fighter_2")
+	_expect(boxer_02 != null and boxer_02.scene.resource_path == "res://fighters/boxer_02/boxer_02.tscn", "FighterDatabase must expose Boxer02 as a selectable opponent")
+	_expect("res://ring/boxing_ring.tscn" in source, "Fight must use the approved BoxingRing scene")
 	_expect("res://referee/referee.tscn" in source, "Fight must spawn the real referee scene")
