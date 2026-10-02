@@ -191,7 +191,7 @@ func _test_all_menu_controls_and_persistence() -> void:
 	SaveSystem.settings.master = old_master
 	SaveSystem.save_settings()
 	await _goto("res://scenes/menus/career.tscn")
-	for label in ["ENTRENAR", "ACEPTAR OFERTA DE PELEA", "VOLVER"]: _assert_button(label)
+	for label in ["RESUMEN", "ENTRENAMIENTO", "CALENDARIO", "EQUIPO", "CONTRATOS", "RANKING", "NOTICIAS", "ESTADÍSTICAS", "VOLVER"]: _assert_button(label)
 	var back := _button("VOLVER")
 	back.pressed.emit()
 	await process_frame
