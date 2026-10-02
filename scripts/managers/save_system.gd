@@ -66,15 +66,35 @@ static func record_fight(result: StringName, method: StringName, round_number: i
 	save_career()
 
 static func apply_settings() -> void:
+	apply_audio_settings()
+	apply_runtime_settings()
+	apply_display_settings()
+
+static func available_resolutions() -> Array[Vector2i]:
+	return [Vector2i(1280, 720), Vector2i(1600, 900), Vector2i(1920, 1080), Vector2i(2560, 1440)]
+
+static func apply_audio_settings() -> void:
 	ensure_audio_buses()
 	for key in ["master", "music", "sfx", "voice", "crowd", "ui"]:
 		var bus_name: String = "Master" if key == "master" else key.capitalize()
 		var index := AudioServer.get_bus_index(bus_name)
 		if index >= 0: AudioServer.set_bus_volume_db(index, linear_to_db(maxf(0.0001, float(settings.get(key, 1.0)))))
+
+static func apply_runtime_settings() -> void:
 	Engine.max_fps = int(settings.get("fps_limit", 60))
+	TranslationServer.set_locale(str(settings.get("language", "es")))
+	var viewport := Engine.get_main_loop().root as Viewport
+	if viewport: viewport.msaa_3d = {"Low": Viewport.MSAA_DISABLED, "Medium": Viewport.MSAA_2X, "High": Viewport.MSAA_4X}.get(str(settings.graphics), Viewport.MSAA_4X)
+
+static func apply_display_settings() -> bool:
+	var parts := str(settings.get("resolution", "1280x720")).split("x")
+	if parts.size() != 2: return false
+	var requested := Vector2i(int(parts[0]), int(parts[1]))
+	if requested not in available_resolutions(): return false
+	var mode := str(settings.get("display_mode", "Windowed"))
+	if mode not in ["Windowed", "Fullscreen", "Borderless"]: return false
 	if not DisplayServer.get_name().to_lower().contains("headless"):
 		DisplayServer.window_set_vsync_mode(DisplayServer.VSYNC_ENABLED if bool(settings.vsync) else DisplayServer.VSYNC_DISABLED)
-		var mode := str(settings.display_mode)
 		if mode == "Fullscreen": DisplayServer.window_set_mode(DisplayServer.WINDOW_MODE_FULLSCREEN)
 		elif mode == "Borderless":
 			DisplayServer.window_set_mode(DisplayServer.WINDOW_MODE_WINDOWED)
@@ -82,11 +102,8 @@ static func apply_settings() -> void:
 		else:
 			DisplayServer.window_set_flag(DisplayServer.WINDOW_FLAG_BORDERLESS, false)
 			DisplayServer.window_set_mode(DisplayServer.WINDOW_MODE_WINDOWED)
-			var parts := str(settings.resolution).split("x")
-			if parts.size() == 2: DisplayServer.window_set_size(Vector2i(int(parts[0]), int(parts[1])))
-	var viewport := Engine.get_main_loop().root as Viewport
-	if viewport: viewport.msaa_3d = {"Low": Viewport.MSAA_DISABLED, "Medium": Viewport.MSAA_2X, "High": Viewport.MSAA_4X}.get(str(settings.graphics), Viewport.MSAA_4X)
-	TranslationServer.set_locale(str(settings.language))
+			DisplayServer.window_set_size(requested)
+	return true
 
 static func ensure_audio_buses() -> void:
 	for bus_name in ["Music", "SFX", "Voice", "Crowd", "UI"]:
