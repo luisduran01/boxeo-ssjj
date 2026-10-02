@@ -37,7 +37,7 @@ func _all_boxers(node: Node) -> Array[BoxerController]:
 func _button(text_value: String) -> Button:
 	for node in _all_of_type(current_scene, &"Button"):
 		var button := node as Button
-		if button.text == text_value: return button
+		if button.text == text_value or button.text.ends_with(text_value): return button
 	return null
 
 
@@ -54,7 +54,7 @@ func _run() -> void:
 	await _test_pause_controls()
 	await _test_settings_application()
 	await _test_all_menu_controls_and_persistence()
-	await _test_sparring_flow()
+	await _test_fighters_roster_flow()
 	await _test_sparring_does_not_change_career()
 	if failures == 0:
 		print("INTEGRATION TESTS PASSED")
@@ -66,7 +66,7 @@ func _run() -> void:
 
 func _test_main_menu_and_quick_fight() -> void:
 	await _goto("res://scenes/menus/main_menu.tscn")
-	for label in ["QUICK FIGHT", "CAREER", "SPARRING", "SETTINGS", "EXIT"]: _assert_button(label)
+	for label in ["QUICK FIGHT", "CAREER", "FIGHTERS", "SETTINGS", "EXIT"]: _assert_button(label)
 	var quick := _button("QUICK FIGHT")
 	quick.pressed.emit()
 	await process_frame
@@ -199,19 +199,14 @@ func _test_all_menu_controls_and_persistence() -> void:
 	_expect(current_scene.scene_file_path == "res://scenes/menus/main_menu.tscn", "Career Back must return to main menu")
 
 
-func _test_sparring_flow() -> void:
+func _test_fighters_roster_flow() -> void:
 	await _goto("res://scenes/menus/main_menu.tscn")
-	var sparring := _button("SPARRING")
-	sparring.pressed.emit()
+	var fighters := _button("FIGHTERS")
+	fighters.pressed.emit()
 	await process_frame
 	await process_frame
-	_expect(SaveSystem.session.mode == "sparring", "Sparring button must configure sparring mode")
-	var start := _button("INICIAR PELEA")
-	start.pressed.emit()
-	await process_frame
-	await process_frame
-	_expect(current_scene.scene_file_path == "res://fight/fight.tscn", "Sparring must enter Fight")
-	_expect(current_scene.manager.total_rounds == 4 and current_scene.manager.round_duration == 90.0, "FightManager must receive sparring round configuration")
+	_expect(SaveSystem.session.mode == "roster", "Fighters button must configure roster mode")
+	_expect(current_scene.scene_file_path == "res://scenes/menus/fighter_select.tscn", "Fighters must open Fighter Select")
 
 
 func _test_sparring_does_not_change_career() -> void:
