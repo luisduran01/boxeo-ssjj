@@ -35,6 +35,7 @@ static func load_all() -> void:
 	apply_settings()
 
 static func save_settings() -> void:
+	_ensure_user_directory(settings_path)
 	var config := ConfigFile.new()
 	for key in settings: config.set_value("settings", key, settings[key])
 	config.save(settings_path)
@@ -162,5 +163,13 @@ static func _read_json(path: String) -> Dictionary:
 
 static func _write_json(path: String, value: Dictionary) -> void:
 	if path.is_empty(): return
+	_ensure_user_directory(path)
 	var file := FileAccess.open(path, FileAccess.WRITE)
 	if file: file.store_string(JSON.stringify(value, "  "))
+
+static func _ensure_user_directory(path: String) -> void:
+	if not path.begins_with("user://"): return
+	var global_path := ProjectSettings.globalize_path(path)
+	var base_dir := global_path.get_base_dir()
+	if not DirAccess.dir_exists_absolute(base_dir):
+		DirAccess.make_dir_recursive_absolute(base_dir)
