@@ -98,10 +98,13 @@ var _separation_correction := Vector3.ZERO
 var _target_speed := 0.0
 var _distance_to_opponent := INF
 var _ai_lateral_direction := 1.0
+var _ai_attack_cooldown := 0.0
+var _ai_guard_time := 0.0
+var _ai_guard_cooldown := 0.0
 
 @onready var animation_tree: AnimationTree = $AnimationTree
-@onready var animation_player: AnimationPlayer = get_node(animation_player_path)
-@onready var skeleton: Skeleton3D = get_node(skeleton_path)
+@onready var animation_player: AnimationPlayer = _resolve_animation_player()
+@onready var skeleton: Skeleton3D = _resolve_skeleton()
 @onready var left_fist: Area3D = $Hitboxes/LeftFist
 @onready var right_fist: Area3D = $Hitboxes/RightFist
 @onready var body_collider: CollisionShape3D = $CollisionShape3D
@@ -111,6 +114,7 @@ func _ready() -> void:
 	collision_layer = 3
 	collision_mask = 19
 	safe_margin = 0.025
+	_normalize_footwork_animations()
 	_configure_body_collider()
 	_configure_combat_areas()
 	animation_tree.active = true
@@ -156,6 +160,9 @@ func _physics_process(delta: float) -> void:
 		return
 	var raw_input := _player_input() if is_player else _ai_input(delta)
 	var input_vector := _prepare_movement_intent(raw_input)
+	if _current_attack != "":
+		_update_attack(delta)
+		return
 	_maybe_request_input_pivot(input_vector)
 	if _pivot_time > 0.0:
 		_update_pivot_movement(delta)
@@ -237,6 +244,15 @@ func _prepare_movement_intent(raw_input: Vector2) -> Vector2:
 
 
 func _ai_input(delta: float) -> Vector2:
+	_ai_attack_cooldown = maxf(0.0, _ai_attack_cooldown - delta)
+	_ai_guard_time = maxf(0.0, _ai_guard_time - delta)
+	_ai_guard_cooldown = maxf(0.0, _ai_guard_cooldown - delta)
+	if _ai_guard_time > 0.0:
+		ai_state = "DEFEND"
+		_ai_move = Vector2.ZERO
+		return _ai_move
+	if block_state != "":
+		block_state = ""
 	_ai_think_time -= delta
 	if _ai_think_time > 0.0:
 		return _ai_move
@@ -244,13 +260,16 @@ func _ai_input(delta: float) -> Vector2:
 	_ai_think_time = {"Easy": 0.68, "Medium": 0.46, "Hard": 0.32}.get(difficulty, 0.46) + randf_range(-0.05, 0.12)
 	var distance := _distance_to_opponent
 	var ring_radius := maxf(absf(global_position.x), absf(global_position.z))
-	block_state = ""
 	if ring_radius > 3.08:
 		ai_state = "RING_ESCAPE"
 		_ai_move = _world_direction_to_input(-Vector3(global_position.x, 0.0, global_position.z).normalized())
-	elif is_instance_valid(opponent) and difficulty == "Hard" and str(opponent.combat_state) in ["STARTUP", "RECOVERY"] and distance <= 1.65 and stats.stamina > 10.0:
+	elif is_instance_valid(opponent) and str(opponent.combat_state) == "STARTUP" and distance <= 1.55 and _ai_guard_cooldown <= 0.0:
+		_begin_ai_guard()
+	elif is_instance_valid(opponent) and difficulty == "Hard" and str(opponent.combat_state) in ["STARTUP", "RECOVERY"] and distance <= 1.65 and stats.stamina > 10.0 and _ai_attack_cooldown <= 0.0:
 		ai_state = "COUNTER"
 		request_attack("jab" if distance > 1.25 else "right_hook")
+		if _current_attack != "":
+			_ai_attack_cooldown = _next_ai_attack_cooldown()
 		_ai_move = Vector2.ZERO
 	elif stats.stamina < 22.0:
 		ai_state = "RETREAT"
@@ -263,14 +282,11 @@ func _ai_input(delta: float) -> Vector2:
 		_ai_move = Vector2(_ai_lateral_direction * 0.45, -0.82)
 		if randf() < 0.22:
 			request_pivot(_ai_lateral_direction)
+	elif range_state in [FootworkModel.RangeState.MID_RANGE, FootworkModel.RangeState.POCKET] and distance <= 1.55 and _ai_attack_cooldown <= 0.0 and stats.stamina > 12.0:
+		_begin_ai_attack(distance)
 	elif range_state == FootworkModel.RangeState.POCKET:
-		if stats.stamina > 32.0 and randf() < 0.52:
-			ai_state = "ATTACK"
-			request_attack(["left_hook", "right_hook", "uppercut"].pick_random())
-			_ai_move = Vector2.ZERO
-		else:
-			ai_state = "RETREAT"
-			_ai_move = Vector2(_ai_lateral_direction * 0.62, -0.45)
+		ai_state = "RANGE_CONTROL"
+		_ai_move = Vector2(_ai_lateral_direction * 0.62, -0.45)
 	else:
 		var roll := randf()
 		var defense_chance: float = {"Easy": 0.10, "Medium": 0.19, "Hard": 0.27}.get(difficulty, 0.19)
@@ -278,11 +294,8 @@ func _ai_input(delta: float) -> Vector2:
 			ai_state = "DEFEND"
 			block_state = ["left", "right", "body"].pick_random()
 			_ai_move = Vector2.ZERO
-		elif roll < 0.62 and stats.stamina > 12.0:
-			ai_state = "ATTACK"
-			_ai_last_attack = _choose_ai_attack(distance)
-			request_attack(_ai_last_attack)
-			_ai_move = Vector2.ZERO
+		elif roll < 0.62 and stats.stamina > 12.0 and _ai_attack_cooldown <= 0.0 and distance <= 1.55:
+			_begin_ai_attack(distance)
 		elif roll < 0.82:
 			ai_state = "RANGE_CONTROL"
 			_ai_move = Vector2(_ai_lateral_direction * randf_range(0.18, 0.52), clampf((distance - 1.70) * 0.45, -0.28, 0.28))
@@ -293,6 +306,32 @@ func _ai_input(delta: float) -> Vector2:
 			_ai_move = Vector2(_ai_lateral_direction * randf_range(0.55, 0.82), randf_range(-0.12, 0.18))
 	set_movement_intent(_ai_move)
 	return _ai_move
+
+
+func _begin_ai_guard() -> void:
+	ai_state = "DEFEND"
+	_ai_move = Vector2.ZERO
+	var incoming := CombatRules.attack_data(str(opponent._current_attack)) if is_instance_valid(opponent) else {}
+	if str(incoming.get("target_level", "head")) == "body":
+		block_state = "body"
+	else:
+		block_state = "right" if str(incoming.get("hand", "left")) == "right" else "left"
+	_ai_guard_time = {"Easy": 0.34, "Medium": 0.48, "Hard": 0.62}.get(difficulty, 0.48)
+	_ai_guard_cooldown = {"Easy": 1.85, "Medium": 1.35, "Hard": 0.95}.get(difficulty, 1.35)
+
+
+func _begin_ai_attack(distance: float) -> void:
+	ai_state = "ATTACK"
+	_ai_last_attack = _choose_ai_attack(distance)
+	_ai_move = Vector2.ZERO
+	request_attack(_ai_last_attack)
+	if _current_attack != "":
+		_ai_attack_cooldown = _next_ai_attack_cooldown()
+
+
+func _next_ai_attack_cooldown() -> float:
+	var base: float = {"Easy": 1.25, "Medium": 0.92, "Hard": 0.68}.get(difficulty, 0.92)
+	return base + randf_range(-0.08, 0.14)
 
 
 func _combat_range(distance: float) -> String:
@@ -323,7 +362,7 @@ func get_range_state_name() -> String:
 
 func _world_direction_to_input(world_direction: Vector3) -> Vector2:
 	var forward := _horizontal_direction_to_opponent()
-	var right := Vector3.UP.cross(forward).normalized()
+	var right := forward.cross(Vector3.UP).normalized()
 	return Vector2(world_direction.dot(right), world_direction.dot(forward)).limit_length(1.0)
 
 
@@ -331,33 +370,186 @@ func _choose_ai_attack(distance: float) -> String:
 	if distance > 1.45:
 		return "jab"
 	if distance > 1.12:
-		return ["jab", "jab", "left_hook", "right_hook"].pick_random()
+		return ["jab", "cross", "cross", "left_hook", "right_hook"].pick_random()
 	return ["left_hook", "right_hook", "uppercut"].pick_random()
 
+func _resolve_animation_player() -> AnimationPlayer:
+	var configured := get_node_or_null(animation_player_path) as AnimationPlayer
+	if configured != null:
+		return configured
+	return find_child("*AnimationPlayer*", true, false) as AnimationPlayer
+
+func _resolve_skeleton() -> Skeleton3D:
+	var configured := get_node_or_null(skeleton_path) as Skeleton3D
+	if configured != null:
+		return configured
+	return find_child("*Skeleton3D*", true, false) as Skeleton3D
+
+func _normalize_footwork_animations() -> void:
+	if animation_player == null:
+		return
+	for locomotion_name in ["step_short", "medium_step", "step_forward", "step_backward", "step_left", "step_right"]:
+		var animation_name: String = "Boxing/" + str(locomotion_name)
+		if animation_player.has_animation(animation_name):
+			var animation := animation_player.get_animation(animation_name)
+			animation.loop_mode = Animation.LOOP_LINEAR
+			_zero_horizontal_hips_drift(animation)
+	for pivot_name in ["pivot_left", "pivot_right"]:
+		var animation_name: String = "Boxing/" + str(pivot_name)
+		if animation_player.has_animation(animation_name):
+			var animation := animation_player.get_animation(animation_name)
+			animation.loop_mode = Animation.LOOP_NONE
+			_zero_horizontal_hips_drift(animation)
+
+func _zero_horizontal_hips_drift(animation: Animation) -> void:
+	for track_index in range(animation.get_track_count()):
+		if animation.track_get_type(track_index) != Animation.TYPE_POSITION_3D or not str(animation.track_get_path(track_index)).to_lower().contains("hips"):
+			continue
+		if animation.track_get_key_count(track_index) < 1:
+			continue
+		var origin: Vector3 = animation.track_get_key_value(track_index, 0)
+		for key_index in range(animation.track_get_key_count(track_index)):
+			var value: Vector3 = animation.track_get_key_value(track_index, key_index)
+			value.x = origin.x
+			value.z = origin.z
+			animation.track_set_key_value(track_index, key_index, value)
 
 func _move_relative_to_opponent(input_vector: Vector2, delta: float) -> void:
-	var basis: Dictionary = FootworkModel.combat_basis(global_position, opponent.global_position if is_instance_valid(opponent) else global_position + _last_forward, _last_forward)
-	var stamina_scale: float = lerpf(0.86, 1.0, stats.stamina / stats.max_stamina)
-	var long_multiplier := 1.18 if _long_step_time > 0.0 and input_vector.y > 0.0 else 1.0
+	# Base de combate relativa al rival.
+	var opponent_position := global_position + _last_forward
+
+	if is_instance_valid(opponent):
+		opponent_position = opponent.global_position
+
+	var basis: Dictionary = FootworkModel.combat_basis(
+		global_position,
+		opponent_position,
+		_last_forward
+	)
+
+	var forward: Vector3 = basis.forward
+	var right: Vector3 = basis.right
+
+	# ---------------------------------------------------------
+	# STAMINA
+	# ---------------------------------------------------------
+	var stamina_ratio: float = clampf(
+		stats.stamina / maxf(stats.max_stamina, 0.01),
+		0.0,
+		1.0
+	)
+
+	var stamina_scale: float = lerpf(0.86, 1.0, stamina_ratio)
+
+	# ---------------------------------------------------------
+	# LONG STEP
+	# ---------------------------------------------------------
+	var long_multiplier: float = 1.0
+
+	if _long_step_time > 0.0 and input_vector.y > 0.0:
+		long_multiplier = 1.18
+
+	# ---------------------------------------------------------
+	# VELOCIDAD BASE
+	# ---------------------------------------------------------
 	var target_velocity: Vector3 = FootworkModel.relative_velocity(
 		input_vector,
-		basis.forward,
-		basis.right,
+		forward,
+		right,
 		forward_speed * stamina_scale * long_multiplier,
 		backward_speed * stamina_scale,
 		lateral_speed * stamina_scale
 	)
+
+	# ---------------------------------------------------------
+	# ORBITADO ALREDEDOR DEL RIVAL
+	# ---------------------------------------------------------
+	if is_instance_valid(opponent):
+		var to_opponent := opponent.global_position - global_position
+		to_opponent.y = 0.0
+
+		var distance := to_opponent.length()
+
+		if distance > 0.01:
+			var radial_direction := to_opponent / distance
+
+			# Vector tangencial al círculo alrededor del rival.
+			var tangent := Vector3(
+				-radial_direction.z,
+				0.0,
+				radial_direction.x
+			)
+
+			# Cuanto más lateral sea el input, más domina el orbitado.
+			var lateral_amount := absf(input_vector.x)
+
+			if lateral_amount > 0.05:
+				var orbit_direction := tangent * input_vector.x
+				var orbit_speed := lateral_speed * stamina_scale
+
+				var orbit_velocity := orbit_direction * orbit_speed
+
+				# Conservamos parte del componente adelante/atrás.
+				var radial_velocity := radial_direction * input_vector.y
+
+				if input_vector.y >= 0.0:
+					radial_velocity *= forward_speed * stamina_scale * long_multiplier
+				else:
+					radial_velocity *= backward_speed * stamina_scale
+
+				var professional_velocity := orbit_velocity + radial_velocity
+
+				target_velocity = target_velocity.lerp(
+					professional_velocity,
+					clampf(lateral_amount * 0.85, 0.0, 0.85)
+				)
+
+	# ---------------------------------------------------------
+	# SEPARACIÓN ENTRE BOXEADORES
+	# ---------------------------------------------------------
 	target_velocity = _body_separation_velocity(target_velocity)
+
 	_target_speed = target_velocity.length()
-	var rate := acceleration if target_velocity.length_squared() > 0.0001 else deceleration
-	_smoothed_velocity = _smoothed_velocity.move_toward(target_velocity, rate * delta)
+
+	# ---------------------------------------------------------
+	# ACELERACIÓN / FRENADO
+	# ---------------------------------------------------------
+	var rate := acceleration
+
+	if target_velocity.length_squared() <= 0.0001:
+		rate = deceleration
+
+	_smoothed_velocity = _smoothed_velocity.move_toward(
+		target_velocity,
+		rate * delta
+	)
+
 	_smoothed_velocity = _body_separation_velocity(_smoothed_velocity)
-	velocity = Vector3(_smoothed_velocity.x, 0.0, _smoothed_velocity.z)
+
+	velocity = Vector3(
+		_smoothed_velocity.x,
+		0.0,
+		_smoothed_velocity.z
+	)
+
 	move_and_slide()
+
+	# ---------------------------------------------------------
+	# ANIMACIONES DE FOOTWORK
+	# ---------------------------------------------------------
 	_update_footwork(input_vector, delta)
+
+	# ---------------------------------------------------------
+	# COSTE DE STAMINA POR MOVIMIENTO INTENSO
+	# ---------------------------------------------------------
 	if input_vector.length() > 0.75:
 		var stamina_before: float = stats.stamina
-		stats.stamina = maxf(0.0, stats.stamina - 0.7 * delta)
+
+		stats.stamina = maxf(
+			0.0,
+			stats.stamina - 0.7 * delta
+		)
+
 		if int(stamina_before) != int(stats.stamina):
 			stats_changed.emit(self)
 
@@ -399,7 +591,11 @@ func _horizontal_direction_to_opponent() -> Vector3:
 
 func _update_defense() -> void:
 	if not is_player:
+		if _current_attack != "":
+			return
 		combat_state = "BLOCK" if block_state != "" else "IDLE"
+		if block_state != "" and animation_tree.active:
+			_play_brief_animation("block_" + block_state, _ai_guard_time)
 		return
 	if Input.is_action_pressed("gamepad_guard"):
 		var guard_direction := _player_input()

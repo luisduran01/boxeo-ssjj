@@ -178,15 +178,27 @@ func _test_all_menu_controls_and_persistence() -> void:
 		_expect((control as OptionButton).item_selected.get_connections().size() > 0, "every Settings option must be connected")
 	for control in _all_of_type(current_scene, &"CheckButton"):
 		_expect((control as CheckButton).toggled.get_connections().size() > 0, "every Settings check must be connected")
+	if current_scene.has_method("show_category"):
+		current_scene.show_category(&"sound")
+		await process_frame
 	var save := _assert_button("GUARDAR Y VOLVER")
 	var sliders := _all_of_type(current_scene, &"HSlider")
+	_expect(not sliders.is_empty(), "Settings sound category must expose sliders")
+	if sliders.is_empty():
+		return
 	var old_master: float = float(SaveSystem.settings.master)
 	(sliders[0] as HSlider).value = 0.45
 	save.pressed.emit()
 	await process_frame
 	await process_frame
 	await _goto("res://scenes/menus/settings.tscn")
+	if current_scene.has_method("show_category"):
+		current_scene.show_category(&"sound")
+		await process_frame
 	var reopened := _all_of_type(current_scene, &"HSlider")
+	_expect(not reopened.is_empty(), "reopened Settings sound category must expose sliders")
+	if reopened.is_empty():
+		return
 	_expect(is_equal_approx((reopened[0] as HSlider).value, 0.45), "Settings value must persist after reopening")
 	SaveSystem.settings.master = old_master
 	SaveSystem.save_settings()
