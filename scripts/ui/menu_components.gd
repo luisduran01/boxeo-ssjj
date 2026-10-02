@@ -122,8 +122,18 @@ static func slider_row(label_text: String, value: float, minimum: float, maximum
 
 
 static func bind_interaction(control: Control) -> void:
+	if control.has_meta("menu_interaction_bound"):
+		return
+	control.set_meta("menu_interaction_bound", true)
+	if control is BaseButton:
+		var button := control as BaseButton
+		control.focus_mode = Control.FOCUS_NONE if button.disabled else Control.FOCUS_ALL
+		button.pressed.connect(play_ui_cue.bind(&"accept"))
 	control.pivot_offset = control.size * 0.5
-	control.focus_entered.connect(func() -> void: _animate_scale(control, Vector2(1.015, 1.015)))
+	control.focus_entered.connect(func() -> void:
+		play_ui_cue(&"focus")
+		_animate_scale(control, Vector2.ONE)
+	)
 	control.focus_exited.connect(func() -> void: _animate_scale(control, Vector2.ONE))
 	control.mouse_entered.connect(func() -> void:
 		if control.focus_mode != Control.FOCUS_NONE:
@@ -134,6 +144,31 @@ static func bind_interaction(control: Control) -> void:
 			_animate_scale(control, Vector2.ONE)
 	)
 
+static func animate_screen_in(root: Control) -> Tween:
+	root.modulate.a = 0.0
+	var tween := root.create_tween()
+	tween.set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_OUT)
+	tween.tween_property(root, "modulate:a", 1.0, 0.22)
+	return tween
+
+static func bind_focus_feedback(root: Control) -> void:
+	_bind_focus_feedback_recursive(root)
+
+static func play_ui_cue(cue: StringName) -> void:
+	if AudioServer.get_bus_index("UI") < 0:
+		AudioServer.add_bus()
+		AudioServer.set_bus_name(AudioServer.bus_count - 1, "UI")
+
+static func _bind_focus_feedback_recursive(node: Node) -> void:
+	if node is Control:
+		var control := node as Control
+		if control is BaseButton and (control as BaseButton).disabled:
+			control.focus_mode = Control.FOCUS_NONE
+		elif control is Button or control is OptionButton or control is CheckButton or control is Slider:
+			control.focus_mode = Control.FOCUS_ALL
+			bind_interaction(control)
+	for child in node.get_children():
+		_bind_focus_feedback_recursive(child)
 
 static func _animate_scale(control: Control, target: Vector2) -> void:
 	if not is_instance_valid(control) or not control.is_inside_tree():

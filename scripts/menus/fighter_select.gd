@@ -19,6 +19,8 @@ func _ready() -> void:
 	SaveSystem.load_all()
 	fighters = Database.valid_for_fight()
 	_build_ui()
+	MenuComponents.bind_focus_feedback(self)
+	MenuComponents.animate_screen_in(self)
 	if not fighters.is_empty(): _highlight(fighters[0].id)
 
 func select_player(id: StringName) -> bool:

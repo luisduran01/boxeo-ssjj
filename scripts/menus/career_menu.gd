@@ -23,6 +23,8 @@ var section_holder: VBoxContainer
 func _ready() -> void:
 	_build_ui()
 	show_section(&"summary")
+	MenuComponents.bind_focus_feedback(self)
+	MenuComponents.animate_screen_in(self)
 	if not section_buttons.is_empty(): section_buttons[0].grab_focus.call_deferred()
 
 func _build_ui() -> void:
@@ -94,6 +96,7 @@ func show_section(section: StringName) -> void:
 		&"training": _add_training_actions()
 		&"calendar": _add_calendar_actions()
 		&"contracts": _add_contract_actions()
+	MenuComponents.bind_focus_feedback(self)
 	for index in range(section_buttons.size()):
 		section_buttons[index].button_pressed = SECTION_DEFINITIONS[index][0] == section
 

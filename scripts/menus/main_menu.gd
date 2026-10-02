@@ -7,6 +7,8 @@ var menu_buttons: Array[Button] = []
 func _ready() -> void:
 	SaveSystem.load_all()
 	_build_ui()
+	MenuComponents.bind_focus_feedback(self)
+	MenuComponents.animate_screen_in(self)
 	if not menu_buttons.is_empty(): menu_buttons[0].grab_focus.call_deferred()
 
 func _build_ui() -> void:

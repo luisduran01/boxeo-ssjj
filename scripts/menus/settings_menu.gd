@@ -27,7 +27,7 @@ func _ready() -> void:
 	for i in range(category_buttons.size()):
 		category_buttons[i].focus_neighbor_top = category_buttons[i].get_path_to(category_buttons[i - 1] if i > 0 else save)
 		category_buttons[i].focus_neighbor_bottom = category_buttons[i].get_path_to(category_buttons[i + 1] if i + 1 < category_buttons.size() else save)
-	show_category(&"general"); category_buttons[0].grab_focus.call_deferred()
+	show_category(&"general"); MenuComponents.bind_focus_feedback(self); MenuComponents.animate_screen_in(self); category_buttons[0].grab_focus.call_deferred()
 
 func show_category(category: StringName) -> void:
 	if not CATEGORIES.any(func(item: Array) -> bool: return item[0] == category): return
@@ -53,6 +53,7 @@ func show_category(category: StringName) -> void:
 		&"accessibility":
 			_add_slider("ESCALA DE TEXTO", &"text_scale", 0.8, 1.5); _add_toggle("SUBTÍTULOS", &"subtitles"); _add_toggle("ALTO CONTRASTE", &"high_contrast"); _add_info("FILTROS DE COLOR", "PENDIENTE")
 		&"credits": _add_info("BOXEO SSSJ", "Desarrollado con Godot 4.7.2")
+	MenuComponents.bind_focus_feedback(self)
 
 func _add_option(label: String, key: StringName, labels: Array, values: Array = []) -> void:
 	var option := OptionButton.new(); option.name = "%sOption" % str(key).to_pascal_case()
