@@ -1,0 +1,15 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+ERROR: No loader found for resource: res://translations/ui_es.csv (expected type: unknown)
+   at: _load (core/io/resource_loader.cpp:332)
+ERROR: No loader found for resource: res://translations/ui_en.csv (expected type: unknown)
+   at: _load (core/io/resource_loader.cpp:332)
+ERROR: SETTINGS_MENU: audio updates live
+   at: push_error (core/variant/variant_utility.cpp:1023)
+   GDScript backtrace (most recent call first):
+       [0] _expect (res://tests/settings_menu_runner.gd:5)
+       [1] _run (res://tests/settings_menu_runner.gd:15)
+ERROR: SETTINGS MENU TESTS FAILED: 1
+   at: push_error (core/variant/variant_utility.cpp:1023)
+   GDScript backtrace (most recent call first):
+       [0] _run (res://tests/settings_menu_runner.gd:19)

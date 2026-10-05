@@ -1,6 +1,6 @@
 [gd_scene format=3 uid="uid://bko2vjxjri41j"]
 
-[ext_resource type="Script" uid="uid://mwm4h76rvuta" path="res://fighters/boxer_green/boxer_controller.gd" id="1_mqq6k"]
+[ext_resource type="Script" path="res://fighters/shared/boxer_controller.gd" id="1_mqq6k"]
 [ext_resource type="PackedScene" uid="uid://dklf1e2ye8ela" path="res://fighters/boxer_03/boxer_03.fbx" id="2_w02ut"]
 [ext_resource type="Animation" uid="uid://5wcrllklod4" path="res://fighters/boxer_03/animations/block_body.res" id="3_aj6lf"]
 [ext_resource type="Animation" uid="uid://bc0uv4nkfof7o" path="res://fighters/boxer_03/animations/block_left.res" id="4_u4twg"]

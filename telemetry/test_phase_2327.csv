@@ -1,0 +1,2 @@
+version_id,fight_id,rounds_started,punches_thrown,punches_landed,punches_blocked,punches_missed,knockdowns,damage
+test_phase,test_phase_2327,1,1,1,1,1,1,6.00

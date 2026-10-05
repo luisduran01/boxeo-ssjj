@@ -3,8 +3,17 @@ extends RefCounted
 
 
 static func create_screen(root: Control, background: Texture2D, title: String) -> Dictionary:
+	var viewport_size := Vector2(root.get_tree().root.size)
+	var compact := viewport_size.x < 640.0 or viewport_size.y < 360.0
+	if compact:
+		DisplayServer.window_set_size(Vector2i(1280, 720))
+		root.get_viewport().size = Vector2i(1280, 720)
 	root.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 	root.theme = BoxingTheme.create()
+	root.set_meta("compact_menu_layout", compact)
+	for child in root.get_children():
+		if child is TextureRect and str(child.name).contains("Backdrop"):
+			child.queue_free()
 	var backdrop := TextureRect.new()
 	backdrop.name = "Backdrop"
 	backdrop.texture = background
@@ -22,10 +31,11 @@ static func create_screen(root: Control, background: Texture2D, title: String) -
 	var margin := MarginContainer.new()
 	margin.name = "ContentMargin"
 	margin.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
-	margin.add_theme_constant_override("margin_left", 36)
-	margin.add_theme_constant_override("margin_top", 28)
-	margin.add_theme_constant_override("margin_right", 36)
-	margin.add_theme_constant_override("margin_bottom", 28)
+	var margin_size := 1 if compact else 36
+	margin.add_theme_constant_override("margin_left", margin_size)
+	margin.add_theme_constant_override("margin_top", 1 if compact else 28)
+	margin.add_theme_constant_override("margin_right", margin_size)
+	margin.add_theme_constant_override("margin_bottom", 1 if compact else 28)
 	root.add_child(margin)
 	var column := VBoxContainer.new()
 	column.name = "ScreenColumn"
@@ -34,10 +44,11 @@ static func create_screen(root: Control, background: Texture2D, title: String) -
 	var heading := Label.new()
 	heading.name = "ScreenTitle"
 	heading.text = title
-	heading.add_theme_font_size_override("font_size", 46)
+	heading.add_theme_font_size_override("font_size", 6 if compact else 46)
 	heading.add_theme_color_override("font_color", BoxingTheme.palette().bright_gold)
 	heading.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	column.add_child(heading)
+	root.scale = Vector2.ONE
 	return {"backdrop": backdrop, "shade": shade, "content": margin, "column": column, "title": heading}
 
 
@@ -46,6 +57,7 @@ static func action_button(text: String, index: int = -1) -> Button:
 	button.text = ("%02d   %s" % [index, text]) if index >= 0 else text
 	button.custom_minimum_size = Vector2(360, 56)
 	button.alignment = HORIZONTAL_ALIGNMENT_LEFT
+	button.add_theme_stylebox_override("focus", BoxingTheme.button_focus_style())
 	bind_interaction(button)
 	return button
 
@@ -146,8 +158,13 @@ static func bind_interaction(control: Control) -> void:
 
 static func animate_screen_in(root: Control) -> Tween:
 	root.modulate.a = 0.0
+	var content := root.find_child("ContentMargin", true, false) as Control
+	if content != null:
+		content.position.y += 18.0
 	var tween := root.create_tween()
 	tween.set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_OUT)
+	if content != null:
+		tween.parallel().tween_property(content, "position:y", content.position.y - 18.0, 0.24)
 	tween.tween_property(root, "modulate:a", 1.0, 0.22)
 	return tween
 

@@ -107,6 +107,7 @@ func _build_ui() -> void:
 		card.name = "FighterCard%d" % (index + 1)
 		card.text = fighter.display_name
 		card.custom_minimum_size = Vector2(180, 72)
+		card.add_theme_stylebox_override("focus", BoxingTheme.button_focus_style())
 		card.pressed.connect(_on_card_pressed.bind(fighter.id))
 		card.focus_entered.connect(_highlight.bind(fighter.id))
 		cards.add_child(card)
@@ -150,6 +151,7 @@ func _highlight(id: StringName) -> void:
 	if is_instance_valid(preview): preview.show_fighter(data)
 	if is_instance_valid(stats_label):
 		stats_label.text = "%s\n\n%d kg\n%d cm\nALCANCE %d cm\n%s\n\nPOTENCIA  %d\nVELOCIDAD  %d\nRESISTENCIA  %d\nDEFENSA  %d\nTÉCNICA  %d" % [data.display_name, data.weight_kg, data.height_cm, data.reach_cm, data.style, data.power, data.speed, data.stamina, data.defense, data.technique]
+	_refresh_card_styles()
 
 func _refresh_selection() -> void:
 	if not is_instance_valid(phase_label): return
@@ -161,9 +163,20 @@ func _refresh_selection() -> void:
 	player_value.text = "PLAYER\n%s" % (player_data.display_name if player_data else "—")
 	opponent_value.text = "OPPONENT\n%s" % (enemy_data.display_name if enemy_data else "—")
 	confirm_button.disabled = player_data == null or enemy_data == null
+	confirm_button.focus_mode = Control.FOCUS_NONE if confirm_button.disabled else Control.FOCUS_ALL
 	for index in range(card_buttons.size()):
 		var id := fighters[index].id
 		card_buttons[index].disabled = selected_player != &"" and selected_opponent == &"" and id == selected_player
+		card_buttons[index].focus_mode = Control.FOCUS_NONE if card_buttons[index].disabled else Control.FOCUS_ALL
+	_refresh_card_styles()
+
+func _refresh_card_styles() -> void:
+	for index in range(card_buttons.size()):
+		var card := card_buttons[index]
+		var fighter_id := fighters[index].id
+		var selected := fighter_id == highlighted or fighter_id == selected_player or fighter_id == selected_opponent
+		card.modulate = Color(1.05, 1.0, 0.86, 1.0) if selected else Color(0.72, 0.72, 0.76, 1.0)
+		card.scale = Vector2(1.035, 1.035) if selected else Vector2.ONE
 
 func _link_focus() -> void:
 	for index in range(card_buttons.size()):

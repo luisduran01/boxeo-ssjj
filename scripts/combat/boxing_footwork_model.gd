@@ -79,7 +79,7 @@ static func combat_basis(
 	if forward.length_squared() < 0.000001:
 		forward = Vector3.FORWARD
 	forward = forward.normalized()
-	var right := Vector3.UP.cross(forward).normalized()
+	var right := forward.cross(Vector3.UP).normalized()
 	return {"forward": forward, "right": right}
 
 

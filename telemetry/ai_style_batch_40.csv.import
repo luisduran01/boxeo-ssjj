@@ -1,0 +1,19 @@
+[remap]
+
+importer="csv_translation"
+type="Translation"
+uid="uid://jxe3dtch3vlp"
+
+[deps]
+
+files=["res://telemetry/ai_style_batch_40.fights.translation", "res://telemetry/ai_style_batch_40.punches.translation", "res://telemetry/ai_style_batch_40.accuracy.translation", "res://telemetry/ai_style_batch_40.knockdowns.translation", "res://telemetry/ai_style_batch_40.ko.translation", "res://telemetry/ai_style_batch_40.max.translation", "res://telemetry/ai_style_batch_40.mid.translation"]
+
+source_file="res://telemetry/ai_style_batch_40.csv"
+dest_files=["res://telemetry/ai_style_batch_40.fights.translation", "res://telemetry/ai_style_batch_40.punches.translation", "res://telemetry/ai_style_batch_40.accuracy.translation", "res://telemetry/ai_style_batch_40.knockdowns.translation", "res://telemetry/ai_style_batch_40.ko.translation", "res://telemetry/ai_style_batch_40.max.translation", "res://telemetry/ai_style_batch_40.mid.translation"]
+
+[params]
+
+compress=1
+delimiter=0
+unescape_keys=false
+unescape_translations=true

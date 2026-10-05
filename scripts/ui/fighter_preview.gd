@@ -2,23 +2,25 @@ class_name FighterPreview
 extends Control
 
 var _viewport: SubViewport
+var _container: SubViewportContainer
 var _stage: Node3D
 var _fallback: TextureRect
 var _fighter: Node3D
+var _pose_safe := true
 
 func _ready() -> void:
 	custom_minimum_size = Vector2(420, 420)
 	clip_contents = true
-	var container := SubViewportContainer.new()
-	container.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
-	container.stretch = true
-	add_child(container)
+	_container = SubViewportContainer.new()
+	_container.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+	_container.stretch = true
+	add_child(_container)
 	_viewport = SubViewport.new()
 	_viewport.size = Vector2i(512, 512)
 	_viewport.transparent_bg = true
 	_viewport.own_world_3d = true
 	_viewport.render_target_update_mode = SubViewport.UPDATE_ALWAYS
-	container.add_child(_viewport)
+	_container.add_child(_viewport)
 	_stage = Node3D.new()
 	_stage.name = "PreviewStage"
 	_viewport.add_child(_stage)
@@ -46,20 +48,32 @@ func _ready() -> void:
 
 func show_fighter(data: FighterData) -> void:
 	clear()
+	_pose_safe = true
 	if data == null or data.scene == null:
 		_fallback.texture = data.portrait if data != null else null
 		_fallback.show()
+		_container.hide()
 		return
 	_fighter = data.scene.instantiate() as Node3D
 	if _fighter == null:
 		_fallback.texture = data.portrait
 		_fallback.show()
+		_container.hide()
 		return
 	_fighter.name = "PreviewFighter"
 	_fighter.process_mode = Node.PROCESS_MODE_DISABLED
 	_fighter.scale = Vector3.ONE * 1.35
 	_disable_collisions(_fighter)
 	_stage.add_child(_fighter)
+	if not _play_idle(_fighter):
+		_fighter.free()
+		_fighter = null
+		_fallback.texture = data.portrait
+		_fallback.show()
+		_container.hide()
+		_pose_safe = true
+		return
+	_container.show()
 	_fallback.hide()
 
 func clear() -> void:
@@ -67,6 +81,8 @@ func clear() -> void:
 		_fighter.free()
 	_fighter = null
 	if is_instance_valid(_fallback): _fallback.hide()
+	if is_instance_valid(_container): _container.show()
+	_pose_safe = true
 
 func live_preview_count() -> int:
 	return 1 if is_instance_valid(_fighter) else 0
@@ -74,8 +90,23 @@ func live_preview_count() -> int:
 func is_fallback_visible() -> bool:
 	return is_instance_valid(_fallback) and _fallback.visible
 
+func is_pose_safe() -> bool:
+	return _pose_safe
+
 func _disable_collisions(node: Node) -> void:
 	if node is CollisionObject3D:
 		(node as CollisionObject3D).collision_layer = 0
 		(node as CollisionObject3D).collision_mask = 0
 	for child in node.get_children(): _disable_collisions(child)
+
+func _play_idle(root: Node) -> bool:
+	var player := root.find_child("*AnimationPlayer*", true, false) as AnimationPlayer
+	if player == null:
+		_pose_safe = false
+		return false
+	for animation_name in ["Boxing/boxing_idle", "Boxing/fight_enter", "mixamo_com"]:
+		if player.has_animation(animation_name):
+			player.play(animation_name)
+			return true
+	_pose_safe = false
+	return false

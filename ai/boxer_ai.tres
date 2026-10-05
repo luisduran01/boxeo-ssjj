@@ -1,0 +1,81 @@
+[gd_resource type="BehaviorTree" format=3 uid="uid://t8cqo58hqpwf"]
+
+[sub_resource type="BlackboardPlan" id="BlackboardPlan_otm5w"]
+var/incoming_attack/name = &"incoming_attack"
+var/incoming_attack/type = 3
+var/incoming_attack/value = 0.0
+var/incoming_attack/hint = 0
+var/incoming_attack/hint_string = ""
+var/ai_block/name = &"ai_block"
+var/ai_block/type = 3
+var/ai_block/value = 0.0
+var/ai_block/hint = 0
+var/ai_block/hint_string = ""
+var/enemy_in_range/name = &"enemy_in_range"
+var/enemy_in_range/type = 3
+var/enemy_in_range/value = 0.0
+var/enemy_in_range/hint = 0
+var/enemy_in_range/hint_string = ""
+var/ai_attack/name = &"ai_attack"
+var/ai_attack/type = 3
+var/ai_attack/value = 0.0
+var/ai_attack/hint = 0
+var/ai_attack/hint_string = ""
+var/ai_move_to_opponent/name = &"ai_move_to_opponent"
+var/ai_move_to_opponent/type = 3
+var/ai_move_to_opponent/value = 0.0
+var/ai_move_to_opponent/hint = 0
+var/ai_move_to_opponent/hint_string = ""
+
+[sub_resource type="BBVariant" id="BBVariant_otm5w"]
+saved_value = null
+resource_name = "<null>"
+
+[sub_resource type="BTCheckVar" id="BTCheckVar_v6i5b"]
+variable = &"incoming_attack"
+value = SubResource("BBVariant_otm5w")
+
+[sub_resource type="BBNode" id="BBNode_dtjlu"]
+saved_value = NodePath("boxer_02")
+resource_name = "boxer_02"
+
+[sub_resource type="BTCallMethod" id="BTCallMethod_vfyrv"]
+node = SubResource("BBNode_dtjlu")
+method = &"ai_block"
+
+[sub_resource type="BTSequence" id="BTSequence_1u4wu"]
+children = [SubResource("BTCheckVar_v6i5b"), SubResource("BTCallMethod_vfyrv")]
+
+[sub_resource type="BBVariant" id="BBVariant_umga5"]
+saved_value = null
+resource_name = "<null>"
+
+[sub_resource type="BTCheckVar" id="BTCheckVar_p7vrd"]
+variable = &"enemy_in_range"
+value = SubResource("BBVariant_umga5")
+
+[sub_resource type="BBNode" id="BBNode_5arxf"]
+saved_value = NodePath("boxer_02")
+resource_name = "boxer_02"
+
+[sub_resource type="BTCallMethod" id="BTCallMethod_80qyd"]
+node = SubResource("BBNode_5arxf")
+method = &"ai_attack"
+
+[sub_resource type="BTSequence" id="BTSequence_yfvap"]
+children = [SubResource("BTCheckVar_p7vrd"), SubResource("BTCallMethod_80qyd")]
+
+[sub_resource type="BBNode" id="BBNode_qch0m"]
+saved_value = NodePath("boxer_02")
+resource_name = "boxer_02"
+
+[sub_resource type="BTCallMethod" id="BTCallMethod_0b0hr"]
+node = SubResource("BBNode_qch0m")
+method = &"ai_move_to_opponent"
+
+[sub_resource type="BTSelector" id="BTSelector_v6i5b"]
+children = [SubResource("BTSequence_1u4wu"), SubResource("BTSequence_yfvap"), SubResource("BTCallMethod_0b0hr")]
+
+[resource]
+blackboard_plan = SubResource("BlackboardPlan_otm5w")
+root_task = SubResource("BTSelector_v6i5b")

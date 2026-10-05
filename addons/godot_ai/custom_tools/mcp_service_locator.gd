@@ -1,12 +1,16 @@
-extends RefCounted
+@tool
 class_name McpServiceLocator
+extends RefCounted
 
-## Minimal service locator required by the installed Godot AI plugin version.
-## The registry owns service resolution; this object only retains its runtime
-## dependencies for custom-tool setup.
-var connection
-var log_buffer
+var _connection: McpConnection = null
+var _log_buffer: McpLogBuffer = null
 
-func setup(next_connection, next_log_buffer) -> void:
-	connection=next_connection
-	log_buffer=next_log_buffer
+func setup(connection: McpConnection, log_buffer: McpLogBuffer) -> void:
+	_connection = connection
+	_log_buffer = log_buffer
+
+func get_connection() -> McpConnection:
+	return _connection
+
+func get_log_buffer() -> McpLogBuffer:
+	return _log_buffer

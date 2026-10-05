@@ -1,0 +1,10 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+[godot_ai game_helper] registered mcp capture (debugger active=false, logger=true)
+root size=(64, 64)
+Navigation rect=[P: (36.0, 370.8394), S: (520.0, 513.0)] size=(520.0, 513.0)
+QuickFightButton rect=[P: (36.0, 555.8394), S: (520.0, 56.0)] size=(520.0, 56.0)
+CareerButton rect=[P: (36.0, 623.8394), S: (520.0, 56.0)] size=(520.0, 56.0)
+FightersButton rect=[P: (36.0, 691.8394), S: (520.0, 56.0)] size=(520.0, 56.0)
+SettingsButton rect=[P: (36.0, 759.8394), S: (520.0, 56.0)] size=(520.0, 56.0)
+ExitButton rect=[P: (36.0, 827.8394), S: (520.0, 56.0)] size=(520.0, 56.0)

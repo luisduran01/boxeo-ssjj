@@ -15,6 +15,7 @@ static func row(label_text: String, control: Control, pending: bool = false) -> 
 
 static func heading(text: String) -> Label:
 	var label := Label.new()
+	label.name = "CategoryHeading"
 	label.text = text
 	label.add_theme_font_size_override("font_size", 24)
 	label.add_theme_color_override("font_color", BoxingTheme.palette().bright_gold)

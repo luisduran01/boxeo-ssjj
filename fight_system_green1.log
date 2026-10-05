@@ -1,0 +1,78 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+WARNING: res://fighters/boxer_green/boxer_green.tscn:17 - ext_resource, invalid UID: uid://e6h77hr3sjk6 - using text path instead: res://fighters/boxer_green/animations/pivot_left.res
+   at: load (scene/resources/resource_format_text.cpp:501)
+WARNING: res://fighters/boxer_green/boxer_green.tscn:20 - ext_resource, invalid UID: uid://dbrntynco5r8r - using text path instead: res://fighters/boxer_green/animations/step_backward.res
+   at: load (scene/resources/resource_format_text.cpp:501)
+WARNING: res://fighters/boxer_green/boxer_green.tscn:21 - ext_resource, invalid UID: uid://x78gbsjqyo8l - using text path instead: res://fighters/boxer_green/animations/step_forward.res
+   at: load (scene/resources/resource_format_text.cpp:501)
+WARNING: res://fighters/boxer_green/boxer_green.tscn:22 - ext_resource, invalid UID: uid://6k86pn1qy6dl - using text path instead: res://fighters/boxer_green/animations/step_left.res
+   at: load (scene/resources/resource_format_text.cpp:501)
+WARNING: res://fighters/boxer_green/boxer_green.tscn:23 - ext_resource, invalid UID: uid://c1psex6n5r7se - using text path instead: res://fighters/boxer_green/animations/step_right.res
+   at: load (scene/resources/resource_format_text.cpp:501)
+SCRIPT ERROR: Parse Error: Could not find type "RoundManager" in the current scope.
+   at: GDScript::reload (res://scripts/managers/fight_manager.gd:26)
+SCRIPT ERROR: Parse Error: Could not find type "FightStats" in the current scope.
+   at: GDScript::reload (res://scripts/managers/fight_manager.gd:27)
+SCRIPT ERROR: Parse Error: Could not find type "Judges" in the current scope.
+   at: GDScript::reload (res://scripts/managers/fight_manager.gd:28)
+SCRIPT ERROR: Parse Error: Identifier "RoundManager" not declared in the current scope.
+   at: GDScript::reload (res://scripts/managers/fight_manager.gd:40)
+SCRIPT ERROR: Parse Error: Identifier "FightStats" not declared in the current scope.
+   at: GDScript::reload (res://scripts/managers/fight_manager.gd:44)
+SCRIPT ERROR: Parse Error: Identifier "Judges" not declared in the current scope.
+   at: GDScript::reload (res://scripts/managers/fight_manager.gd:48)
+SCRIPT ERROR: Parse Error: Cannot infer the type of "cards" variable because the value doesn't have a set type.
+   at: GDScript::reload (res://scripts/managers/fight_manager.gd:109)
+SCRIPT ERROR: Parse Error: Cannot infer the type of "decision" variable because the value doesn't have a set type.
+   at: GDScript::reload (res://scripts/managers/fight_manager.gd:173)
+SCRIPT ERROR: Parse Error: Cannot infer the type of "player_total" variable because the value doesn't have a set type.
+   at: GDScript::reload (res://scripts/managers/fight_manager.gd:252)
+SCRIPT ERROR: Parse Error: Cannot infer the type of "enemy_total" variable because the value doesn't have a set type.
+   at: GDScript::reload (res://scripts/managers/fight_manager.gd:253)
+SCRIPT ERROR: Compile Error: Failed to compile depended scripts.
+   at: GDScript::reload (res://scripts/fight/fight_scene.gd:0)
+SCRIPT ERROR: Parse Error: Cannot infer the type of "preference" variable because the value doesn't have a set type.
+   at: GDScript::reload (res://scripts/managers/judges.gd:77)
+SCRIPT ERROR: Compile Error: Failed to compile depended scripts.
+   at: GDScript::reload (res://tests/fight_system_runner.gd:0)
+ERROR: Failed to load script "res://tests/fight_system_runner.gd" with error "Compilation failed".
+   at: load (modules/gdscript/gdscript_resource_format.cpp:46)
+[godot_ai game_helper] registered mcp capture (debugger active=false, logger=true)
+SCRIPT ERROR: Invalid call. Nonexistent function 'new' in base 'GDScript'.
+   at: _ready (res://scripts/fight/fight_scene.gd:60)
+   GDScript backtrace (most recent call first):
+       [0] _ready (res://scripts/fight/fight_scene.gd:60)
+       [1] _run (res://tests/fight_system_runner.gd:27)
+SCRIPT ERROR: Invalid access to property or key 'round_manager' on a base object of type 'Nil'.
+   at: _test_managers_are_connected (res://tests/fight_system_runner.gd:45)
+   GDScript backtrace (most recent call first):
+       [0] _test_managers_are_connected (res://tests/fight_system_runner.gd:45)
+       [1] _run (res://tests/fight_system_runner.gd:30)
+SCRIPT ERROR: Invalid access to property or key 'fight_stats' on a base object of type 'Nil'.
+   at: _test_stats_capture_thrown_landed_defense_and_accuracy (res://tests/fight_system_runner.gd:54)
+   GDScript backtrace (most recent call first):
+       [0] _test_stats_capture_thrown_landed_defense_and_accuracy (res://tests/fight_system_runner.gd:54)
+       [1] _run (res://tests/fight_system_runner.gd:31)
+SCRIPT ERROR: Invalid assignment of property or key 'state' with value of type 'int' on a base object of type 'Nil'.
+   at: _test_rounds_pause_combat_and_score_judges (res://tests/fight_system_runner.gd:71)
+   GDScript backtrace (most recent call first):
+       [0] _test_rounds_pause_combat_and_score_judges (res://tests/fight_system_runner.gd:71)
+       [1] _run (res://tests/fight_system_runner.gd:32)
+SCRIPT ERROR: Invalid call. Nonexistent function 'new' in base 'GDScript'.
+   at: _test_decision_types (res://tests/fight_system_runner.gd:87)
+   GDScript backtrace (most recent call first):
+       [0] _test_decision_types (res://tests/fight_system_runner.gd:87)
+       [1] _run (res://tests/fight_system_runner.gd:33)
+SCRIPT ERROR: Invalid assignment of property or key 'state' with value of type 'int' on a base object of type 'Nil'.
+   at: _test_knockdown_count_ko_tko_rules (res://tests/fight_system_runner.gd:104)
+   GDScript backtrace (most recent call first):
+       [0] _test_knockdown_count_ko_tko_rules (res://tests/fight_system_runner.gd:104)
+       [1] _run (res://tests/fight_system_runner.gd:34)
+SCRIPT ERROR: Invalid call. Nonexistent function 'new' in base 'GDScript'.
+   at: _ready (res://scripts/fight/fight_scene.gd:60)
+   GDScript backtrace (most recent call first):
+       [0] _ready (res://scripts/fight/fight_scene.gd:60)
+       [1] _test_quick_fight_reaches_result (res://tests/fight_system_runner.gd:123)
+       [2] _run (res://tests/fight_system_runner.gd:35)
+FIGHT SYSTEM TESTS PASSED

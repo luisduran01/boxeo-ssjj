@@ -1,0 +1,8 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+SCRIPT ERROR: Parse Error: The function signature doesn't match the parent. Parent signature is "set(StringName, Variant) -> void".
+   at: GDScript::reload (res://tests/animation_manual_runner.gd:98)
+SCRIPT ERROR: Parse Error: The method "set()" overrides a method from native class "Object". This won't be called by the engine and may not work as expected. (Warning treated as error.)
+   at: GDScript::reload (res://tests/animation_manual_runner.gd:98)
+ERROR: Failed to load script "res://tests/animation_manual_runner.gd" with error "Parse error".
+   at: load (modules/gdscript/gdscript_resource_format.cpp:46)

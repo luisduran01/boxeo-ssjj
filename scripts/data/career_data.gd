@@ -4,7 +4,7 @@ extends RefCounted
 const ATTRIBUTE_KEYS: Array[StringName] = [&"power", &"speed", &"stamina", &"defense", &"technique"]
 
 static func defaults() -> Dictionary:
-	return {"fighter": "fighter_1", "name": "FIGHTER 1", "wins": 0, "losses": 0, "draws": 0, "kos": 0, "ranking": 50, "money": 1200, "fans": 80, "fitness": 100, "fatigue": 0, "training_progress": 0, "training_points": 0, "current_week": 1, "current_date": "2026-10-02", "next_opponent": "fighter_2", "next_fight_date": "2026-10-12", "fight_history": [], "news": [], "attributes": {"power": 70, "speed": 70, "stamina": 70, "defense": 70, "technique": 70}}
+	return {"fighter": "fighter_1", "name": "FIGHTER 1", "created_fighter": {}, "wins": 0, "losses": 0, "draws": 0, "kos": 0, "ranking": 50, "money": 1200, "fans": 80, "fitness": 100, "fatigue": 0, "training_progress": 0, "training_points": 0, "current_week": 1, "current_date": "2026-10-02", "next_opponent": "fighter_2", "next_fight_date": "2026-10-12", "fight_history": [], "news": [], "attributes": {"power": 70, "speed": 70, "stamina": 70, "defense": 70, "technique": 70}}
 
 static func normalize(source: Dictionary) -> Dictionary:
 	var result := defaults()
@@ -16,6 +16,7 @@ static func normalize(source: Dictionary) -> Dictionary:
 	result.current_week = maxi(1, int(result.current_week))
 	result.fight_history = result.fight_history if result.fight_history is Array else []
 	result.news = result.news if result.news is Array else []
+	result.created_fighter = result.created_fighter if result.created_fighter is Dictionary else {}
 	var source_attributes: Dictionary = result.attributes if result.attributes is Dictionary else {}
 	var attributes: Dictionary = {}
 	for key in ATTRIBUTE_KEYS: attributes[key] = clampi(int(source_attributes.get(key, 70)), 0, 100)

@@ -3,7 +3,7 @@
 importer="scene"
 importer_version=1
 type="PackedScene"
-uid="uid://dql3bg03o0ie8"
+uid="uid://dbfw0cl015r20"
 path="res://.godot/imported/Uppercut.fbx-c869e04ad0c544469c426bd20c5af145.scn"
 
 [deps]
@@ -43,7 +43,7 @@ _subresources={
 "animations": {
 "mixamo_com": {
 "save_to_file/enabled": true,
-"save_to_file/fallback_path": "res://fighters/boxer_green/animations/uppercut.res",
+"save_to_file/fallback_path": "res://fighters/boxer_02/animations/uppercut.res",
 "save_to_file/keep_custom_tracks": "",
 "save_to_file/path": "uid://k86l75ne023r",
 "settings/loop_mode": 0,

@@ -51,11 +51,12 @@ func _test_input_tiers() -> void:
 
 
 func _test_combat_basis_and_velocity() -> void:
-	var basis: Dictionary = model.combat_basis(Vector3.ZERO, Vector3(0.0, 2.0, 0.0), Vector3.FORWARD)
+	var basis: Dictionary = model.combat_basis(Vector3.ZERO, Vector3(0.0, 0.0, -2.0), Vector3.FORWARD)
 	var forward: Vector3 = basis.forward
 	var right: Vector3 = basis.right
 	_expect(_near(forward.length(), 1.0) and _near(right.length(), 1.0), "combat basis vectors must be normalized")
 	_expect(_near(forward.dot(right), 0.0), "combat basis vectors must be perpendicular")
+	_expect(right.x > 0.999, "an opponent on -Z must make positive X the fighter's right side")
 	var advance: Vector3 = model.relative_velocity(Vector2(0.0, 1.0), forward, right, 2.4, 1.8, 2.0)
 	var retreat: Vector3 = model.relative_velocity(Vector2(0.0, -1.0), forward, right, 2.4, 1.8, 2.0)
 	var lateral: Vector3 = model.relative_velocity(Vector2(1.0, 0.0), forward, right, 2.4, 1.8, 2.0)

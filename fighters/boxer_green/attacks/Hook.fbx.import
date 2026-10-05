@@ -3,7 +3,7 @@
 importer="scene"
 importer_version=1
 type="PackedScene"
-uid="uid://dejsn74gbp0oo"
+uid="uid://bo54c2tvhn1nk"
 path="res://.godot/imported/Hook.fbx-5965cea1512a1a34e3b67cc3d3db3804.scn"
 
 [deps]
@@ -43,7 +43,7 @@ _subresources={
 "animations": {
 "mixamo_com": {
 "save_to_file/enabled": true,
-"save_to_file/fallback_path": "res://fighters/boxer_green/animations/left_hook.res",
+"save_to_file/fallback_path": "res://fighters/boxer_02/animations/left_hook.res",
 "save_to_file/keep_custom_tracks": "",
 "save_to_file/path": "uid://8rpu0dr26qmy",
 "settings/loop_mode": 0,

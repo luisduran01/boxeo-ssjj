@@ -3,7 +3,7 @@
 importer="scene"
 importer_version=1
 type="PackedScene"
-uid="uid://dvrkl23vnv1n3"
+uid="uid://cdplebp420kd6"
 path="res://.godot/imported/Right Hook.fbx-a1a97b63c5d7da4215f2786dcfa75e4d.scn"
 
 [deps]
@@ -43,7 +43,7 @@ _subresources={
 "animations": {
 "mixamo_com": {
 "save_to_file/enabled": true,
-"save_to_file/fallback_path": "res://fighters/boxer_green/animations/right_hook.res",
+"save_to_file/fallback_path": "res://fighters/boxer_02/animations/right_hook.res",
 "save_to_file/keep_custom_tracks": "",
 "save_to_file/path": "uid://5n1527arwjg1",
 "settings/loop_mode": 0,

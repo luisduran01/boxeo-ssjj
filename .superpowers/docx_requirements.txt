@@ -1,0 +1,749 @@
+BOXEO 3D · GODOT 4.7.2 · SOLO GAMEPLAY
+Del sistema que funciona al combate que se siente bien
+Mejoras puras de gameplay después de las Tasks 1 a 4
+Base: los reportes de Codex de las Tasks 1 a 4 (ciclo de pelea, Events, controlador compartido y MoveData) más el resumen del proyecto que enviaste antes.
+Fecha: 4 de octubre de 2026
+Alcance: únicamente lo que cambia cómo se juega y cómo se siente el combate. Quedan fuera carrera, creador, arte, audio de producción, licencias y exportación.
+Aviso de método. No vi tu código, solo lo que Codex reportó. Los valores numéricos (frames, porcentajes, tiempos) son puntos de partida para probar y ajustar, no verdades. Las estimaciones de esfuerzo son orientativas.
+1. Dónde estás después de las Tasks 1 a 4
+Las cuatro tareas no añadieron "diversión" por sí mismas, pero te dieron algo igual de importante: una base donde puedes cambiar el gameplay sin romper todo. Esto es lo que desbloquea cada una para trabajar la jugabilidad.
+Task
+Qué entregó (según Codex)
+Qué habilita para gameplay
+1
+Runner de ciclo de pelea; _end_round() idempotente; knockdown/get-up y TKO verificados; Majority Decision / Majority Draw / Draw; restauración de Engine.time_scale
+Puedes jugar peleas completas y repetidas sin que el estado se corrompa. Esto es obligatorio para tocar hitstop y slow-motion sin dejar el juego en cámara lenta
+2
+Autoload Events con fight_started, round_started, round_ended, punch_landed, knockdown_started, fight_finished; ARCHITECTURE.md y CODEX_RULES.md
+Feedback, telemetría, cámara y audio pueden reaccionar a eventos sin acoplarse al controlador. Faltan señales de gameplay más finas (ver 3.1 y 6)
+3
+Controlador en fighters/shared/boxer_controller.gd; los 3 boxeadores lo usan; AnimationTree arranca en Footwork; ANIMATION_CATALOG.md; runner de los 3 fighters
+Un solo código de gameplay para todos, y el T-pose inicial queda controlado. Cualquier mejora se aplica a los tres de una vez
+4
+MoveData, MoveLibrary y 5 .tres (jab, cross, left_hook, right_hook, uppercut); CombatRules lee de la librería
+Puedes balancear golpes editando datos. Hoy solo hay 5 golpes y sin campos de "feel" (hitstop, pushback, whiff, cancel); ahí está la siguiente gran mejora
+Lectura honesta
+Ya resuelto en estructura: fases de golpe, buffer, defensas con consecuencias, stamina, stability, stun, wobble, knockdown, get-up, IA con planner, ciclo de pelea y jueces.
+Todavía sin resolver en sensación: es muy probable que, aunque todo "funcione" y pase los tests, el combate se sienta plano: golpes sin peso, defensas sin recompensa clara, IA demasiado perfecta o demasiado tonta, y poca tensión de principio a fin. Los tests verifican que algo ocurre; no verifican que se sienta bien.
+Lo que falta medir: nadie ha puesto números a la latencia de input, a cuántos golpes conectan por round ni a cómo se distribuyen los KO. Sin eso, ajustar es adivinar.
+Antes de seguir: Codex no hizo commit en ninguna de las 4 tareas porque el repo ya tenía cambios mezclados. Eso significa que no tienes un punto al que volver si un ajuste de feel sale mal. Haz un commit (o una rama etiquetada) de la línea base actual antes de empezar la Task 5, aunque mezcle cosas. Los cambios de gameplay son experimentales y necesitas poder deshacerlos.
+Advertencias que Codex dice que quedan: UIDs inválidos en animaciones/escena de boxer_green y certificados de Windows. No afectan a los runners, pero conviene limpiar los UIDs en algún momento para que el ruido de la consola no oculte errores reales de gameplay.
+2. Principios de diseño de gameplay
+Antes de tocar números, estos siete principios sirven para decidir qué entra y qué no. Si una mejora no apoya alguno, probablemente sobra.
+Respuesta inmediata. Entre pulsar y ver algo en pantalla no deberían pasar más de ~3 frames. La mayor causa de "se siente pesado" no es la animación, es la latencia.
+Compromiso y consecuencia. Cada golpe cuesta algo (recovery, stamina, exposición). Un golpe sin riesgo se convierte en spam.
+Legibilidad. El jugador debe poder leer al rival: el startup de un golpe tiene que verse, y la distancia tiene que entenderse con la cámara.
+Riesgo y recompensa en capas. Suave piedra-papel-tijera: cada acción gana contra algo y pierde contra otra cosa (tabla abajo).
+Ritmo con picos. Un round no es intensidad constante: tanteo, intercambio, pausa, remate. El juego debe generar esos picos.
+Derrota recuperable, victoria merecida. Estar herido debe dar opciones (clinch, defensa, un counter de esperanza); ganar debe exigir controlar distancia y energía, no un solo botón.
+Cero estrategia dominante. Si existe una táctica que gana siempre (jab spam, retroceder sin parar, bloquear todo), el diseño falló y hay que cerrarla con mecánica.
+Matriz de riesgo y recompensa (diseño objetivo)
+Acción
+Gana contra
+Pierde contra
+Riesgo
+Jab
+Avances simples, guardia pasiva
+Counter rápido tras slip, lean_back + cross
+Bajo
+Cross
+Jab lento, defensa baja
+Slip o lean_back seguido de counter (whiff caro)
+Medio
+Hook
+Guardia frontal, pivots cortos
+Duck, lean_back, jab de entrada
+Alto
+Uppercut
+Duck y cuerpo inclinado, POCKET
+Distancia larga, retroceso
+Alto
+Golpe al cuerpo
+Guardia alta, rival que presiona
+Bloqueo bajo, codos abajo
+Medio
+Bloqueo
+Golpes aislados
+Presión sostenida (guard break) y cambio de altura
+Gasta stamina/guard
+Slip / duck
+Golpes rectos o hooks altos según el caso
+Golpes que persiguen, fatiga
+Timing
+Lean back
+Jab/cross
+Presión; te empuja a cuerdas
+Posicional
+Pivot
+Presión contra cuerdas
+Cortadores de ring
+Medio
+Clinch
+Presión, rival que castiga
+Rival fresco con ventaja; árbitro lo rompe
+Bajo, con cooldown
+Las 10 mejoras de mayor impacto
+#
+Mejora
+Por qué importa
+Task
+1
+Overlay de debug y telemetría
+Sin ver frame data, estado, buffer y hitboxes no puedes ajustar nada con criterio
+5
+2
+Input responsivo con prioridades y cancels
+Elimina el "el juego me ignoró" y permite combos fluidos
+6
+3
+Hit feedback (hitstop, pushback, shake, head snap)
+Convierte datos de daño en sensación de peso
+7
+4
+Compromiso y whiff penalty
+Crea riesgo y evita el spam
+8
+5
+Defensa por calidad de timing
+Da maestría y hace que defender sea activo, no pasivo
+9
+6
+Footwork con espacio y ángulos
+Hace que moverse y cortar el ring sea una habilidad
+10
+7
+Drama de stability, wobble y knockdown
+Genera los picos de tensión de la pelea
+12
+8
+Clinch con break
+Rompe la monotonía y da recurso al jugador herido
+13
+9
+IA con reacción humana y estilos medibles
+Rivales que se sienten distintos y justos
+14–15
+10
+Legibilidad: cámara y HUD de gameplay
+El jugador entiende qué pasa sin mirar números
+17–18
+3. Mejoras de gameplay por bloque
+Cada bloque indica qué buscamos, las mejoras concretas, valores iniciales para empezar a probar y cómo verificar que funcionó. Los valores asumen simulación a 60 Hz; todo debe vivir en MoveData, Resources de configuración o constantes en un solo archivo, no repartido por el código.
+3.1 Telemetría y herramientas para ajustar
+Qué buscamos: poder ver lo que el juego está haciendo. Es la mejora que hace posibles todas las demás.
+Mejoras
+Overlay de debug activable con una tecla: estado de la FSM, fase del golpe (STARTUP/ACTIVE/RECOVERY), frame actual, distancia (TOO_CLOSE… LONG_RANGE), contenido del buffer, stamina, stability, guard, hitboxes y hurtboxes visibles.
+Input viewer: muestra qué entró, en qué frame y qué hizo el juego con eso.
+Control de tiempo: pausa, avance frame a frame y cámara lenta para inspeccionar un golpe.
+Más señales en `Events`: punch_thrown, punch_blocked, punch_missed, punch_slipped, guard_broken, stunned, wobbled, clinch_started, clinch_ended, counter_hit. Ya existen punch_landed y knockdown_started; el resto es lo que necesitan telemetría, feedback y estadísticas.
+Telemetría a CSV por pelea: golpes lanzados/conectados/bloqueados/fallados por tipo, daño, knockdowns, stuns, tiempo en cada distancia, tiempo en cuerdas, clinches, uso de defensa y stamina media.
+Dummy configurable para probar un golpe aislado (pasivo, bloquea, contraataca, ataca en bucle).
+Valores iniciales para probar
+Overlay apagado por defecto y excluido del build final.
+Un CSV por pelea en una carpeta de telemetría, con id de versión del juego para comparar antes y después de un cambio.
+Cómo se prueba: ejecutas una pelea, abres el CSV y puedes responder "¿cuántos jabs conectaron por round?" sin mirar la pantalla. El overlay muestra la misma cifra en vivo.
+3.2 Input responsivo
+Qué buscamos: que cada pulsación se sienta atendida, que no se pierdan inputs legítimos y que los combos fluyan sin sentir "el juego me ignoró".
+Mejoras
+Medir la latencia entre input y primer frame de animación (objetivo: 3 frames o menos, unos 50 ms).
+Buffer con prioridad: ya tienes una cola FIFO. Añade límite de 2–3 acciones, que una acción nueva reemplace a la más vieja cuando la cola está llena, y prioridad de defensa sobre golpe cuando un golpe rival está a punto de impactar.
+Ventanas de cancel por golpe en `MoveData`: cancel_start_frame, cancel_end_frame y cancel_into. Así, jab → cross puede salir antes de terminar el recovery sin que parezca un truco.
+Tolerancia de timing de 2–4 frames en ventanas de defensa, para absorber latencia de mandos inalámbricos y evitar la frustración de "lo pulsé a tiempo".
+Intención antes de ejecución: la altura (cabeza o cuerpo) y la variante se leen en los primeros 1–2 frames del golpe, no a mitad.
+Anti-mashing con costo, no con silencio: en vez de ignorar pulsaciones repetidas, que el mash aumente la stamina gastada y el recovery. El jugador siente la consecuencia, no un juego que no responde.
+Opción de defensa en hold o toggle para accesibilidad.
+Valores iniciales para probar
+Buffer: 8 frames (rango 6–10).
+Cola máxima: 3 acciones.
+Tolerancia de defensa: 4 frames.
+Lectura de dirección: frames 1–2 del STARTUP.
+Cómo se prueba: un runner reproduce secuencias (jab, cross, hook separadas por 3, 6 y 10 frames) y comprueba qué sale y cuándo; además, una prueba manual con mando inalámbrico confirma que no se pierden golpes.
+3.3 Golpes: peso, compromiso y whiff
+Qué buscamos: que cada golpe tenga peso, riesgo y recompensa claros, y que fallar duela más que conectar.
+Mejoras
+Hitstop de 2 a 12 frames según potencia y resultado, aplicado a atacante y defensor. Es la mejora que más "peso" da por menos esfuerzo. Ahora puede colgarse de Events.punch_landed.
+Pushback y stagger: el defensor se desplaza según la potencia; el atacante avanza un poco en golpes pesados (lunge).
+Whiff penalty: un golpe fallado cuesta más stamina y alarga el recovery; si el rival lo vio, abre su ventana de counter.
+Golpe limpio vs sucio: limpio = distancia óptima y primeros frames de ACTIVE; sucio = brazo extendido o contacto con antebrazo, con menos daño. Esto hace que el espaciado importe.
+Escalado anti-spam: repetir el mismo golpe reduce su daño y su stability damage de forma progresiva; counters y golpes limpios los aumentan.
+Daño por zona (cabeza vs cuerpo) con reacción, efecto y estadística diferentes.
+Variantes por distancia: jab largo y corto, cross a cabeza y cuerpo.
+Ampliar `MoveData`: hoy hay 5 golpes. Añade jab al cuerpo, cross al cuerpo, hooks al cuerpo L/R, uppercut al cuerpo, overhand, doble jab y finta. Campos nuevos sugeridos: hitstop_frames, pushback, sweet_spot_min/max, whiff_recovery_extra, whiff_stamina_mult, magnetism, stun_power, counter_mult, cancel_start/end.
+Valores iniciales para probar
+Hitstop: jab 2, cross 3, hook 4, uppercut 4, golpe de knockdown 8–12 frames.
+Whiff: stamina ×1.5; recovery +15 % si falla en ACTIVE vacío.
+Golpe sucio: −40 % de daño. Repetición del mismo golpe: ×0.92 por repetición, con tope.
+Counter: ×1.35 de daño y stability.
+Cómo se prueba: una simulación de "jab spam" contra un jugador que cuida distancia debe perder; un test confirma que fallar gasta más stamina y abre la ventana de counter; y un clip A/B con y sin hitstop muestra la diferencia de peso.
+3.4 Footwork y control del espacio
+Qué buscamos: que moverse sea una habilidad: ganar posición, cortar el ring y escapar de cuerdas con decisión, no con spam.
+Mejoras
+Velocidades asimétricas: retroceder más lento que avanzar. Hace que huir sea arriesgado y que cortar el ring funcione.
+Step-in y step-out: pasos cortos con impulso para entrar a MID_RANGE tras un jab, con costo bajo de stamina y breve vulnerabilidad.
+Compromiso de pie: frenar y cambiar de dirección toma frames; el pivot es la herramienta rápida para cambiar de ángulo.
+Pivot con ventaja posicional: tras un pivot exitoso, el rival tarda unos frames en reorientarse.
+Reglas por distancia: cada rango (TOO_CLOSE, POCKET, MID_RANGE, LONG_RANGE) cambia daño y probabilidad de conectar vía sweet_spot en MoveData. Ya tienes la lectura de distancia; falta que tenga consecuencias.
+Fatiga en el movimiento: correr y dar pasos grandes cansa; con stamina baja el footwork se vuelve más lento.
+Postura (opcional): ortodoxo, zurdo y switch, con cambio de ángulos y de golpe que llega primero.
+Valores iniciales para probar
+Retroceso: 65–75 % de la velocidad de avance.
+Lateral: 80–90 %.
+Frenado al invertir dirección: 3–5 frames.
+Ventaja tras pivot exitoso: 8–12 frames del rival sin reorientar.
+Cómo se prueba: un test mide cuánto tarda un boxeador en rodear al rival y cuánto en salir de una esquina; en una prueba manual, huir en línea recta nunca debe ser una estrategia segura.
+3.5 Defensa y contragolpe
+Qué buscamos: que defender sea una decisión activa y arriesgada con recompensa clara, no un botón de seguridad.
+Mejoras
+Tres calidades de defensa: perfecta (ventana corta antes del impacto: sin daño, abre counter), normal (reduce daño y gasta guard) y tardía (reduce poco).
+Guard como recurso propio: se llena con golpes bloqueados y más rápido con stamina baja; al agotarse, guard break y stun corto. Ya tienes guard pressure; falta que sea visible y escalable.
+Matriz de efectividad: qué defensa funciona contra qué golpe y qué altura (slip contra rectos, duck contra hooks altos, lean_back contra rectos con costo posicional, bloqueo alto no cubre cuerpo y viceversa).
+Costo de cambiar de bloqueo: pasar de alto a bajo toma 4–6 frames, para castigar adivinar.
+Movimiento con guardia: moverse bloqueando es más lento.
+Counter escalado: la ventana y el bonus dependen de la calidad de la defensa (perfecta > normal). Un counter limpio otorga daño, stability y stun extra.
+Anti-spam de defensa: pulsar defensa sin golpe entrante tiene un pequeño costo, y la defensa perfecta tiene cooldown corto tras fallar.
+Valores iniciales para probar
+Perfecta: 4–6 frames antes del impacto.
+Normal: reduce 60–75 % del daño.
+Tardía: reduce ~30 %.
+Ventana de counter: 10–18 frames.
+Bonus de counter: ×1.3–1.5.
+Cómo se prueba: una matriz automática "cada golpe contra cada defensa" (cabeza/cuerpo, calidad de timing) debe dar resultados definidos y documentados; se añade a technical_combat_runner.gd.
+3.6 Daño, stability, wobble y knockdown
+Qué buscamos: que el combate tenga picos de peligro creíbles y que perder ventaja o remontar se sienta natural.
+Mejoras
+Separar el rol de cada barra: salud = castigo acumulado (afecta chin), stability = riesgo inmediato de caer, stamina = capacidad de actuar. Si dos hacen lo mismo, una sobra.
+Wobble jugable: movimiento errático, inputs con ligero retraso y guardia reducida; se sale por tiempo, defensa exitosa o clinch. Ya existe el estado; falta que dé decisiones.
+Flash knockdown raro: golpe limpio + counter + stability baja puede tumbar aunque la salud sea alta, pero que sea poco frecuente (por debajo del 10 % de los KO).
+Golpe al hígado: hook al cuerpo limpio con stamina baja puede provocar una caída o parálisis breve; es un clásico del boxeo.
+Levantarse con tensión: la dificultad depende de chin, daño acumulado y fatiga; opcionalmente con un pequeño input rítmico del jugador.
+Remontada sin trampas: un boxeador herido puede conectar un counter fuerte. No hay rubber banding oculto; la esperanza viene de defender y esperar el error.
+Fatiga por rounds: la stamina máxima efectiva baja un poco cada round y la recuperación entre rounds es parcial.
+Valores iniciales para probar
+Wobble: 2.5–4 s con salida anticipada por clinch o defensa.
+Fatiga por round: −3 a −6 % de stamina máxima efectiva.
+Knockdowns: umbral de stability ajustado hasta lograr entre 0.3 y 1.0 por pelea de 3 rounds IA vs IA.
+Cómo se prueba: el batch IA vs IA debe mostrar KO y knockdowns dentro de rangos objetivo, con peleas que no terminan siempre igual.
+3.7 Clinch y trabajo cercano
+Qué buscamos: un recurso de supervivencia y de ritmo en distancia corta, que rompa la monotonía de intercambios y dé opciones al boxeador herido.
+Mejoras
+Entrada: en TOO_CLOSE/POCKET con input de clinch, o por la IA cuando está cansada o herida.
+Estado CLINCH compartido: ambos acoplados; quien inicia tiene ligera ventaja.
+Salida: el árbitro ordena break tras 2–4 s, o uno empuja y rompe; después ambos quedan en MID_RANGE.
+Recompensa y límite: recupera un poco de stamina al que lo recibe cansado; clinchear en exceso tiene cooldown y puede ser advertido.
+Golpes cortos de bajo daño al cuerpo opcionales durante el clinch.
+No sirve para evitar el conteo ni durante un knockdown.
+Valores iniciales para probar
+Duración antes del break: 2–4 s.
+Cooldown tras un break: ~3 s.
+Máximo por round: 3–4 para la IA.
+Cómo se prueba: un runner cubre entrada, mantenimiento, break por árbitro, break por empuje y cooldown, y comprueba que nadie queda atascado en el estado.
+3.8 IA con comportamiento humano
+Qué buscamos: rivales que se sientan distintos, justos y legibles, no perfectos ni ciegos.
+Mejoras
+Reacción con retraso: la IA responde a las señales del jugador (startup de golpe) con un retraso por dificultad más un pequeño jitter, y puede fallar.
+Errores deliberados: una probabilidad de defender mal o de dudar, según nivel.
+Estilos medibles: cada FighterStyle debe cambiar métricas observables. Ejemplo: un COUNTER_PUNCHER contraataca mucho más tras slip o bloqueo; un PRESSURE_FIGHTER pasa más tiempo en POCKET y corta el ring.
+Memoria corta: recuerda los últimos 8 golpes del jugador y su defensa favorita. Si repites jab 4 veces, responde con slip + cross; pero con límite para no ser adivina.
+Ráfagas y descansos: ataca en picos de 3–5 s y se recupera, en lugar de intensidad constante.
+Remate y supervivencia: si el rival está wobbled entra en modo FINISH con combos más largos y más riesgo; si ella está herida, clinchea, se mueve y bloquea.
+Dificultad = parámetros e información, nunca daño oculto ni lectura de inputs.
+Anti-exploits: detectar jab spam, kiting (huir en círculos) y bloqueo permanente, y responder con mecánicas (cortar el ring, fintas, golpes al cuerpo).
+Overlay de intención: muestra el estado y la intención de la IA para depurar.
+Valores iniciales para probar
+Reacción (frames): Rookie 24, Amateur 18, Pro 12, Elite 9, Legend 6, más jitter de 0–6.
+Error defensivo: Rookie 25 %, Amateur 18 %, Pro 12 %, Elite 7 %, Legend 4 %.
+Rondas de ataque: 3–5 s con descansos de 2–4 s.
+Cómo se prueba: tres bots de prueba (jab spam, corredor y bloqueador permanente) no deben vencer a la IA; un batch por estilo debe dar métricas dentro de rangos distintos entre estilos.
+3.9 Ring, cuerdas y esquinas
+Qué buscamos: que la geometría del ring sea parte de la estrategia.
+Mejoras
+Cuerdas: limitan el retroceso, dan un pequeño rebote visual y aumentan algo el daño de golpes que empujan; pivot_escape es la salida.
+Esquinas: más peligrosas; salir exige pivot, clinch o un buen counter.
+Control del ring como mecánica: quien domina el centro gana opciones; esto alimenta también a los jueces.
+Árbitro funcional: no estorba la vista, no se interpone entre golpes, separa en clinch y reacciona en knockdown.
+Golpes lanzados antes de la campana cuentan; después, el ataque se cancela.
+Valores iniciales para probar
+Daño extra por golpes de empuje contra cuerdas: +10 %.
+Velocidad hacia atrás pegado a cuerdas: ~0.
+Salida con pivot: 12–18 frames.
+Cómo se prueba: una prueba de "acorralar y salir" funciona sin spam: el atacante puede arrinconar con buenas decisiones y el defensor tiene al menos dos salidas válidas.
+3.10 Ritmo de round y flujo de pelea
+Qué buscamos: que cada round tenga arco (tanteo, intercambio, pausa, remate) y que la pelea evolucione entre rounds.
+Mejoras
+Curva de ritmo: el inicio favorece el estudio; la mitad, los intercambios; los últimos 10 segundos premian el esfuerzo (con buen peso en la puntuación).
+Detección de intercambios: cuando ambos golpean en una ventana de ~1 s, se activa un "momento" (más shake, público, mayor gasto de stamina). Es un pico, no una recompensa de poder.
+Pasividad penalizada: quien no lanza golpes ni controla el ring pierde puntos de agresión efectiva con los jueces.
+Adaptación entre rounds: la IA puede cambiar un poco su plan; el jugador también ajusta la suya.
+Momentum ligero (opcional): varios golpes limpios consecutivos elevan algo la confianza (precisión y reacción), con tope bajo y visible; nada de rubber banding.
+Valores iniciales para probar
+Final de round: ventana de 10 s con peso adicional de agresión efectiva en los jueces.
+Momentum: máximo +5 % y decae en pocos segundos.
+Cómo se prueba: las curvas de golpes por segundo de varios rounds muestran picos y valles, no una línea plana.
+3.11 Cámara y HUD para legibilidad
+Qué buscamos: que el jugador vea y entienda lo que importa para jugar, sin depender de números.
+Mejoras
+Cámara de gameplay estable: ángulo 3/4 lateral, histéresis para no girar con cada paso y anti-oclusión del árbitro.
+Siempre se ve el startup del rival, y en MID_RANGE se ven los pies para el espaciado; se limita el zoom en POCKET.
+Indicadores opcionales: halo de guard que se agrieta, destello en defensa perfecta, aviso breve en la ventana de counter, color de guantes por stamina.
+HUD mínimo: salud y stamina como máximo; stability se comunica con la postura (wobble), no con una barra. Modo "sin HUD".
+Feedback distintivo para defensa perfecta y counter, con sonido y luz propios, para que el jugador aprenda qué hizo bien.
+Cómo se prueba: un jugador nuevo, sin explicación, describe correctamente por qué ganó o perdió un intercambio al ver el replay corto.
+3.12 Dificultad, onboarding y práctica
+Qué buscamos: que alguien nuevo aprenda a jugar y que un jugador experto siga teniendo reto.
+Mejoras
+Cinco niveles: Rookie, Amateur, Pro, Elite y Legend, definidos por parámetros de IA, no por números ocultos.
+Tutorial en 6 lecciones: movimiento y distancia, jab/cross, hooks y uppercuts, defensa, counters, clinch y ring.
+Modo práctica con dummy: pasivo, bloquea, contraataca o ataca en bucle; muestra frame data, daño y buffer.
+Asistencias opcionales: soft-lock y ventanas de defensa más amplias en niveles bajos.
+Resumen post-pelea con consejos derivados de las estadísticas (por ejemplo, "lanzaste 80 golpes y conectaron 14; el rival bloqueó 40").
+Cómo se prueba: una persona que nunca jugó completa el tutorial en menos de 15 minutos y gana un combate Rookie sin mirar la lista de movimientos.
+3.13 Controles avanzados y versus local
+Qué buscamos: un esquema que se sienta natural en mando y permita jugar con otra persona sin fricción.
+Mejoras
+Esquema gestual con stick derecho: además del esquema por botones, flicks por sectores para golpes, con zona muerta, umbral de velocidad y sensibilidad configurables.
+Modificadores: un botón para cuerpo y otro para golpes cargados o fintas.
+Prompts dinámicos según el mando (PlayStation, Xbox, teclado) y vibración por tipo de impacto.
+Versus local: perfiles de input por jugador, selección independiente y handicap opcional.
+Pausa automática al desconectarse un mando.
+Cómo se prueba: dos personas con mandos distintos juegan un combate completo sin tocar menús ni reconfigurar nada.
+Propuesta de esquema gestual (para tu referencia)
+Stick derecho
+Golpe
+Con modificador de cuerpo
+Flick adelante
+Jab
+Jab al cuerpo
+Flick diagonal adelante-derecha
+Cross
+Cross al cuerpo
+Flick lateral izquierda
+Hook izquierdo
+Hook al cuerpo izquierdo
+Flick lateral derecha
+Hook derecho
+Hook al cuerpo derecho
+Flick hacia atrás
+Uppercut
+Uppercut al cuerpo
+Es solo una propuesta inicial; ajústala tras probarla con mando real. Lo importante es tener un esquema consistente, con tolerancias configurables y un buffer propio para no perder gestos.
+4. Tabla maestra de valores iniciales
+Todos son puntos de partida a 60 Hz para tener algo con lo que medir. Guárdalos en un solo lugar (Resource de balance o MoveData) y cambia uno a la vez.
+Grupo
+Parámetro
+Valor inicial
+Rango a explorar
+Input
+Buffer
+8 frames
+6–10
+Input
+Cola máxima
+3
+2–4
+Input
+Tolerancia de defensa
+4 frames
+2–6
+Golpes
+Hitstop jab / cross / hook
+2 / 3 / 4 frames
+1–5
+Golpes
+Hitstop golpe de knockdown
+8–12 frames
+6–14
+Golpes
+Whiff stamina multiplicador
+×1.5
+×1.3–1.8
+Golpes
+Whiff recovery extra
++15 %
++10–25 %
+Golpes
+Golpe sucio
+−40 % de daño
+−25–50 %
+Golpes
+Repetición del mismo golpe
+×0.92 por vez, con tope
+×0.85–0.95
+Golpes
+Counter
+×1.35
+×1.2–1.6
+Defensa
+Ventana perfecta
+4–6 frames
+3–8
+Defensa
+Reducción de bloqueo normal
+60–75 %
+50–80 %
+Defensa
+Ventana de counter
+10–18 frames
+8–24
+Defensa
+Cambio de bloqueo alto/bajo
+4–6 frames
+3–8
+Movimiento
+Retroceso / avance
+70 %
+60–80 %
+Movimiento
+Lateral / avance
+85 %
+75–95 %
+Movimiento
+Frenado al invertir
+3–5 frames
+2–7
+Movimiento
+Ventaja tras pivot
+8–12 frames
+6–16
+Estado
+Duración de wobble
+2.5–4 s
+2–5
+Estado
+Fatiga por round
+−3 a −6 % stamina máx.
+−2–8 %
+Clinch
+Duración antes del break
+2–4 s
+1.5–5
+Clinch
+Cooldown tras break
+3 s
+2–5
+Ring
+Daño extra contra cuerdas
++10 %
++5–20 %
+IA
+Reacción (Rookie / Amateur / Pro / Elite / Legend)
+24 / 18 / 12 / 9 / 6 frames
+según playtest
+IA
+Error defensivo (mismos niveles)
+25 / 18 / 12 / 7 / 4 %
+según playtest
+Pelea
+Peso del último tramo del round
+10 s
+8–15
+5. Plan de Tasks siguientes (para Codex)
+Continúa la numeración que ya llevas. Cada Task es pequeña, tiene un runner o prueba y un criterio claro, y está ordenada para que cada una aproveche la anterior. Hazlas en este orden.
+Task
+Nombre
+Qué cambia en el juego
+Prueba nueva
+5
+Overlay de debug y telemetría
+Se ve el estado interno y se guardan métricas por pelea. Nuevas señales en Events
+telemetry_runner.gd
+6
+Input responsivo
+Prioridades de buffer, cancel windows, tolerancia y mash con costo
+input_buffer_runner.gd
+7
+Hit feedback
+Hitstop, pushback, shake, head snap, vibración, por Events
+hit_feedback_runner.gd
+8
+Compromiso y whiff
+Whiff penalty, golpes limpios/sucios, anti-spam, ventana de counter por golpe fallado
+whiff_runner.gd
+9
+Defensa por calidad
+Perfecta/normal/tardía, guard como recurso, matriz de efectividad
+defense_matrix_runner.gd
+10
+Footwork y espacio
+Velocidades asimétricas, step-in/out, pivot con ventaja, reglas por distancia
+spacing_runner.gd
+11
+Magnetismo y zonas
+Soft-lock, hurtboxes por zona, variantes por distancia, golpes al cuerpo y overhand en MoveData
+zones_runner.gd
+12
+Stability, wobble y knockdown
+Roles de barras, wobble jugable, flash KO, hígado, levantarse con tensión
+knockdown_batch_runner.gd
+13
+Clinch
+Estado clinch, break del árbitro, cooldown
+clinch_runner.gd
+14
+IA: reacción y dificultad
+Retraso de reacción, errores, 5 niveles, memoria corta
+ai_difficulty_runner.gd
+15
+IA: estilos medibles
+Métricas por estilo, bots anti-exploit, batch IA vs IA con CSV
+ai_style_batch_runner.gd
+16
+Ring y cuerdas
+Rebote, daño de empuje, esquinas, árbitro sin estorbar
+ring_runner.gd
+17
+Cámara legible
+Histéresis, anti-oclusión, límites de zoom, visibilidad del startup
+camera_readability_runner.gd
+18
+HUD de gameplay
+HUD mínimo, indicadores de counter y guard, modo sin HUD
+hud_gameplay_runner.gd
+19
+Tutorial y práctica
+Seis lecciones y dummy configurable
+tutorial_runner.gd
+20
+Esquema gestual
+Flicks de stick derecho con tolerancias configurables
+gesture_runner.gd
+21
+Versus local
+Perfiles por jugador, selección y pausa por desconexión
+local_versus_runner.gd
+22
+Pasada de balance
+Ajuste con 1000 peleas IA vs IA y playtest real
+CSV comparativo
+Por qué este orden: la Task 5 va primero porque hace visibles todas las demás; 6 a 9 son el núcleo del feel y no dependen entre sí en lo grueso, pero conviene hacerlas antes del footwork y de la IA, porque la IA se calibra contra las reglas finales de golpes y defensa. La IA va después para no recalibrarla dos veces.
+Prompts listos para Codex
+Usa la plantilla de CODEX_RULES.md que Codex ya creó. Aquí van las cuatro primeras tareas con el formato que más le ayuda: objetivo, alcance, no tocar, criterios y pruebas.
+Task 5: Overlay de debug y telemetría
+OBJETIVO
+Hacer visible el estado interno del combate y guardar metricas por pelea.
+ALCANCE
+- Overlay activable con una tecla (apagado por defecto): estado FSM, fase del
+golpe y frame, distancia, buffer, stamina, stability, guard, hitboxes y
+hurtboxes. Input viewer. Pausa, avance por frame y camara lenta.
+- Nuevas senales en Events: punch_thrown, punch_blocked, punch_missed,
+punch_slipped, guard_broken, stunned, wobbled, clinch_started,
+clinch_ended, counter_hit.
+- Telemetria por pelea a CSV con id de version.
+NO TOCAR
+Balance actual de golpes y comportamiento de combate. Solo observar.
+CRITERIOS
+1. Una pelea IA vs IA genera un CSV con golpes lanzados/conectados/
+bloqueados/fallados por tipo, knockdowns y tiempo por distancia.
+2. El overlay no afecta el rendimiento cuando esta apagado.
+PRUEBAS
+Nuevo telemetry_runner.gd y todos los runners existentes en PASS.
+Task 6: Input responsivo
+OBJETIVO
+Que ningun input legitimo se pierda y que los combos fluyan.
+ALCANCE
+- Buffer con cola maxima de 3, prioridad defensa sobre golpe cuando hay
+impacto inminente, reemplazo del mas viejo si la cola esta llena.
+- cancel_start_frame, cancel_end_frame y cancel_into en MoveData.
+- Tolerancia de 4 frames en ventanas de defensa.
+- Altura (cabeza/cuerpo) leida en los frames 1-2 del STARTUP.
+- Mash con costo (mas stamina y recovery) en lugar de ignorar inputs.
+NO TOCAR
+Animaciones, IA y daños. Mantener la forma publica de CombatRules.
+CRITERIOS
+Secuencias jab-cross-hook separadas por 3, 6 y 10 frames producen lo
+esperado y la latencia input->primer frame es 3 frames o menos.
+PRUEBAS
+Nuevo input_buffer_runner.gd; combat_runner y technical_combat_runner PASS.
+Task 7: Hit feedback
+OBJETIVO
+Dar peso a los golpes sin tocar su logica de dano.
+ALCANCE
+- HitFeedbackSystem que escucha Events (punch_landed, counter_hit,
+knockdown_started) y aplica hitstop (usando speed_scale local, NO
+Engine.time_scale), pushback, camera shake, head snap y vibracion.
+- Campos nuevos en MoveData: hitstop_frames, pushback.
+- Opciones en Settings para intensidad de shake y vibracion.
+NO TOCAR
+Valores de dano y stability; fight_manager salvo conectar senales.
+CRITERIOS
+Hitstop de 2 a 12 frames segun potencia; nunca queda el juego congelado ni
+en camara lenta tras terminar la pelea o abandonar la escena.
+PRUEBAS
+Nuevo hit_feedback_runner.gd; fight_lifecycle_runner PASS (verifica que
+time_scale se restaura).
+Task 8: Compromiso y whiff
+OBJETIVO
+Que fallar un golpe cueste mas que conectarlo y que el spam no sea viable.
+ALCANCE
+- Whiff: stamina x1.5 y recovery +15 % cuando el golpe falla en ACTIVE
+vacio; abrir ventana de counter para el rival si lo vio.
+- Golpe limpio vs sucio segun distancia y frames de ACTIVE (-40 % dano).
+- Escalado anti-spam: x0.92 por repeticion del mismo golpe, con tope.
+- Todos los valores como campos de MoveData o un Resource de balance.
+NO TOCAR
+IA y animaciones.
+CRITERIOS
+Una simulacion de jab spam pierde contra un jugador que cuida distancia; el
+CSV muestra mas stamina gastada por golpe fallado que por golpe conectado.
+PRUEBAS
+Nuevo whiff_runner.gd; move_data_runner y combat_runner PASS.
+6. Cómo medir si el gameplay mejora
+Los tests automáticos dicen si algo funciona; las métricas dicen si el juego se comporta como diseñaste; y el playtest humano dice si se siente bien. Necesitas las tres.
+Métricas objetivo iniciales (peleas de 3 rounds, IA vs IA)
+Métrica
+Objetivo inicial
+Si sale fuera de rango
+Golpes lanzados por boxeador y por round
+40–70
+Muy pocos: IA pasiva o recovery largo. Muchos: spam
+Precisión (conectados / lanzados)
+25–40 %
+Alta: defensa débil. Baja: hitboxes o alcance mal
+Golpes bloqueados / lanzados
+20–35 %
+Muy alto: defensa demasiado fuerte
+Knockdowns por pelea
+0.3–1.0
+Muchos: stability baja. Ninguno: poca amenaza
+Peleas que terminan por KO/TKO
+15–35 %
+Ajustar daño, stability y fatiga
+Tiempo en cada distancia
+Reparto con mayoría en MID_RANGE y POCKET
+Todo en LONG_RANGE: kiting
+Clinches por round (IA)
+0–3
+Muchos: abuso del recurso
+Variedad de golpes
+Ningún golpe pasa del 45 % del total
+Un golpe domina: spam
+Son rangos de referencia para empezar; ajústalos a la sensación que busques. Lo importante es fijarlos por escrito y comprobar si cada cambio los mueve en la dirección deseada.
+Protocolo de playtest
+Reúne 4–6 personas con experiencia variada (al menos dos que nunca hayan jugado).
+Sesión de 20 minutos sin explicaciones previas: 5 min libres, 10 min contra IA y 5 min con el tutorial.
+Observa en silencio; anota dónde se confunden, qué botón pulsan en pánico y qué táctica repiten.
+Pregunta al final: ¿qué golpe fue más satisfactorio?, ¿cuándo sentiste que perdiste por injusticia?, ¿qué hiciste para ganar?
+Cambia una sola cosa por ronda de pruebas y compara con el CSV.
+Checklist de feel (revísala tras cada Task)
+Pulso un botón y veo respuesta de inmediato.
+Puedo distinguir un golpe conectado, uno bloqueado y uno fallado sin mirar el HUD.
+Los golpes fuertes se sienten más pesados que el jab.
+Fallar un golpe me deja expuesto de forma visible.
+Defender a tiempo se siente premiado.
+Retroceder en línea recta no es seguro.
+Un rival cansado se mueve y defiende peor y se nota.
+Estar herido me da opciones, no solo espera.
+Cada estilo de rival se juega distinto.
+Los knockdowns generan tensión real.
+Siempre entiendo por qué perdí un intercambio.
+Exploits que vigilar
+Exploit
+Señal en la telemetría
+Mecánica que lo cierra
+Jab spam
+Un golpe > 45 % del total
+Whiff penalty, escalado anti-spam, rival que entra con slip + counter
+Retroceder sin parar (kiting)
+Casi todo el tiempo en LONG_RANGE
+Retroceso lento, IA que corta el ring, daño extra en cuerdas
+Bloquear todo
+Bloqueados > 60 %
+Guard break, golpes al cuerpo, fintas, coste de cambiar altura
+Defensa perfecta spam
+Muchas defensas sin golpe entrante
+Costo por pulsar sin amenaza, cooldown tras fallar
+Clinch infinito
+Clinches > 4 por round
+Cooldown, break del árbitro, advertencias
+Esquina segura
+Mucho tiempo en esquina sin daño
+Daño de empuje, pivot como única salida costosa
+Cancel infinito
+Combos sin recovery
+Cancel windows acotadas y costo de stamina
+7. Apéndice
+A. Ejemplos de código (GDScript, Godot 4)
+Son esqueletos para orientar el diseño. Adáptalos a tus nombres y a lo que ya exista en tu proyecto.
+A.1 Buffer de input con prioridad y expiración
+class_name InputBuffer extends RefCounted
+const BUFFER_FRAMES := 8
+const MAX_QUEUE := 3
+var _q: Array[Dictionary] = []
+func push(action: StringName, frame: int) -> void:
+if _q.size() >= MAX_QUEUE:
+_q.pop_front()                     # reemplaza el mas viejo
+_q.append({"a": action, "f": frame})
+# can_act recibe la accion y dice si el boxeador puede ejecutarla ahora
+func consume(now: int, can_act: Callable) -> StringName:
+while not _q.is_empty():
+var e: Dictionary = _q[0]
+if now - int(e["f"]) > BUFFER_FRAMES:
+_q.pop_front()                 # expiro
+continue
+if can_act.call(e["a"]):
+_q.pop_front()
+return e["a"]
+break                              # aun no puede; sigue esperando
+return &""
+A.2 Daño con limpio/sucio, fatiga, counter y anti-spam
+func compute_damage(base: float, power_stat: float, stamina_ratio: float,
+is_counter: bool, is_clean: bool, repeat_count: int) -> float:
+var d := base * lerpf(0.85, 1.15, power_stat)     # power_stat 0..1
+d *= lerpf(0.7, 1.0, stamina_ratio)               # cansado pega menos
+if is_counter:
+d *= 1.35
+if not is_clean:
+d *= 0.6
+d *= maxf(pow(0.92, repeat_count), 0.6)           # tope del anti-spam
+return d
+A.3 Whiff: coste extra y ventana de counter para el rival
+func on_punch_missed(move: MoveData) -> void:
+stamina -= move.stamina_cost * 1.5
+recovery_frames_left += int(move.recovery_frames * 0.15)
+if rival_saw_punch():
+rival.open_counter_window(12)                 # frames
+Events.punch_missed.emit(self, move.id)           # senal nueva
+A.4 Magnetismo suave durante el STARTUP
+func apply_punch_magnetism(delta: float, to_rival: Vector3, strength: float) -> void:
+# En Godot el frente de un nodo apunta a -Z
+var target_yaw := atan2(-to_rival.x, -to_rival.z)
+rotation.y = lerp_angle(rotation.y, target_yaw, 1.0 - exp(-strength * delta))
+A.5 Reacción humana de la IA
+var _rng := RandomNumberGenerator.new()
+func ai_can_react(frames_since_cue: int, reaction_frames: int, jitter: int) -> bool:
+return frames_since_cue >= reaction_frames + _rng.randi_range(0, jitter)
+func ai_defends_correctly(error_chance: float) -> bool:
+return _rng.randf() >= error_chance
+A.6 Hitstop local sin tocar Engine.time_scale
+func apply_hitstop(frames: int, attacker: Node, defender: Node) -> void:
+var seconds := frames / 60.0
+attacker.anim_player.speed_scale = 0.0
+defender.anim_player.speed_scale = 0.0
+# process_always = true, process_in_physics = false, ignore_time_scale = true
+await get_tree().create_timer(seconds, true, false, true).timeout
+if is_instance_valid(attacker):
+attacker.anim_player.speed_scale = 1.0
+if is_instance_valid(defender):
+defender.anim_player.speed_scale = 1.0
+Importante: la Task 1 ya garantiza que Engine.time_scale se restaura al terminar la pelea. Para el hitstop usa speed_scale local, y reserva Engine.time_scale para el slow-motion global del KO.
+B. Glosario
+Término
+Significado
+Hitstop
+Congelación de 1–12 frames al conectar para dar peso
+Whiff
+Golpe fallado; en este diseño cuesta stamina y deja expuesto
+Cancel window
+Intervalo en el que un golpe puede interrumpirse con otra acción permitida
+Sweet spot
+Rango de distancia donde un golpe hace su daño completo
+Guard break
+Ruptura de la guardia por exceso de presión; provoca stun breve
+Soft-lock
+Asistencia suave que orienta al boxeador hacia el rival
+Kiting
+Alejarse sin parar para evitar el combate
+Rubber banding
+Ayuda oculta al que va perdiendo; aquí se evita
+Telegraph
+Señal visual previa a un ataque que permite reaccionar
+Siguiente paso recomendado. Haz el commit de línea base, pide a Codex la Task 5 con el prompt de la sección 5 y juega dos peleas con el overlay activo. Antes de cambiar un solo número, anota qué métricas salen fuera de rango; así sabrás qué tareas ayudan de verdad.

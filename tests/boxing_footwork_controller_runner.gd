@@ -45,6 +45,8 @@ func _run() -> void:
 		_test_target_lock_and_ranges()
 		_test_player_only_input_and_relative_motion()
 		_test_acceleration_and_long_latch()
+		_test_body_separation_and_ring_limits()
+		_test_attack_buffer_and_defense_priority()
 		_test_debug_snapshot()
 	Input.action_release("move_forward")
 	Input.action_release("move_right")
@@ -65,13 +67,23 @@ func _test_public_contract() -> void:
 		"long_step_duration", "long_step_cooldown", "forward_speed", "backward_speed",
 		"lateral_speed", "acceleration", "deceleration", "turn_responsiveness",
 		"minimum_fighter_distance", "hard_separation_distance",
-		"soft_separation_strength", "maximum_separation_speed", "range_state",
+		"soft_separation_strength", "maximum_separation_speed", "ring_limit", "range_state",
 		"movement_intensity", "locomotion_state"
 	]:
 		_expect(_has_property(player, property_name), "controller must expose %s" % property_name)
 	_expect(player.has_method("set_movement_intent"), "controller must expose set_movement_intent")
 	_expect(player.has_method("request_pivot"), "controller must expose request_pivot")
+	_expect(player.has_method("get_distance_to_opponent"), "controller must expose get_distance_to_opponent")
+	_expect(player.has_method("get_combat_range_state"), "controller must expose get_combat_range_state")
+	_expect(player.has_method("get_buffered_attack_count"), "controller must expose get_buffered_attack_count")
+	_expect(player.has_method("get_next_buffered_attack"), "controller must expose get_next_buffered_attack")
 	_expect(player.has_method("get_boxing_movement_debug"), "controller must expose movement debug snapshot")
+	for ai_method in ["ai_move_to_opponent", "ai_attack", "ai_block"]:
+		_expect(enemy.has_method(ai_method), "boxer_02 BehaviorTree method must exist: %s" % ai_method)
+	var planner: Node = enemy.get_node_or_null("BoxingAIPlanner")
+	_expect(planner != null, "boxer_02 must use BoxingAIPlanner as the LimboAI decision layer")
+	if planner != null:
+		_expect(planner.get_node_or_null("BTPlayer") != null or planner.get("limbo_available") == false, "planner must own the LimboAI BTPlayer bridge when available")
 
 
 func _test_animation_tree_contract() -> void:
@@ -210,6 +222,53 @@ func _test_acceleration_and_long_latch() -> void:
 	for i in range(8):
 		player._physics_process(0.05)
 	_expect(player.movement_intensity < player.long_step_threshold and player._long_step_armed, "release must settle to idle and re-arm Long")
+
+
+func _test_body_separation_and_ring_limits() -> void:
+	_reset_positions()
+	player.global_position = Vector3(0.0, 0.0, 0.46)
+	enemy.global_position = Vector3(0.0, 0.0, -0.46)
+	player.fight_enabled = true
+	enemy.fight_enabled = true
+	Input.action_press("move_forward")
+	for i in range(24):
+		player._physics_process(0.016)
+		enemy.set_movement_intent(Vector2(0.0, 1.0))
+		enemy._physics_process(0.016)
+	Input.action_release("move_forward")
+	var distance: float = player.global_position.distance_to(enemy.global_position)
+	_expect(distance >= player.hard_separation_distance - 0.03, "fighters walking into each other must not overlap hard body distance")
+	_expect(distance <= player.minimum_fighter_distance + 0.22, "body separation must not bounce fighters far apart")
+	player.global_position = Vector3(3.14, 0.0, 0.0)
+	enemy.global_position = Vector3(2.10, 0.0, 0.0)
+	player._smoothed_velocity = Vector3.ZERO
+	player.set_movement_intent(Vector2(1.0, 0.0))
+	for i in range(16):
+		player._move_relative_to_opponent(Vector2(1.0, 0.0), 0.016)
+	if _has_property(player, "ring_limit"):
+		_expect(absf(player.global_position.x) <= player.ring_limit + 0.01 and absf(player.global_position.z) <= player.ring_limit + 0.01, "fighter body must stay inside the ring movement limit")
+
+
+func _test_attack_buffer_and_defense_priority() -> void:
+	_reset_positions()
+	player.fight_enabled = true
+	player.stats.stamina = 100.0
+	player.request_attack("jab")
+	player.request_attack("cross")
+	player.request_attack("left_hook")
+	if player.has_method("get_buffered_attack_count") and player.has_method("get_next_buffered_attack"):
+		_expect(player.get_buffered_attack_count() <= 2, "input buffer must stay limited")
+		_expect(player.get_next_buffered_attack() == "cross", "buffer must preserve the first queued combo action")
+	var attack := CombatRules.attack_data("jab")
+	player._update_attack(float(attack.startup) + float(attack.active_time) + maxf(0.0, float(attack.recovery) - float(attack.cancel_window)) + 0.01)
+	_expect(player._current_attack == "cross" and player.combat_state == "STARTUP", "jab recovery cancel window must start queued cross")
+	player._finish_action()
+	player.block_state = ""
+	player.animation_tree.active = true
+	Input.action_press("block_left")
+	player._update_defense()
+	Input.action_release("block_left")
+	_expect(player.block_state == "left" and player.combat_state == "BLOCK", "block must have priority from idle or movement")
 
 
 func _test_debug_snapshot() -> void:

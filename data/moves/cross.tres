@@ -1,0 +1,28 @@
+[gd_resource type="Resource" script_class="MoveData" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/combat/move_data.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+id = &"cross"
+animation_name = "cross"
+hand = "right"
+attack_type = "straight"
+target_level = "head"
+startup_frames = 9.6
+active_frames = 5.4
+recovery_frames = 16.8
+damage = 8.8
+stamina_cost = 7.4
+min_range = 0.68
+max_range = 1.52
+power = 0.96
+stun = 8.0
+counter_bonus = 1.2
+movement_allowed = 0.65
+tracking_strength = 0.62
+step_in = 0.12
+hitstop_frames = 1.14
+camera_feedback = 0.004
+animation_speed = 1.03
+cancel_window_frames = 7.2

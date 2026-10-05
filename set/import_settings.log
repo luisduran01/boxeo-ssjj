@@ -1,0 +1,222 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+ERROR: No loader found for resource: res://translations/ui_es.csv (expected type: unknown)
+   at: _load (core/io/resource_loader.cpp:332)
+ERROR: No loader found for resource: res://translations/ui_en.csv (expected type: unknown)
+   at: _load (core/io/resource_loader.cpp:332)
+ERROR: Failed loading resource: res://translations/ui_es.csv.
+   at: _load (core/io/resource_loader.cpp:317)
+ERROR: Failed loading resource: res://translations/ui_en.csv.
+   at: _load (core/io/resource_loader.cpp:317)
+[   0% ] first_scan_filesystem | Started Project initialization (5 steps)
+[   0% ] first_scan_filesystem | Scanning file structure...
+[  16% ] first_scan_filesystem | Loading global class names...
+[  33% ] first_scan_filesystem | Verifying GDExtensions...
+[  50% ] first_scan_filesystem | Creating autoload scripts...
+[  66% ] first_scan_filesystem | Initializing plugins...
+[  83% ] first_scan_filesystem | Starting file scan...
+[ DONE ] first_scan_filesystem
+
+WARNING: UID duplicate detected between res://fighters/boxer_03/animations/locomotion/Left Pivot.fbx and res://fighters/boxer_02/animations/locomotion/Left Pivot.fbx.
+   at: _process_file_system (editor/file_system/editor_file_system.cpp:1405)
+WARNING: UID duplicate detected between res://fighters/boxer_03/animations/locomotion/Long Right Side Step.fbx and res://fighters/boxer_02/animations/locomotion/Long Right Side Step.fbx.
+   at: _process_file_system (editor/file_system/editor_file_system.cpp:1405)
+WARNING: UID duplicate detected between res://fighters/boxer_03/animations/locomotion/Long Step Forward.fbx and res://fighters/boxer_02/animations/locomotion/Long Step Forward.fbx.
+   at: _process_file_system (editor/file_system/editor_file_system.cpp:1405)
+WARNING: UID duplicate detected between res://fighters/boxer_03/animations/locomotion/Medium Step Forward.fbx and res://fighters/boxer_02/animations/locomotion/Medium Step Forward.fbx.
+   at: _process_file_system (editor/file_system/editor_file_system.cpp:1405)
+WARNING: UID duplicate detected between res://fighters/boxer_03/animations/locomotion/Short Left Side Step.fbx and res://fighters/boxer_02/animations/locomotion/Short Left Side Step.fbx.
+   at: _process_file_system (editor/file_system/editor_file_system.cpp:1405)
+WARNING: UID duplicate detected between res://fighters/boxer_03/animations/locomotion/Short Step Forward.fbx and res://fighters/boxer_02/animations/locomotion/Short Step Forward.fbx.
+   at: _process_file_system (editor/file_system/editor_file_system.cpp:1405)
+WARNING: UID duplicate detected between res://fighters/boxer_03/animations/locomotion/Step Backward.fbx and res://fighters/boxer_02/animations/locomotion/Step Backward.fbx.
+   at: _process_file_system (editor/file_system/editor_file_system.cpp:1405)
+WARNING: UID duplicate detected between res://fighters/boxer_03/animations/block_body.res and res://fighters/boxer_02/animations/block_body.res.
+   at: _process_file_system (editor/file_system/editor_file_system.cpp:1405)
+WARNING: UID duplicate detected between res://fighters/boxer_03/animations/block_left.res and res://fighters/boxer_02/animations/block_left.res.
+   at: _process_file_system (editor/file_system/editor_file_system.cpp:1405)
+WARNING: UID duplicate detected between res://fighters/boxer_03/animations/block_right.res and res://fighters/boxer_02/animations/block_right.res.
+   at: _process_file_system (editor/file_system/editor_file_system.cpp:1405)
+WARNING: UID duplicate detected between res://fighters/boxer_03/animations/boxing_idle.res and res://fighters/boxer_02/animations/boxing_idle.res.
+   at: _process_file_system (editor/file_system/editor_file_system.cpp:1405)
+WARNING: UID duplicate detected between res://fighters/boxer_03/animations/cross.res and res://fighters/boxer_02/animations/cross.res.
+   at: _process_file_system (editor/file_system/editor_file_system.cpp:1405)
+WARNING: UID duplicate detected between res://fighters/boxer_03/animations/fight_enter.res and res://fighters/boxer_02/animations/fight_enter.res.
+   at: _process_file_system (editor/file_system/editor_file_system.cpp:1405)
+WARNING: UID duplicate detected between res://fighters/boxer_03/animations/get_up.res and res://fighters/boxer_02/animations/get_up.res.
+   at: _process_file_system (editor/file_system/editor_file_system.cpp:1405)
+WARNING: UID duplicate detected between res://fighters/boxer_03/animations/hit_kidney.res and res://fighters/boxer_02/animations/hit_kidney.res.
+   at: _process_file_system (editor/file_system/editor_file_system.cpp:1405)
+WARNING: UID duplicate detected between res://fighters/boxer_03/animations/hit_reaction.res and res://fighters/boxer_02/animations/hit_reaction.res.
+   at: _process_file_system (editor/file_system/editor_file_system.cpp:1405)
+WARNING: UID duplicate detected between res://fighters/boxer_03/animations/hit_rib.res and res://fighters/boxer_02/animations/hit_rib.res.
+   at: _process_file_system (editor/file_system/editor_file_system.cpp:1405)
+WARNING: UID duplicate detected between res://fighters/boxer_03/animations/hit_uppercut.res and res://fighters/boxer_02/animations/hit_uppercut.res.
+   at: _process_file_system (editor/file_system/editor_file_system.cpp:1405)
+WARNING: UID duplicate detected between res://fighters/boxer_03/animations/jab.res and res://fighters/boxer_02/animations/jab.res.
+   at: _process_file_system (editor/file_system/editor_file_system.cpp:1405)
+WARNING: UID duplicate detected between res://fighters/boxer_03/animations/left_hook.res and res://fighters/boxer_02/animations/left_hook.res.
+   at: _process_file_system (editor/file_system/editor_file_system.cpp:1405)
+WARNING: UID duplicate detected between res://fighters/boxer_03/animations/pivot_left.res and res://fighters/boxer_02/animations/pivot_left.res.
+   at: _process_file_system (editor/file_system/editor_file_system.cpp:1405)
+WARNING: UID duplicate detected between res://fighters/boxer_03/animations/Right Pivot.fbx and res://fighters/boxer_02/animations/Right Pivot.fbx.
+   at: _process_file_system (editor/file_system/editor_file_system.cpp:1405)
+WARNING: UID duplicate detected between res://fighters/boxer_03/animations/right_hook.res and res://fighters/boxer_02/animations/right_hook.res.
+   at: _process_file_system (editor/file_system/editor_file_system.cpp:1405)
+WARNING: UID duplicate detected between res://fighters/boxer_03/animations/step_backward.res and res://fighters/boxer_02/animations/step_backward.res.
+   at: _process_file_system (editor/file_system/editor_file_system.cpp:1405)
+WARNING: UID duplicate detected between res://fighters/boxer_03/animations/step_forward.res and res://fighters/boxer_02/animations/step_forward.res.
+   at: _process_file_system (editor/file_system/editor_file_system.cpp:1405)
+WARNING: UID duplicate detected between res://fighters/boxer_03/animations/step_left.res and res://fighters/boxer_02/animations/step_left.res.
+   at: _process_file_system (editor/file_system/editor_file_system.cpp:1405)
+WARNING: UID duplicate detected between res://fighters/boxer_03/animations/step_right.res and res://fighters/boxer_02/animations/step_right.res.
+   at: _process_file_system (editor/file_system/editor_file_system.cpp:1405)
+WARNING: UID duplicate detected between res://fighters/boxer_03/animations/uppercut.res and res://fighters/boxer_02/animations/uppercut.res.
+   at: _process_file_system (editor/file_system/editor_file_system.cpp:1405)
+WARNING: UID duplicate detected between res://fighters/boxer_03/attacks/Cross Punch.fbx and res://fighters/boxer_02/attacks/Cross Punch.fbx.
+   at: _process_file_system (editor/file_system/editor_file_system.cpp:1405)
+WARNING: UID duplicate detected between res://fighters/boxer_03/attacks/Hook.fbx and res://fighters/boxer_02/attacks/Hook.fbx.
+   at: _process_file_system (editor/file_system/editor_file_system.cpp:1405)
+WARNING: UID duplicate detected between res://fighters/boxer_03/attacks/Lead Jab.fbx and res://fighters/boxer_02/attacks/Lead Jab.fbx.
+   at: _process_file_system (editor/file_system/editor_file_system.cpp:1405)
+WARNING: UID duplicate detected between res://fighters/boxer_03/attacks/Right Hook.fbx and res://fighters/boxer_02/attacks/Right Hook.fbx.
+   at: _process_file_system (editor/file_system/editor_file_system.cpp:1405)
+WARNING: UID duplicate detected between res://fighters/boxer_03/attacks/Uppercut.fbx and res://fighters/boxer_02/attacks/Uppercut.fbx.
+   at: _process_file_system (editor/file_system/editor_file_system.cpp:1405)
+WARNING: UID duplicate detected between res://fighters/boxer_03/defense/body.block.green.fbx and res://fighters/boxer_02/defense/body.block.green.fbx.
+   at: _process_file_system (editor/file_system/editor_file_system.cpp:1405)
+WARNING: UID duplicate detected between res://fighters/boxer_03/defense/Left Block.fbx and res://fighters/boxer_02/defense/Left Block.fbx.
+   at: _process_file_system (editor/file_system/editor_file_system.cpp:1405)
+WARNING: UID duplicate detected between res://fighters/boxer_03/defense/Right Block.fbx and res://fighters/boxer_02/defense/Right Block.fbx.
+   at: _process_file_system (editor/file_system/editor_file_system.cpp:1405)
+WARNING: UID duplicate detected between res://fighters/boxer_03/idle/Idle.fbx and res://fighters/boxer_02/idle/Idle.fbx.
+   at: _process_file_system (editor/file_system/editor_file_system.cpp:1405)
+WARNING: UID duplicate detected between res://fighters/boxer_03/idle/Standing Idle To Fight Idle.fbx and res://fighters/boxer_02/idle/Standing Idle To Fight Idle.fbx.
+   at: _process_file_system (editor/file_system/editor_file_system.cpp:1405)
+WARNING: UID duplicate detected between res://fighters/boxer_03/model/boxer.green.fbx and res://fighters/boxer_02/model/boxer.green.fbx.
+   at: _process_file_system (editor/file_system/editor_file_system.cpp:1405)
+WARNING: UID duplicate detected between res://fighters/boxer_03/model/boxer_0.png and res://fighters/boxer_02/model/boxer_0.png.
+   at: _process_file_system (editor/file_system/editor_file_system.cpp:1405)
+WARNING: UID duplicate detected between res://fighters/boxer_03/reactions/Kidney Hit.fbx and res://fighters/boxer_02/reactions/Kidney Hit.fbx.
+   at: _process_file_system (editor/file_system/editor_file_system.cpp:1405)
+WARNING: UID duplicate detected between res://fighters/boxer_03/reactions/Reaction.fbx and res://fighters/boxer_02/reactions/Reaction.fbx.
+   at: _process_file_system (editor/file_system/editor_file_system.cpp:1405)
+WARNING: UID duplicate detected between res://fighters/boxer_03/reactions/Receiving An Uppercut.fbx and res://fighters/boxer_02/reactions/Receiving An Uppercut.fbx.
+   at: _process_file_system (editor/file_system/editor_file_system.cpp:1405)
+WARNING: UID duplicate detected between res://fighters/boxer_03/reactions/Rib Hit.fbx and res://fighters/boxer_02/reactions/Rib Hit.fbx.
+   at: _process_file_system (editor/file_system/editor_file_system.cpp:1405)
+WARNING: UID duplicate detected between res://fighters/boxer_03/standing/Standing Up.fbx and res://fighters/boxer_02/standing/Standing Up.fbx.
+   at: _process_file_system (editor/file_system/editor_file_system.cpp:1405)
+WARNING: UID duplicate detected between res://fighters/boxer_green/animations/locomotion/Left Pivot.fbx and res://fighters/boxer_03/animations/locomotion/Left Pivot.fbx.
+   at: _process_file_system (editor/file_system/editor_file_system.cpp:1405)
+WARNING: UID duplicate detected between res://fighters/boxer_green/animations/locomotion/Long Right Side Step.fbx and res://fighters/boxer_03/animations/locomotion/Long Right Side Step.fbx.
+   at: _process_file_system (editor/file_system/editor_file_system.cpp:1405)
+WARNING: UID duplicate detected between res://fighters/boxer_green/animations/locomotion/Long Step Forward.fbx and res://fighters/boxer_03/animations/locomotion/Long Step Forward.fbx.
+   at: _process_file_system (editor/file_system/editor_file_system.cpp:1405)
+WARNING: UID duplicate detected between res://fighters/boxer_green/animations/locomotion/Short Left Side Step.fbx and res://fighters/boxer_03/animations/locomotion/Short Left Side Step.fbx.
+   at: _process_file_system (editor/file_system/editor_file_system.cpp:1405)
+WARNING: UID duplicate detected between res://fighters/boxer_green/animations/locomotion/Step Backward.fbx and res://fighters/boxer_03/animations/locomotion/Step Backward.fbx.
+   at: _process_file_system (editor/file_system/editor_file_system.cpp:1405)
+WARNING: UID duplicate detected between res://fighters/boxer_green/attacks/Hook.fbx and res://fighters/boxer_03/attacks/Hook.fbx.
+   at: _process_file_system (editor/file_system/editor_file_system.cpp:1405)
+WARNING: UID duplicate detected between res://fighters/boxer_green/attacks/Lead Jab.fbx and res://fighters/boxer_03/attacks/Lead Jab.fbx.
+   at: _process_file_system (editor/file_system/editor_file_system.cpp:1405)
+WARNING: UID duplicate detected between res://fighters/boxer_green/attacks/Right Hook.fbx and res://fighters/boxer_03/attacks/Right Hook.fbx.
+   at: _process_file_system (editor/file_system/editor_file_system.cpp:1405)
+WARNING: UID duplicate detected between res://fighters/boxer_green/attacks/Uppercut.fbx and res://fighters/boxer_03/attacks/Uppercut.fbx.
+   at: _process_file_system (editor/file_system/editor_file_system.cpp:1405)
+WARNING: UID duplicate detected between res://fighters/boxer_green/standing/Standing Up.fbx and res://fighters/boxer_03/standing/Standing Up.fbx.
+   at: _process_file_system (editor/file_system/editor_file_system.cpp:1405)
+[   0% ] update_scripts_classes | Started Registering global classes... (17 steps)
+[   0% ] update_scripts_classes | 
+[   5% ] update_scripts_classes | CareerData
+[  11% ] update_scripts_classes | FighterDatabase
+[  16% ] update_scripts_classes | 
+[  22% ] update_scripts_classes | SettingsMenu
+[  27% ] update_scripts_classes | BoxingTheme
+[  33% ] update_scripts_classes | FighterPreview
+[  38% ] update_scripts_classes | MenuComponents
+[  44% ] update_scripts_classes | SettingsSections
+[  50% ] update_scripts_classes | 
+[  55% ] update_scripts_classes | 
+[  61% ] update_scripts_classes | 
+[  66% ] update_scripts_classes | 
+[  72% ] update_scripts_classes | 
+[  77% ] update_scripts_classes | 
+[  83% ] update_scripts_classes | 
+[  88% ] update_scripts_classes | 
+[ DONE ] update_scripts_classes
+
+[   0% ] _update_scan_actions | Started Scanning actions... (2 steps)
+[   0% ] _update_scan_actions | ui_en.csv
+[  33% ] _update_scan_actions | ui_es.csv
+[ DONE ] _update_scan_actions
+
+[   0% ] reimport | Started (Re)Importing Assets (2 steps)
+[   0% ] reimport | Preparing files to reimport...
+[  33% ] reimport | Preparing files to reimport...
+[   0% ] reimport | Executing pre-reimport operations...
+[   0% ] reimport | ui_en.csv
+[  33% ] reimport | ui_es.csv
+[  66% ] reimport | Finalizing Asset Import...
+[ DONE ] reimport
+
+[   0% ] reimport | Started (Re)Importing Assets (2 steps)
+[   0% ] reimport | Executing post-reimport operations...
+[ DONE ] reimport
+
+[   0% ] loading_editor_layout | Started Loading editor (5 steps)
+[   0% ] loading_editor_layout | Loading editor layout...
+[  16% ] loading_editor_layout | Loading docks...
+[  33% ] loading_editor_layout | Reopening scenes...
+WARNING: res://fighters/boxer_green/boxer_green.tscn:17 - ext_resource, invalid UID: uid://e6h77hr3sjk6 - using text path instead: res://fighters/boxer_green/animations/pivot_left.res
+   at: load (scene/resources/resource_format_text.cpp:501)
+WARNING: res://fighters/boxer_green/boxer_green.tscn:20 - ext_resource, invalid UID: uid://dbrntynco5r8r - using text path instead: res://fighters/boxer_green/animations/step_backward.res
+   at: load (scene/resources/resource_format_text.cpp:501)
+WARNING: res://fighters/boxer_green/boxer_green.tscn:21 - ext_resource, invalid UID: uid://x78gbsjqyo8l - using text path instead: res://fighters/boxer_green/animations/step_forward.res
+   at: load (scene/resources/resource_format_text.cpp:501)
+WARNING: res://fighters/boxer_green/boxer_green.tscn:22 - ext_resource, invalid UID: uid://6k86pn1qy6dl - using text path instead: res://fighters/boxer_green/animations/step_left.res
+   at: load (scene/resources/resource_format_text.cpp:501)
+WARNING: res://fighters/boxer_green/boxer_green.tscn:23 - ext_resource, invalid UID: uid://c1psex6n5r7se - using text path instead: res://fighters/boxer_green/animations/step_right.res
+   at: load (scene/resources/resource_format_text.cpp:501)
+WARNING: res://fighters/boxer_green/boxer_green.tscn:17 - ext_resource, invalid UID: uid://e6h77hr3sjk6 - using text path instead: res://fighters/boxer_green/animations/pivot_left.res
+   at: load (scene/resources/resource_format_text.cpp:501)
+WARNING: res://fighters/boxer_green/boxer_green.tscn:20 - ext_resource, invalid UID: uid://dbrntynco5r8r - using text path instead: res://fighters/boxer_green/animations/step_backward.res
+   at: load (scene/resources/resource_format_text.cpp:501)
+WARNING: res://fighters/boxer_green/boxer_green.tscn:21 - ext_resource, invalid UID: uid://x78gbsjqyo8l - using text path instead: res://fighters/boxer_green/animations/step_forward.res
+   at: load (scene/resources/resource_format_text.cpp:501)
+WARNING: res://fighters/boxer_green/boxer_green.tscn:22 - ext_resource, invalid UID: uid://6k86pn1qy6dl - using text path instead: res://fighters/boxer_green/animations/step_left.res
+   at: load (scene/resources/resource_format_text.cpp:501)
+WARNING: res://fighters/boxer_green/boxer_green.tscn:23 - ext_resource, invalid UID: uid://c1psex6n5r7se - using text path instead: res://fighters/boxer_green/animations/step_right.res
+   at: load (scene/resources/resource_format_text.cpp:501)
+[  50% ] loading_editor_layout | Loading central editor layout...
+[  66% ] loading_editor_layout | Loading plugin window layout...
+ERROR: Could not create child process: ""C:\Users\Luis Duran\AppData\Local\Programs\Antigravity IDE\Antigravity IDE.exe"" "C:/Users/Luis Duran/Desktop/boxeo-ssjj" --goto "C:/Users/Luis Duran/Desktop/boxeo-ssjj/fighters/boxer_green/boxer_controller.gd:1:1"
+   at: create_process (platform/windows/os_windows.cpp:1589)
+ERROR: Couldn't open external text editor, falling back to the internal editor. Review your `text_editor/external/` editor settings.
+   at: edit (editor/script/script_editor_plugin.cpp:2232)
+ERROR: Could not create child process: ""C:\Users\Luis Duran\AppData\Local\Programs\Antigravity IDE\Antigravity IDE.exe"" "C:/Users/Luis Duran/Desktop/boxeo-ssjj" --goto "C:/Users/Luis Duran/Desktop/boxeo-ssjj/ring/boxing_ring.gd:1:1"
+   at: create_process (platform/windows/os_windows.cpp:1589)
+ERROR: Couldn't open external text editor, falling back to the internal editor. Review your `text_editor/external/` editor settings.
+   at: edit (editor/script/script_editor_plugin.cpp:2232)
+WARNING: res://fighters/boxer_green/boxer_green.tscn:17 - ext_resource, invalid UID: uid://e6h77hr3sjk6 - using text path instead: res://fighters/boxer_green/animations/pivot_left.res
+   at: load (scene/resources/resource_format_text.cpp:501)
+WARNING: res://fighters/boxer_green/boxer_green.tscn:20 - ext_resource, invalid UID: uid://dbrntynco5r8r - using text path instead: res://fighters/boxer_green/animations/step_backward.res
+   at: load (scene/resources/resource_format_text.cpp:501)
+WARNING: res://fighters/boxer_green/boxer_green.tscn:21 - ext_resource, invalid UID: uid://x78gbsjqyo8l - using text path instead: res://fighters/boxer_green/animations/step_forward.res
+   at: load (scene/resources/resource_format_text.cpp:501)
+WARNING: res://fighters/boxer_green/boxer_green.tscn:22 - ext_resource, invalid UID: uid://6k86pn1qy6dl - using text path instead: res://fighters/boxer_green/animations/step_left.res
+   at: load (scene/resources/resource_format_text.cpp:501)
+WARNING: res://fighters/boxer_green/boxer_green.tscn:23 - ext_resource, invalid UID: uid://c1psex6n5r7se - using text path instead: res://fighters/boxer_green/animations/step_right.res
+   at: load (scene/resources/resource_format_text.cpp:501)
+ERROR: Could not create child process: ""C:\Users\Luis Duran\AppData\Local\Programs\Antigravity IDE\Antigravity IDE.exe"" "C:/Users/Luis Duran/Desktop/boxeo-ssjj" --goto "C:/Users/Luis Duran/Desktop/boxeo-ssjj/scripts/fight/fight_scene.gd:1:1"
+   at: create_process (platform/windows/os_windows.cpp:1589)
+ERROR: Couldn't open external text editor, falling back to the internal editor. Review your `text_editor/external/` editor settings.
+   at: edit (editor/script/script_editor_plugin.cpp:2232)
+ERROR: Could not create child process: ""C:\Users\Luis Duran\AppData\Local\Programs\Antigravity IDE\Antigravity IDE.exe"" "C:/Users/Luis Duran/Desktop/boxeo-ssjj" --goto "C:/Users/Luis Duran/Desktop/boxeo-ssjj/scripts/arenas/ring_builder.gd:1:1"
+   at: create_process (platform/windows/os_windows.cpp:1589)
+ERROR: Couldn't open external text editor, falling back to the internal editor. Review your `text_editor/external/` editor settings.
+   at: edit (editor/script/script_editor_plugin.cpp:2232)
+[  83% ] loading_editor_layout | Editor layout ready.
+[ DONE ] loading_editor_layout
+

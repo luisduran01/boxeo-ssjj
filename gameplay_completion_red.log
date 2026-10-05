@@ -1,0 +1,58 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+WARNING: res://fighters/boxer_green/boxer_green.tscn:17 - ext_resource, invalid UID: uid://e6h77hr3sjk6 - using text path instead: res://fighters/boxer_green/animations/pivot_left.res
+   at: load (scene/resources/resource_format_text.cpp:501)
+WARNING: res://fighters/boxer_green/boxer_green.tscn:20 - ext_resource, invalid UID: uid://dbrntynco5r8r - using text path instead: res://fighters/boxer_green/animations/step_backward.res
+   at: load (scene/resources/resource_format_text.cpp:501)
+WARNING: res://fighters/boxer_green/boxer_green.tscn:21 - ext_resource, invalid UID: uid://x78gbsjqyo8l - using text path instead: res://fighters/boxer_green/animations/step_forward.res
+   at: load (scene/resources/resource_format_text.cpp:501)
+WARNING: res://fighters/boxer_green/boxer_green.tscn:22 - ext_resource, invalid UID: uid://6k86pn1qy6dl - using text path instead: res://fighters/boxer_green/animations/step_left.res
+   at: load (scene/resources/resource_format_text.cpp:501)
+WARNING: res://fighters/boxer_green/boxer_green.tscn:23 - ext_resource, invalid UID: uid://c1psex6n5r7se - using text path instead: res://fighters/boxer_green/animations/step_right.res
+   at: load (scene/resources/resource_format_text.cpp:501)
+SCRIPT ERROR: Parse Error: Preload file "res://scripts/practice/practice_dummy.gd" does not exist.
+   at: GDScript::reload (res://tests/gameplay_completion_runner.gd:6)
+SCRIPT ERROR: Parse Error: Cannot infer the type of "DummyScript" constant because the value doesn't have a set type.
+   at: GDScript::reload (res://tests/gameplay_completion_runner.gd:6)
+SCRIPT ERROR: Parse Error: Preload file "res://scripts/practice/tutorial_flow.gd" does not exist.
+   at: GDScript::reload (res://tests/gameplay_completion_runner.gd:7)
+SCRIPT ERROR: Parse Error: Cannot infer the type of "TutorialScript" constant because the value doesn't have a set type.
+   at: GDScript::reload (res://tests/gameplay_completion_runner.gd:7)
+SCRIPT ERROR: Parse Error: Preload file "res://scripts/input/local_versus_manager.gd" does not exist.
+   at: GDScript::reload (res://tests/gameplay_completion_runner.gd:8)
+SCRIPT ERROR: Parse Error: Cannot infer the type of "VersusScript" constant because the value doesn't have a set type.
+   at: GDScript::reload (res://tests/gameplay_completion_runner.gd:8)
+SCRIPT ERROR: Parse Error: Preload file "res://scripts/balance/ai_balance_batch.gd" does not exist.
+   at: GDScript::reload (res://tests/gameplay_completion_runner.gd:9)
+SCRIPT ERROR: Parse Error: Cannot infer the type of "BatchScript" constant because the value doesn't have a set type.
+   at: GDScript::reload (res://tests/gameplay_completion_runner.gd:9)
+SCRIPT ERROR: Parse Error: Static function "impact_quality_for_distance()" not found in base "CombatRules".
+   at: GDScript::reload (res://tests/gameplay_completion_runner.gd:87)
+SCRIPT ERROR: Parse Error: Cannot infer the type of "clean" variable because the value doesn't have a set type.
+   at: GDScript::reload (res://tests/gameplay_completion_runner.gd:87)
+SCRIPT ERROR: Parse Error: Static function "impact_quality_for_distance()" not found in base "CombatRules".
+   at: GDScript::reload (res://tests/gameplay_completion_runner.gd:88)
+SCRIPT ERROR: Parse Error: Cannot infer the type of "dirty" variable because the value doesn't have a set type.
+   at: GDScript::reload (res://tests/gameplay_completion_runner.gd:88)
+SCRIPT ERROR: Parse Error: Cannot infer the type of "perfect" variable because the value doesn't have a set type.
+   at: GDScript::reload (res://tests/gameplay_completion_runner.gd:100)
+SCRIPT ERROR: Parse Error: Cannot infer the type of "normal" variable because the value doesn't have a set type.
+   at: GDScript::reload (res://tests/gameplay_completion_runner.gd:101)
+SCRIPT ERROR: Parse Error: Cannot infer the type of "late" variable because the value doesn't have a set type.
+   at: GDScript::reload (res://tests/gameplay_completion_runner.gd:102)
+SCRIPT ERROR: Parse Error: Cannot infer the type of "before" variable because the value doesn't have a set type.
+   at: GDScript::reload (res://tests/gameplay_completion_runner.gd:104)
+SCRIPT ERROR: Parse Error: Cannot infer the type of "before" variable because the value doesn't have a set type.
+   at: GDScript::reload (res://tests/gameplay_completion_runner.gd:119)
+SCRIPT ERROR: Parse Error: Cannot infer the type of "dummy" variable because the value doesn't have a set type.
+   at: GDScript::reload (res://tests/gameplay_completion_runner.gd:164)
+SCRIPT ERROR: Parse Error: Cannot infer the type of "tutorial" variable because the value doesn't have a set type.
+   at: GDScript::reload (res://tests/gameplay_completion_runner.gd:167)
+SCRIPT ERROR: Parse Error: Cannot infer the type of "versus" variable because the value doesn't have a set type.
+   at: GDScript::reload (res://tests/gameplay_completion_runner.gd:173)
+SCRIPT ERROR: Parse Error: Cannot infer the type of "batch" variable because the value doesn't have a set type.
+   at: GDScript::reload (res://tests/gameplay_completion_runner.gd:182)
+SCRIPT ERROR: Parse Error: Cannot infer the type of "report" variable because the value doesn't have a set type.
+   at: GDScript::reload (res://tests/gameplay_completion_runner.gd:183)
+ERROR: Failed to load script "res://tests/gameplay_completion_runner.gd" with error "Parse error".
+   at: load (modules/gdscript/gdscript_resource_format.cpp:46)

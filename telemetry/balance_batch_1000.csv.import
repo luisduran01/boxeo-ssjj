@@ -1,0 +1,19 @@
+[remap]
+
+importer="csv_translation"
+type="Translation"
+uid="uid://dcti7bnjok1su"
+
+[deps]
+
+files=["res://telemetry/balance_batch_1000.punches.translation", "res://telemetry/balance_batch_1000.accuracy.translation", "res://telemetry/balance_batch_1000.knockdowns.translation", "res://telemetry/balance_batch_1000.ko.translation", "res://telemetry/balance_batch_1000.max.translation", "res://telemetry/balance_batch_1000.mid.translation"]
+
+source_file="res://telemetry/balance_batch_1000.csv"
+dest_files=["res://telemetry/balance_batch_1000.punches.translation", "res://telemetry/balance_batch_1000.accuracy.translation", "res://telemetry/balance_batch_1000.knockdowns.translation", "res://telemetry/balance_batch_1000.ko.translation", "res://telemetry/balance_batch_1000.max.translation", "res://telemetry/balance_batch_1000.mid.translation"]
+
+[params]
+
+compress=1
+delimiter=0
+unescape_keys=false
+unescape_translations=true

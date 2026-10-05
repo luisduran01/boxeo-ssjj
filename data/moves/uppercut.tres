@@ -1,0 +1,28 @@
+[gd_resource type="Resource" script_class="MoveData" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/combat/move_data.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+id = &"uppercut"
+animation_name = "uppercut"
+hand = "right"
+attack_type = "uppercut"
+target_level = "head"
+startup_frames = 14.4
+active_frames = 6.6
+recovery_frames = 25.8
+damage = 14.5
+stamina_cost = 14.0
+min_range = 0.48
+max_range = 1.12
+power = 1.42
+stun = 18.0
+counter_bonus = 1.28
+movement_allowed = 0.27
+tracking_strength = 0.34
+step_in = 0.02
+hitstop_frames = 2.4
+camera_feedback = 0.013
+animation_speed = 1.02
+cancel_window_frames = 9.0

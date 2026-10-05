@@ -1,0 +1,10 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+SCRIPT ERROR: Parse Error: Preload file "res://career/character_creator/career_fighter.gd" does not exist.
+   at: GDScript::reload (res://tests/character_creator_runner.gd:4)
+SCRIPT ERROR: Parse Error: Cannot infer the type of "CareerFighter" constant because the value doesn't have a set type.
+   at: GDScript::reload (res://tests/character_creator_runner.gd:4)
+SCRIPT ERROR: Parse Error: "CareerFighter" is a constant but does not contain a type.
+   at: GDScript::reload (res://tests/character_creator_runner.gd:80)
+ERROR: Failed to load script "res://tests/character_creator_runner.gd" with error "Parse error".
+   at: load (modules/gdscript/gdscript_resource_format.cpp:46)

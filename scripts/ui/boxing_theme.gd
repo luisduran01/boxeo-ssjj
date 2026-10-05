@@ -46,6 +46,14 @@ static func create(high_contrast: bool = false, text_scale: float = 1.0) -> Them
 	return theme
 
 
+static func button_focus_style() -> StyleBoxFlat:
+	var style := _button_style(Color("18191d"), COLORS.bright_gold, 2)
+	style.shadow_color = Color(0.95, 0.76, 0.25, 0.28)
+	style.shadow_size = 8
+	style.shadow_offset = Vector2.ZERO
+	return style
+
+
 static func _button_style(fill: Color, border: Color, width: int) -> StyleBoxFlat:
 	var style := StyleBoxFlat.new()
 	style.bg_color = fill

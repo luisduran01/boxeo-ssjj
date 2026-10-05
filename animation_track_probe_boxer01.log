@@ -1,0 +1,82 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+WARNING: res://fighters/boxer_green/boxer_green.tscn:17 - ext_resource, invalid UID: uid://e6h77hr3sjk6 - using text path instead: res://fighters/boxer_green/animations/pivot_left.res
+   at: load (scene/resources/resource_format_text.cpp:501)
+WARNING: res://fighters/boxer_green/boxer_green.tscn:20 - ext_resource, invalid UID: uid://dbrntynco5r8r - using text path instead: res://fighters/boxer_green/animations/step_backward.res
+   at: load (scene/resources/resource_format_text.cpp:501)
+WARNING: res://fighters/boxer_green/boxer_green.tscn:21 - ext_resource, invalid UID: uid://x78gbsjqyo8l - using text path instead: res://fighters/boxer_green/animations/step_forward.res
+   at: load (scene/resources/resource_format_text.cpp:501)
+WARNING: res://fighters/boxer_green/boxer_green.tscn:22 - ext_resource, invalid UID: uid://6k86pn1qy6dl - using text path instead: res://fighters/boxer_green/animations/step_left.res
+   at: load (scene/resources/resource_format_text.cpp:501)
+WARNING: res://fighters/boxer_green/boxer_green.tscn:23 - ext_resource, invalid UID: uid://c1psex6n5r7se - using text path instead: res://fighters/boxer_green/animations/step_right.res
+   at: load (scene/resources/resource_format_text.cpp:501)
+[godot_ai game_helper] registered mcp capture (debugger active=false, logger=true)
+configured skeleton path=boxer_green/Skeleton3D2
+skeleton found boxer_green/Skeleton3D bones=33
+skeleton found boxer_green/Skeleton3D2 bones=0
+ANIM Boxing/boxing_idle tracks=27 length=4.0
+  0 type=1 path=Skeleton3D:mixamorig_Hips keys=53
+  1 type=2 path=Skeleton3D:mixamorig_Hips keys=116
+  2 type=2 path=Skeleton3D:mixamorig_Spine keys=85
+  3 type=2 path=Skeleton3D:mixamorig_LeftUpLeg keys=107
+  4 type=2 path=Skeleton3D:mixamorig_RightUpLeg keys=116
+  5 type=2 path=Skeleton3D:mixamorig_Spine1 keys=102
+  6 type=2 path=Skeleton3D:mixamorig_LeftLeg keys=113
+  7 type=2 path=Skeleton3D:mixamorig_RightLeg keys=112
+  8 type=2 path=Skeleton3D:mixamorig_Spine2 keys=102
+  9 type=2 path=Skeleton3D:mixamorig_LeftFoot keys=100
+  10 type=2 path=Skeleton3D:mixamorig_RightFoot keys=99
+  11 type=2 path=Skeleton3D:mixamorig_Neck keys=118
+ERROR: Index p_bone = -1 is out of bounds (bone_size = 0).
+   at: get_bone_global_pose (scene/3d/skeleton_3d.cpp:571)
+   GDScript backtrace (most recent call first):
+       [0] _probe (res://tests/animation_track_probe.gd:26)
+ERROR: Index p_bone = -1 is out of bounds (bone_size = 0).
+   at: get_bone_global_pose (scene/3d/skeleton_3d.cpp:571)
+   GDScript backtrace (most recent call first):
+       [0] _probe (res://tests/animation_track_probe.gd:30)
+  left before=(0.0, 0.0, 0.0) after=(0.0, 0.0, 0.0) dist=0.0
+ANIM Boxing/jab tracks=29 length=1.06666666666667
+  0 type=1 path=Skeleton3D:mixamorig_Hips keys=32
+  1 type=2 path=Skeleton3D:mixamorig_Hips keys=33
+  2 type=2 path=Skeleton3D:mixamorig_Spine keys=29
+  3 type=2 path=Skeleton3D:mixamorig_LeftUpLeg keys=30
+  4 type=2 path=Skeleton3D:mixamorig_RightUpLeg keys=32
+  5 type=2 path=Skeleton3D:mixamorig_Spine1 keys=31
+  6 type=2 path=Skeleton3D:mixamorig_LeftLeg keys=32
+  7 type=2 path=Skeleton3D:mixamorig_RightLeg keys=33
+  8 type=2 path=Skeleton3D:mixamorig_Spine2 keys=32
+  9 type=2 path=Skeleton3D:mixamorig_LeftFoot keys=32
+  10 type=2 path=Skeleton3D:mixamorig_RightFoot keys=32
+  11 type=2 path=Skeleton3D:mixamorig_Neck keys=31
+ERROR: Index p_bone = -1 is out of bounds (bone_size = 0).
+   at: get_bone_global_pose (scene/3d/skeleton_3d.cpp:571)
+   GDScript backtrace (most recent call first):
+       [0] _probe (res://tests/animation_track_probe.gd:26)
+ERROR: Index p_bone = -1 is out of bounds (bone_size = 0).
+   at: get_bone_global_pose (scene/3d/skeleton_3d.cpp:571)
+   GDScript backtrace (most recent call first):
+       [0] _probe (res://tests/animation_track_probe.gd:30)
+  left before=(0.0, 0.0, 0.0) after=(0.0, 0.0, 0.0) dist=0.0
+ANIM UnarmedSupport/stunned tracks=28 length=2.03333330154419
+  0 type=2 path=Skeleton3D:Hips keys=51
+  1 type=2 path=Skeleton3D:Spine keys=57
+  2 type=2 path=Skeleton3D:Chest keys=38
+  3 type=2 path=Skeleton3D:UpperChest keys=46
+  4 type=2 path=Skeleton3D:Neck keys=62
+  5 type=2 path=Skeleton3D:Head keys=61
+  6 type=2 path=Skeleton3D:LeftShoulder keys=60
+  7 type=2 path=Skeleton3D:LeftUpperArm keys=61
+  8 type=2 path=Skeleton3D:LeftLowerArm keys=51
+  9 type=2 path=Skeleton3D:LeftHand keys=60
+  10 type=2 path=Skeleton3D:LeftIndexProximal keys=52
+  11 type=2 path=Skeleton3D:LeftIndexIntermediate keys=51
+ERROR: Index p_bone = -1 is out of bounds (bone_size = 0).
+   at: get_bone_global_pose (scene/3d/skeleton_3d.cpp:571)
+   GDScript backtrace (most recent call first):
+       [0] _probe (res://tests/animation_track_probe.gd:26)
+ERROR: Index p_bone = -1 is out of bounds (bone_size = 0).
+   at: get_bone_global_pose (scene/3d/skeleton_3d.cpp:571)
+   GDScript backtrace (most recent call first):
+       [0] _probe (res://tests/animation_track_probe.gd:30)
+  left before=(0.0, 0.0, 0.0) after=(0.0, 0.0, 0.0) dist=0.0

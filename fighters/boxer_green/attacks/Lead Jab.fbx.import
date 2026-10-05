@@ -3,7 +3,7 @@
 importer="scene"
 importer_version=1
 type="PackedScene"
-uid="uid://c8x46fkbgm7wr"
+uid="uid://cnshvh5rr70la"
 path="res://.godot/imported/Lead Jab.fbx-59f3bc979af12932eed912f7d3379f41.scn"
 
 [deps]
@@ -43,7 +43,7 @@ _subresources={
 "animations": {
 "mixamo_com": {
 "save_to_file/enabled": true,
-"save_to_file/fallback_path": "res://fighters/boxer_green/animations/jab.res",
+"save_to_file/fallback_path": "res://fighters/boxer_02/animations/jab.res",
 "save_to_file/keep_custom_tracks": "",
 "save_to_file/path": "uid://dbqaybe2w0cak",
 "settings/loop_mode": 0,

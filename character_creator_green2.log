@@ -1,0 +1,79 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+SCRIPT ERROR: Parse Error: Cannot infer the type of "fighter" variable because the value doesn't have a set type.
+   at: GDScript::reload (res://career/character_creator/career_fighter.gd:58)
+SCRIPT ERROR: Compile Error: Failed to compile depended scripts.
+   at: GDScript::reload (res://tests/character_creator_runner.gd:0)
+ERROR: Failed to load script "res://tests/character_creator_runner.gd" with error "Compilation failed".
+   at: load (modules/gdscript/gdscript_resource_format.cpp:46)
+[godot_ai game_helper] registered mcp capture (debugger active=false, logger=true)
+WARNING: res://fighters/boxer_green/boxer_green.tscn:17 - ext_resource, invalid UID: uid://e6h77hr3sjk6 - using text path instead: res://fighters/boxer_green/animations/pivot_left.res
+   at: load (scene/resources/resource_format_text.cpp:501)
+   GDScript backtrace (most recent call first):
+       [0] _run (res://tests/character_creator_runner.gd:24)
+WARNING: res://fighters/boxer_green/boxer_green.tscn:20 - ext_resource, invalid UID: uid://dbrntynco5r8r - using text path instead: res://fighters/boxer_green/animations/step_backward.res
+   at: load (scene/resources/resource_format_text.cpp:501)
+   GDScript backtrace (most recent call first):
+       [0] _run (res://tests/character_creator_runner.gd:24)
+WARNING: res://fighters/boxer_green/boxer_green.tscn:21 - ext_resource, invalid UID: uid://x78gbsjqyo8l - using text path instead: res://fighters/boxer_green/animations/step_forward.res
+   at: load (scene/resources/resource_format_text.cpp:501)
+   GDScript backtrace (most recent call first):
+       [0] _run (res://tests/character_creator_runner.gd:24)
+WARNING: res://fighters/boxer_green/boxer_green.tscn:22 - ext_resource, invalid UID: uid://6k86pn1qy6dl - using text path instead: res://fighters/boxer_green/animations/step_left.res
+   at: load (scene/resources/resource_format_text.cpp:501)
+   GDScript backtrace (most recent call first):
+       [0] _run (res://tests/character_creator_runner.gd:24)
+WARNING: res://fighters/boxer_green/boxer_green.tscn:23 - ext_resource, invalid UID: uid://c1psex6n5r7se - using text path instead: res://fighters/boxer_green/animations/step_right.res
+   at: load (scene/resources/resource_format_text.cpp:501)
+   GDScript backtrace (most recent call first):
+       [0] _run (res://tests/character_creator_runner.gd:24)
+SCRIPT ERROR: Invalid call. Nonexistent function 'new' in base 'GDScript'.
+   at: CharacterCreator._ready (res://career/character_creator/character_creator.gd:22)
+   GDScript backtrace (most recent call first):
+       [0] _ready (res://career/character_creator/character_creator.gd:22)
+       [1] _run (res://tests/character_creator_runner.gd:28)
+ERROR: CHARACTER CREATOR: preview must autoplay idle/boxing_idle, got 
+   at: push_error (core/variant/variant_utility.cpp:1023)
+   GDScript backtrace (most recent call first):
+       [0] _expect (res://tests/character_creator_runner.gd:13)
+       [1] _test_preview_is_sanitized_and_animated (res://tests/character_creator_runner.gd:72)
+       [2] _run (res://tests/character_creator_runner.gd:32)
+ERROR: CHARACTER CREATOR: creator must use CareerFighter resource
+   at: push_error (core/variant/variant_utility.cpp:1023)
+   GDScript backtrace (most recent call first):
+       [0] _expect (res://tests/character_creator_runner.gd:13)
+       [1] _test_categories_and_realtime_appearance (res://tests/character_creator_runner.gd:80)
+       [2] _run (res://tests/character_creator_runner.gd:33)
+SCRIPT ERROR: Cannot call method 'set' on a null value.
+   at: CharacterCreator._apply_option (res://career/character_creator/character_creator.gd:120)
+   GDScript backtrace (most recent call first):
+       [0] _apply_option (res://career/character_creator/character_creator.gd:120)
+       [1] select_option_for_test (res://career/character_creator/character_creator.gd:62)
+       [2] _test_categories_and_realtime_appearance (res://tests/character_creator_runner.gd:82)
+       [3] _run (res://tests/character_creator_runner.gd:33)
+SCRIPT ERROR: Cannot call method 'get' on a null value.
+   at: _test_categories_and_realtime_appearance (res://tests/character_creator_runner.gd:83)
+   GDScript backtrace (most recent call first):
+       [0] _test_categories_and_realtime_appearance (res://tests/character_creator_runner.gd:83)
+       [1] _run (res://tests/character_creator_runner.gd:33)
+SCRIPT ERROR: Invalid assignment of property or key 'first_name' with value of type 'String' on a base object of type 'Nil'.
+   at: CharacterCreator.set_identity_for_test (res://career/character_creator/character_creator.gd:70)
+   GDScript backtrace (most recent call first):
+       [0] set_identity_for_test (res://career/character_creator/character_creator.gd:70)
+       [1] _test_save_to_career (res://tests/character_creator_runner.gd:108)
+       [2] _run (res://tests/character_creator_runner.gd:35)
+SCRIPT ERROR: Invalid access to property or key 'first_name' on a base object of type 'Nil'.
+   at: CharacterCreator.confirm_creation (res://career/character_creator/character_creator.gd:79)
+   GDScript backtrace (most recent call first):
+       [0] confirm_creation (res://career/character_creator/character_creator.gd:79)
+       [1] _test_save_to_career (res://tests/character_creator_runner.gd:109)
+       [2] _run (res://tests/character_creator_runner.gd:35)
+SCRIPT ERROR: Invalid access to property or key 'first_name' on a base object of type 'Dictionary'.
+   at: _test_save_to_career (res://tests/character_creator_runner.gd:112)
+   GDScript backtrace (most recent call first):
+       [0] _test_save_to_career (res://tests/character_creator_runner.gd:112)
+       [1] _run (res://tests/character_creator_runner.gd:35)
+ERROR: CHARACTER CREATOR TESTS FAILED: 2
+   at: push_error (core/variant/variant_utility.cpp:1023)
+   GDScript backtrace (most recent call first):
+       [0] _run (res://tests/character_creator_runner.gd:37)

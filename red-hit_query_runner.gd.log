@@ -1,0 +1,16 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+ERROR: Failed to read the root certificate store.
+   at: get_system_ca_certificates (platform/windows/os_windows.cpp:2582)
+[godot_ai game_helper] registered mcp capture (debugger active=false, logger=true)
+SCRIPT ERROR: Invalid call. Nonexistent function 'configure_default_zones' in base 'RefCounted (HitboxQuery)'.
+   at: _test_zoned_hurtboxes_and_sweep_no_tunneling (res://tests/hit_query_runner.gd:31)
+   GDScript backtrace (most recent call first):
+       [0] _test_zoned_hurtboxes_and_sweep_no_tunneling (res://tests/hit_query_runner.gd:31)
+       [1] _run (res://tests/hit_query_runner.gd:19)
+SCRIPT ERROR: Invalid call. Nonexistent function 'configure_default_zones' in base 'RefCounted (HitboxQuery)'.
+   at: _test_no_double_impact_and_environment_ignored (res://tests/hit_query_runner.gd:45)
+   GDScript backtrace (most recent call first):
+       [0] _test_no_double_impact_and_environment_ignored (res://tests/hit_query_runner.gd:45)
+       [1] _run (res://tests/hit_query_runner.gd:20)
+HIT_QUERY_TESTS_PASSED

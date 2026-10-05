@@ -26,17 +26,30 @@ func _run() -> void:
 	_test_all_attacks_damage_with_animation()
 	_test_visual_camera_and_collision_resources()
 	_test_guard_reduces_damage_and_releases()
+	_test_ai_attacks_and_defends_reliably()
 	_test_ai_states_and_activity()
-	_test_round_scoring_and_transition()
+	await _test_round_scoring_and_transition()
 	_test_knockdown_ko_tko_states()
 	Input.action_release("move_forward")
 	Input.action_release("block_left")
+	await _cleanup_scene()
 	if failures == 0:
 		print("COMBAT INTEGRATION TESTS PASSED")
 		quit(0)
 	else:
 		push_error("COMBAT INTEGRATION TESTS FAILED: %d" % failures)
 		quit(1)
+
+
+func _cleanup_scene() -> void:
+	if is_instance_valid(fight) and is_instance_valid(fight.manager) and is_instance_valid(fight.manager.audio):
+		var audio: BoxingAudio = fight.manager.audio
+		if is_instance_valid(audio.player):
+			audio.player.stop()
+			audio.player.stream = null
+	if is_instance_valid(current_scene):
+		current_scene.queue_free()
+		await process_frame
 
 
 func _test_movement_and_footwork() -> void:
@@ -68,7 +81,7 @@ func _test_movement_and_footwork() -> void:
 	for step in range(8): fight.player._physics_process(0.05)
 	Input.action_release("move_left")
 	blend = fight.player.animation_tree.get("parameters/Footwork/blend_position")
-	_expect(fight.player.global_position.x > start_x and blend.x < -0.25, "A must circle left using step_left")
+	_expect(fight.player.global_position.x < start_x and blend.x < -0.25, "A must circle left using step_left")
 	fight.player._smoothed_velocity = Vector3.ZERO
 	fight.player.velocity = Vector3.ZERO
 	start_x = fight.player.global_position.x
@@ -76,7 +89,7 @@ func _test_movement_and_footwork() -> void:
 	for step in range(8): fight.player._physics_process(0.05)
 	Input.action_release("move_right")
 	blend = fight.player.animation_tree.get("parameters/Footwork/blend_position")
-	_expect(fight.player.global_position.x < start_x and blend.x > 0.25, "D must circle right using step_right")
+	_expect(fight.player.global_position.x > start_x and blend.x > 0.25, "D must circle right using step_right")
 
 
 func _test_all_attacks_damage_with_animation() -> void:
@@ -154,6 +167,10 @@ func _test_guard_reduces_damage_and_releases() -> void:
 func _test_ai_states_and_activity() -> void:
 	fight.enemy.fight_enabled = true
 	fight.enemy.difficulty = "Hard"
+	fight.enemy._ai_attack_cooldown = 0.0
+	fight.enemy._ai_guard_time = 0.0
+	fight.enemy._ai_guard_cooldown = 0.0
+	fight.enemy.block_state = ""
 	fight.enemy.global_position = Vector3(0, 0, -1.3)
 	fight.player.global_position = Vector3(0, 0, 0)
 	fight.player.combat_state = "RECOVERY"
@@ -162,7 +179,7 @@ func _test_ai_states_and_activity() -> void:
 	_expect(fight.enemy.ai_state == "COUNTER", "Hard AI must enter COUNTER against recovery")
 	fight.enemy._finish_action()
 	fight.player.combat_state = "IDLE"
-	fight.enemy.global_position = Vector3(0, 0, -2.0)
+	fight.enemy.global_position = Vector3(0, 0, -1.45)
 	var states := {}
 	for i in range(80):
 		fight.enemy.stats.stamina = 100.0
@@ -170,12 +187,58 @@ func _test_ai_states_and_activity() -> void:
 		fight.enemy._ai_input(0.4)
 		states[fight.enemy.ai_state] = true
 		fight.enemy._finish_action()
-	_expect(states.has("RANGE_CONTROL") and states.has("ATTACK") and states.has("DEFEND") and states.has("CIRCLE"), "AI combat states must be reachable")
+	_expect(states.has("RANGE_CONTROL") and states.has("ATTACK") and states.has("DEFEND") and states.has("CIRCLE"), "AI combat states must be reachable, got %s" % [states.keys()])
 	fight.enemy.global_position = Vector3(0, 0, -3.0)
 	fight.enemy.stats.stamina = 100.0
 	fight.enemy._ai_think_time = 0.0
 	var command: Vector2 = fight.enemy._ai_input(0.4)
 	_expect(fight.enemy.ai_state == "APPROACH" and command.y > 0.0, "distant AI must approach")
+
+
+func _test_ai_attacks_and_defends_reliably() -> void:
+	fight.enemy._finish_action()
+	fight.enemy.fight_enabled = true
+	fight.enemy.difficulty = "Medium"
+	fight.enemy.global_position = Vector3(0, 0, -1.25)
+	fight.player.global_position = Vector3.ZERO
+	fight.player.combat_state = "STARTUP"
+	fight.enemy.block_state = ""
+	fight.enemy._ai_think_time = 0.0
+	fight.enemy._ai_input(0.4)
+	_expect(fight.enemy.ai_state == "DEFEND" and fight.enemy.block_state != "", "AI must raise a guard against a nearby punch startup")
+	fight.enemy._update_defense()
+	_expect(fight.enemy.combat_state == "BLOCK" and fight.enemy.animation_player.current_animation.begins_with("Boxing/block_"), "AI defense must visibly play a block animation")
+	fight.enemy._finish_action()
+	fight.enemy.block_state = ""
+	fight.player.combat_state = "IDLE"
+	fight.enemy._ai_think_time = 0.0
+	var has_attack_cooldown := false
+	for property in fight.enemy.get_property_list():
+		if property.name == "_ai_attack_cooldown":
+			has_attack_cooldown = true
+			break
+	_expect(has_attack_cooldown, "AI must expose an internal attack cadence timer")
+	if not has_attack_cooldown:
+		return
+	fight.enemy.set("_ai_attack_cooldown", 0.0)
+	fight.enemy.set("_ai_guard_time", 0.0)
+	fight.enemy.set("_ai_guard_cooldown", 0.0)
+	fight.enemy._ai_input(0.4)
+	_expect(fight.enemy.ai_state == "ATTACK" and fight.enemy._current_attack != "" and fight.enemy.combat_state == "STARTUP", "AI at punching range must start an attack when its cadence is ready")
+	fight.enemy._update_defense()
+	_expect(fight.enemy.combat_state == "STARTUP", "AI defense update must not erase an attack startup")
+	fight.enemy._update_attack(2.0)
+	_expect(fight.enemy._current_attack == "" and fight.enemy.animation_tree.active, "AI attack must complete and recover to Footwork")
+	var attacked_during_cooldown := false
+	seed(12345)
+	for decision in range(12):
+		fight.enemy._finish_action()
+		fight.enemy._ai_think_time = 0.0
+		fight.enemy._ai_input(0.0)
+		if fight.enemy._current_attack != "":
+			attacked_during_cooldown = true
+			break
+	_expect(not attacked_during_cooldown, "AI attack cadence must prevent a second attack while cooldown is active")
 
 
 func _test_round_scoring_and_transition() -> void:
@@ -184,9 +247,10 @@ func _test_round_scoring_and_transition() -> void:
 	fight.manager.round_time = 0.0
 	fight.manager.state = FightManager.State.FIGHTING
 	fight.manager._end_round()
+	await create_timer(0.7).timeout
 	_expect(fight.manager.current_round == 2, "round end must advance round number")
 	_expect(fight.manager.scores.size() == 1, "round end must append a score")
-	_expect(not fight.player.fight_enabled and not fight.enemy.fight_enabled, "combat must stop between rounds")
+	_expect(fight.player.fight_enabled and fight.enemy.fight_enabled, "combat must resume after round break")
 
 
 func _test_knockdown_ko_tko_states() -> void:
@@ -199,5 +263,6 @@ func _test_knockdown_ko_tko_states() -> void:
 	fight.manager._end_fight(fight.enemy, "KO")
 	_expect(fight.manager.state == FightManager.State.FIGHT_END and fight.hud.banner.text.contains("KO"), "KO must reach result state")
 	_expect(FightRules.should_tko(3, fight.manager.tko_knockdown_limit), "third knockdown must satisfy TKO rule")
+	fight.manager.state = FightManager.State.FIGHTING
 	fight.manager._end_fight(fight.enemy, "TKO")
 	_expect(fight.hud.banner.text.contains("TKO"), "TKO must identify result method")

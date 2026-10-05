@@ -3,6 +3,7 @@ extends Node3D
 const BOXING_RING_SCENE := preload("res://ring/boxing_ring.tscn")
 const REFEREE_SCENE := preload("res://referee/referee.tscn")
 const FIGHTER_DATABASE := preload("res://scripts/data/fighter_database.gd")
+const HIT_FEEDBACK_SYSTEM := preload("res://scripts/presentation/hit_feedback_system.gd")
 
 var player: BoxerController
 var enemy: BoxerController
@@ -10,6 +11,7 @@ var camera_rig: BoxingCamera
 var hud: FightHUD
 var manager: FightManager
 var referee: RefereeController
+var hit_feedback: Node
 
 
 func _ready() -> void:
@@ -59,8 +61,10 @@ func _ready() -> void:
 	add_child(audio)
 	manager = FightManager.new()
 	add_child(manager)
-	player.punch_landed.connect(_on_punch_landed)
-	enemy.punch_landed.connect(_on_punch_landed)
+	hit_feedback = HIT_FEEDBACK_SYSTEM.new()
+	hit_feedback.name = "HitFeedbackSystem"
+	add_child(hit_feedback)
+	hit_feedback.setup(camera_rig, audio, hud)
 	referee = REFEREE_SCENE.instantiate() as RefereeController
 	referee.name = "Referee"
 	referee.position = Vector3(-2.7, 0.0, 0.0)
@@ -94,28 +98,3 @@ func _process(delta: float) -> void:
 			hud.set_debug("ATTACK %s  PHASE %s  HAND %s\nRANGE %.2f  TARGET %s  ACTIVE %s\nRESULT %s  DAMAGE %.1f  COST %.1f\nCOUNTER %s  DISTANCE %.2f\nAI %s  REF %s" % [punch.attack, punch.phase, punch.hand, punch.range, punch.target, punch.hitbox_active, punch.hit_result, punch.damage, punch.stamina_cost, punch.counter, punch.distance, enemy.ai_state, RefereeController.State.keys()[referee.state]])
 		else:
 			hud.set_debug("")
-
-
-func _on_punch_landed(attacker: BoxerController, defender: BoxerController, result: Dictionary) -> void:
-	var attack_name: String = attacker._current_attack
-	var attack := CombatRules.attack_data(attack_name)
-	var strength: float = float(attack.get("camera_feedback", 0.004))
-	if float(result.counter_bonus) > 1.0:
-		strength += 0.006
-	if bool(result.blocked):
-		strength *= 0.28
-	strength *= float(SaveSystem.settings.camera_shake)
-	if strength > 0.003:
-		camera_rig.impact(strength)
-	hud.flash_damage(defender, float(result.damage))
-	var audio: BoxingAudio = manager.audio
-	audio.play_cue("block" if result.blocked else ("jab" if attack_name == "jab" else attack_name))
-	if not bool(result.blocked):
-		var hit_stop: float = float(attack.get("hit_stop", 0.02))
-		if float(result.counter_bonus) > 1.0:
-			hit_stop += 0.008
-		Engine.time_scale = 0.38
-		await get_tree().create_timer(hit_stop, true, false, true).timeout
-		Engine.time_scale = 1.0
-	for device in Input.get_connected_joypads():
-		Input.start_joy_vibration(device, clampf(float(result.damage) / 35.0, 0.08, 0.35), clampf(float(result.damage) / 24.0, 0.12, 0.65), 0.09)

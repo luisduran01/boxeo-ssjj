@@ -8,6 +8,37 @@
 
 config_version=5
 
+[addons]
+
+"Controls Remap/Remappable Actions"=Array[StringName]([&"move_forward", &"move_backward", &"move_left", &"move_right", &"jab", &"cross", &"left_hook", &"right_hook", &"uppercut", &"block_left", &"block_right", &"block_body", &"slip_left", &"slip_right", &"duck", &"pause"])
+"Controls Remap/Events Dictionary"={
+"Joypad Button 0 (Bottom Action, Sony Cross, Xbox A, Nintendo B)": "Gamepad South",
+"Joypad Button 1 (Right Action, Sony Circle, Xbox B, Nintendo A)": "Gamepad East",
+"Joypad Button 10 (Right Shoulder, Sony R1, Xbox RB)": "Right Shoulder",
+"Joypad Button 2 (Left Action, Sony Square, Xbox X, Nintendo Y)": "Gamepad West",
+"Joypad Button 3 (Top Action, Sony Triangle, Xbox Y, Nintendo X)": "Gamepad North",
+"Joypad Button 6 (Back, Sony Select, Xbox Back, Nintendo -)": "Back / Select",
+"Joypad Button 9 (Left Shoulder, Sony L1, Xbox LB)": "Left Shoulder"
+}
+"Controls Remap/Action Names Dictionary"={
+&"block_body": "Body Block",
+&"block_left": "Left Block",
+&"block_right": "Right Block",
+&"cross": "Cross",
+&"duck": "Duck",
+&"jab": "Jab",
+&"left_hook": "Left Hook",
+&"move_backward": "Move Backward",
+&"move_forward": "Move Forward",
+&"move_left": "Move Left",
+&"move_right": "Move Right",
+&"pause": "Pause",
+&"right_hook": "Right Hook",
+&"slip_left": "Slip Left",
+&"slip_right": "Slip Right",
+&"uppercut": "Uppercut"
+}
+
 [application]
 
 config/name="Boxeo Ssjj"
@@ -15,12 +46,24 @@ run/main_scene="res://scenes/menus/main_menu.tscn"
 config/features=PackedStringArray("4.7", "Forward Plus")
 config/icon="res://icon.svg"
 
+[autoload]
+
+_mcp_game_helper="*res://addons/godot_ai/runtime/game_helper.gd"
+PhantomCameraManager="*res://addons/phantom_camera/scripts/managers/phantom_camera_manager.gd"
+ControlsRemap="*res://addons/runtime_controls_remap/controls_remap.gd"
+Events="*res://autoload/events.gd"
+LowLatencyInput="*res://autoload/low_latency_input.gd"
+
 [display]
 
 window/size/viewport_width=1280
 window/size/viewport_height=720
 window/stretch/mode="canvas_items"
 window/stretch/aspect="expand"
+
+[editor_plugins]
+
+enabled=PackedStringArray("res://addons/godot_ai/plugin.cfg", "res://addons/phantom_camera/plugin.cfg", "res://addons/runtime_controls_remap/plugin.cfg")
 
 [input]
 
@@ -88,10 +131,37 @@ block_body={
 "events": [Object(InputEventKey,"resource_local_to_scene":false,"resource_name":"","device":-1,"window_id":0,"alt_pressed":false,"shift_pressed":false,"ctrl_pressed":false,"meta_pressed":false,"pressed":false,"keycode":32,"physical_keycode":32,"key_label":32,"unicode":32,"location":0,"echo":false,"script":null)
 ]
 }
+slip_left={
+"deadzone": 0.2,
+"events": [Object(InputEventKey,"resource_local_to_scene":false,"resource_name":"","device":-1,"window_id":0,"alt_pressed":false,"shift_pressed":false,"ctrl_pressed":false,"meta_pressed":false,"pressed":false,"keycode":81,"physical_keycode":81,"key_label":81,"unicode":113,"location":0,"echo":false,"script":null)
+]
+}
+slip_right={
+"deadzone": 0.2,
+"events": [Object(InputEventKey,"resource_local_to_scene":false,"resource_name":"","device":-1,"window_id":0,"alt_pressed":false,"shift_pressed":false,"ctrl_pressed":false,"meta_pressed":false,"pressed":false,"keycode":69,"physical_keycode":69,"key_label":69,"unicode":101,"location":0,"echo":false,"script":null)
+]
+}
+duck={
+"deadzone": 0.2,
+"events": [Object(InputEventKey,"resource_local_to_scene":false,"resource_name":"","device":-1,"window_id":0,"alt_pressed":false,"shift_pressed":false,"ctrl_pressed":false,"meta_pressed":false,"pressed":false,"keycode":67,"physical_keycode":67,"key_label":67,"unicode":99,"location":0,"echo":false,"script":null)
+]
+}
 pause={
 "deadzone": 0.2,
 "events": [Object(InputEventKey,"resource_local_to_scene":false,"resource_name":"","device":-1,"window_id":0,"alt_pressed":false,"shift_pressed":false,"ctrl_pressed":false,"meta_pressed":false,"pressed":false,"keycode":4194305,"physical_keycode":4194305,"key_label":4194305,"unicode":0,"location":0,"echo":false,"script":null)
 , Object(InputEventJoypadButton,"resource_local_to_scene":false,"resource_name":"","device":-1,"button_index":6,"pressure":0.0,"pressed":false,"script":null)
+]
+}
+creator_rotate_left={
+"deadzone": 0.2,
+"events": [Object(InputEventKey,"resource_local_to_scene":false,"resource_name":"","device":-1,"window_id":0,"alt_pressed":false,"shift_pressed":false,"ctrl_pressed":false,"meta_pressed":false,"pressed":false,"keycode":81,"physical_keycode":81,"key_label":81,"unicode":113,"location":0,"echo":false,"script":null)
+, Object(InputEventJoypadButton,"resource_local_to_scene":false,"resource_name":"","device":-1,"button_index":9,"pressure":0.0,"pressed":false,"script":null)
+]
+}
+creator_rotate_right={
+"deadzone": 0.2,
+"events": [Object(InputEventKey,"resource_local_to_scene":false,"resource_name":"","device":-1,"window_id":0,"alt_pressed":false,"shift_pressed":false,"ctrl_pressed":false,"meta_pressed":false,"pressed":false,"keycode":69,"physical_keycode":69,"key_label":69,"unicode":101,"location":0,"echo":false,"script":null)
+, Object(InputEventJoypadButton,"resource_local_to_scene":false,"resource_name":"","device":-1,"button_index":10,"pressure":0.0,"pressed":false,"script":null)
 ]
 }
 punch_left={

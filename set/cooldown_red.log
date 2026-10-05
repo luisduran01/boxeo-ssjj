@@ -1,0 +1,44 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+WARNING: res://fighters/boxer_green/boxer_green.tscn:17 - ext_resource, invalid UID: uid://ckj8kh0jofgoq - using text path instead: res://fighters/boxer_green/animations/pivot_left.res
+   at: load (scene/resources/resource_format_text.cpp:501)
+   GDScript backtrace (most recent call first):
+       [0] _run (res://tests/combat_runner.gd:18)
+WARNING: res://fighters/boxer_green/boxer_green.tscn:18 - ext_resource, invalid UID: uid://d4k5so3i28jw1 - using text path instead: res://fighters/boxer_green/animations/pivot_right.res
+   at: load (scene/resources/resource_format_text.cpp:501)
+   GDScript backtrace (most recent call first):
+       [0] _run (res://tests/combat_runner.gd:18)
+WARNING: res://fighters/boxer_green/boxer_green.tscn:20 - ext_resource, invalid UID: uid://bspptn7q6f3ed - using text path instead: res://fighters/boxer_green/animations/step_backward.res
+   at: load (scene/resources/resource_format_text.cpp:501)
+   GDScript backtrace (most recent call first):
+       [0] _run (res://tests/combat_runner.gd:18)
+WARNING: res://fighters/boxer_green/boxer_green.tscn:21 - ext_resource, invalid UID: uid://b6qm1sg2rf723 - using text path instead: res://fighters/boxer_green/animations/step_forward.res
+   at: load (scene/resources/resource_format_text.cpp:501)
+   GDScript backtrace (most recent call first):
+       [0] _run (res://tests/combat_runner.gd:18)
+WARNING: res://fighters/boxer_green/boxer_green.tscn:22 - ext_resource, invalid UID: uid://dm76pnmwtlamp - using text path instead: res://fighters/boxer_green/animations/step_left.res
+   at: load (scene/resources/resource_format_text.cpp:501)
+   GDScript backtrace (most recent call first):
+       [0] _run (res://tests/combat_runner.gd:18)
+WARNING: res://fighters/boxer_green/boxer_green.tscn:23 - ext_resource, invalid UID: uid://bisxiarladmq2 - using text path instead: res://fighters/boxer_green/animations/step_right.res
+   at: load (scene/resources/resource_format_text.cpp:501)
+   GDScript backtrace (most recent call first):
+       [0] _run (res://tests/combat_runner.gd:18)
+WARNING: res://fighters/boxer_green/boxer_green.tscn:25 - ext_resource, invalid UID: uid://c85djcqodbt3r - using text path instead: res://fighters/boxer_green/animations/step_short.res
+   at: load (scene/resources/resource_format_text.cpp:501)
+   GDScript backtrace (most recent call first):
+       [0] _run (res://tests/combat_runner.gd:18)
+WARNING: res://fighters/boxer_green/boxer_green.tscn:26 - ext_resource, invalid UID: uid://blouwo8pn5l35 - using text path instead: res://fighters/boxer_green/animations/medium_step.res
+   at: load (scene/resources/resource_format_text.cpp:501)
+   GDScript backtrace (most recent call first):
+       [0] _run (res://tests/combat_runner.gd:18)
+ERROR: COMBAT INTEGRATION: AI attack cadence must prevent a second attack while cooldown is active
+   at: push_error (core/variant/variant_utility.cpp:1023)
+   GDScript backtrace (most recent call first):
+       [0] _expect (res://tests/combat_runner.gd:14)
+       [1] _test_ai_attacks_and_defends_reliably (res://tests/combat_runner.gd:225)
+       [2] _run (res://tests/combat_runner.gd:29)
+ERROR: COMBAT INTEGRATION TESTS FAILED: 1
+   at: push_error (core/variant/variant_utility.cpp:1023)
+   GDScript backtrace (most recent call first):
+       [0] _run (res://tests/combat_runner.gd:39)

@@ -1,0 +1,45 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+[godot_ai game_helper] registered mcp capture (debugger active=false, logger=true)
+ANIM Boxing/boxing_idle tracks=27 length=4.0
+  0 type=1 path=Skeleton3D:mixamorig_Hips keys=53
+  1 type=2 path=Skeleton3D:mixamorig_Hips keys=116
+  2 type=2 path=Skeleton3D:mixamorig_Spine keys=85
+  3 type=2 path=Skeleton3D:LeftUpperLeg keys=107
+  4 type=2 path=Skeleton3D:RightUpperLeg keys=116
+  5 type=2 path=Skeleton3D:Chest keys=102
+  6 type=2 path=Skeleton3D:LeftLowerLeg keys=113
+  7 type=2 path=Skeleton3D:RightLowerLeg keys=112
+  8 type=2 path=Skeleton3D:UpperChest keys=102
+  9 type=2 path=Skeleton3D:mixamorig_LeftFoot keys=100
+  10 type=2 path=Skeleton3D:mixamorig_RightFoot keys=99
+  11 type=2 path=Skeleton3D:mixamorig_Neck keys=118
+  left before=(0.331852, 0.781773, -0.042239) after=(0.267426, 0.702603, 0.193112) dist=0.25653165578842
+ANIM Boxing/jab tracks=29 length=1.06666666666667
+  0 type=1 path=Skeleton3D:mixamorig_Hips keys=32
+  1 type=2 path=Skeleton3D:mixamorig_Hips keys=33
+  2 type=2 path=Skeleton3D:mixamorig_Spine keys=29
+  3 type=2 path=Skeleton3D:LeftUpperLeg keys=30
+  4 type=2 path=Skeleton3D:RightUpperLeg keys=32
+  5 type=2 path=Skeleton3D:Chest keys=31
+  6 type=2 path=Skeleton3D:LeftLowerLeg keys=32
+  7 type=2 path=Skeleton3D:RightLowerLeg keys=33
+  8 type=2 path=Skeleton3D:UpperChest keys=32
+  9 type=2 path=Skeleton3D:mixamorig_LeftFoot keys=32
+  10 type=2 path=Skeleton3D:mixamorig_RightFoot keys=32
+  11 type=2 path=Skeleton3D:mixamorig_Neck keys=31
+  left before=(0.271168, 0.701494, 0.188496) after=(0.208584, 0.692158, 0.2808) dist=0.11191043257713
+ANIM UnarmedSupport/stunned tracks=28 length=2.03333330154419
+  0 type=2 path=Skeleton3D:mixamorig_Hips keys=51
+  1 type=2 path=Skeleton3D:mixamorig_Spine keys=57
+  2 type=2 path=Skeleton3D:Chest keys=38
+  3 type=2 path=Skeleton3D:UpperChest keys=46
+  4 type=2 path=Skeleton3D:mixamorig_Neck keys=62
+  5 type=2 path=Skeleton3D:mixamorig_Head keys=61
+  6 type=2 path=Skeleton3D:mixamorig_LeftShoulder keys=60
+  7 type=2 path=Skeleton3D:LeftUpperArm keys=61
+  8 type=2 path=Skeleton3D:LeftLowerArm keys=51
+  9 type=2 path=Skeleton3D:mixamorig_LeftHand keys=60
+  10 type=2 path=Skeleton3D:LeftIndexProximal keys=52
+  11 type=2 path=Skeleton3D:LeftIndexIntermediate keys=51
+  left before=(0.268989, 0.682576, 0.17288) after=(0.220401, 0.900739, 0.224125) dist=0.22930777072906

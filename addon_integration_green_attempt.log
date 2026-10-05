@@ -1,0 +1,37 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+WARNING: res://fighters/boxer_green/boxer_green.tscn:17 - ext_resource, invalid UID: uid://e6h77hr3sjk6 - using text path instead: res://fighters/boxer_green/animations/pivot_left.res
+   at: load (scene/resources/resource_format_text.cpp:501)
+WARNING: res://fighters/boxer_green/boxer_green.tscn:20 - ext_resource, invalid UID: uid://dbrntynco5r8r - using text path instead: res://fighters/boxer_green/animations/step_backward.res
+   at: load (scene/resources/resource_format_text.cpp:501)
+WARNING: res://fighters/boxer_green/boxer_green.tscn:21 - ext_resource, invalid UID: uid://x78gbsjqyo8l - using text path instead: res://fighters/boxer_green/animations/step_forward.res
+   at: load (scene/resources/resource_format_text.cpp:501)
+WARNING: res://fighters/boxer_green/boxer_green.tscn:22 - ext_resource, invalid UID: uid://6k86pn1qy6dl - using text path instead: res://fighters/boxer_green/animations/step_left.res
+   at: load (scene/resources/resource_format_text.cpp:501)
+WARNING: res://fighters/boxer_green/boxer_green.tscn:23 - ext_resource, invalid UID: uid://c1psex6n5r7se - using text path instead: res://fighters/boxer_green/animations/step_right.res
+   at: load (scene/resources/resource_format_text.cpp:501)
+SCRIPT ERROR: Compile Error: Identifier not found: ControlsRemap
+   at: GDScript::reload (res://scripts/menus/settings_menu.gd:79)
+ERROR: Failed to load script "res://scripts/menus/settings_menu.gd" with error "Compilation failed".
+   at: load (modules/gdscript/gdscript_resource_format.cpp:46)
+SCRIPT ERROR: Compile Error: Identifier not found: ControlsRemap
+   at: GDScript::reload (res://addons/runtime_controls_remap/input_remap_button.gd:23)
+SCRIPT ERROR: Compile Error: Failed to compile depended scripts.
+   at: GDScript::reload (res://tests/addon_integration_runner.gd:0)
+ERROR: Failed to load script "res://tests/addon_integration_runner.gd" with error "Compilation failed".
+   at: load (modules/gdscript/gdscript_resource_format.cpp:46)
+[godot_ai game_helper] registered mcp capture (debugger active=false, logger=true)
+ERROR: ADDON INTEGRATION: AI boxer must create BoxingAIPlanner
+   at: push_error (core/variant/variant_utility.cpp:1023)
+   GDScript backtrace (most recent call first):
+       [0] _expect (res://tests/addon_integration_runner.gd:17)
+       [1] _assert_limbo_ai_planner_contract (res://tests/addon_integration_runner.gd:61)
+SCRIPT ERROR: Invalid call. Nonexistent function 'show_category' in base 'Control'.
+   at: _assert_runtime_controls_settings_ui (res://tests/addon_integration_runner.gd:77)
+   GDScript backtrace (most recent call first):
+       [0] _assert_runtime_controls_settings_ui (res://tests/addon_integration_runner.gd:77)
+ERROR: ADDON INTEGRATION TESTS FAILED: 1
+   at: push_error (core/variant/variant_utility.cpp:1023)
+   GDScript backtrace (most recent call first):
+       [0] _run (res://tests/addon_integration_runner.gd:29)
+       [1] _assert_runtime_controls_settings_ui (res://tests/addon_integration_runner.gd:77)

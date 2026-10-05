@@ -27,12 +27,27 @@ func _run() -> void:
 	_test_ranges_and_results()
 	_test_phases_buffer_and_unique_hit()
 	_test_shared_ai_and_debug()
+	await _cleanup_scene()
 	if failures.is_empty():
 		print("PUNCH_SYSTEM_TESTS_OK")
 		quit(0)
 	else:
 		push_error("PUNCH_SYSTEM_TESTS_FAILED: %d" % failures.size())
 		quit(1)
+
+
+func _cleanup_scene() -> void:
+	if is_instance_valid(fight) and is_instance_valid(fight.manager) and is_instance_valid(fight.manager.audio):
+		var audio: BoxingAudio = fight.manager.audio
+		if is_instance_valid(audio.player):
+			audio.player.stop()
+			audio.player.stream = null
+	await create_timer(0.12).timeout
+	if is_instance_valid(current_scene):
+		current_scene.queue_free()
+		await process_frame
+	fight = null
+	await process_frame
 
 
 func _reset(distance: float) -> void:

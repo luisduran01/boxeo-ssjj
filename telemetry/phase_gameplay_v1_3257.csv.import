@@ -1,0 +1,19 @@
+[remap]
+
+importer="csv_translation"
+type="Translation"
+uid="uid://2fjs37l3b8po"
+
+[deps]
+
+files=["res://telemetry/phase_gameplay_v1_3257.fight.translation", "res://telemetry/phase_gameplay_v1_3257.rounds.translation", "res://telemetry/phase_gameplay_v1_3257.punches.translation", "res://telemetry/phase_gameplay_v1_3257.punches.translation", "res://telemetry/phase_gameplay_v1_3257.punches.translation", "res://telemetry/phase_gameplay_v1_3257.punches.translation", "res://telemetry/phase_gameplay_v1_3257.knockdowns.translation", "res://telemetry/phase_gameplay_v1_3257.damage.translation"]
+
+source_file="res://telemetry/phase_gameplay_v1_3257.csv"
+dest_files=["res://telemetry/phase_gameplay_v1_3257.fight.translation", "res://telemetry/phase_gameplay_v1_3257.rounds.translation", "res://telemetry/phase_gameplay_v1_3257.punches.translation", "res://telemetry/phase_gameplay_v1_3257.punches.translation", "res://telemetry/phase_gameplay_v1_3257.punches.translation", "res://telemetry/phase_gameplay_v1_3257.punches.translation", "res://telemetry/phase_gameplay_v1_3257.knockdowns.translation", "res://telemetry/phase_gameplay_v1_3257.damage.translation"]
+
+[params]
+
+compress=1
+delimiter=0
+unescape_keys=false
+unescape_translations=true

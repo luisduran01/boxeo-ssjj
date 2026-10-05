@@ -38,12 +38,19 @@ func setup(p_player: BoxerController, p_enemy: BoxerController) -> void:
 func _physics_process(delta: float) -> void:
 	if not is_instance_valid(player) or not is_instance_valid(enemy):
 		return
-	var target := _count_target() if state == State.COUNTING else _observation_target(delta)
-	_move_toward_target(target, delta)
-	var look_target := _fallen.global_position if state == State.COUNTING and is_instance_valid(_fallen) else (player.global_position + enemy.global_position) * 0.5
-	_face_position(look_target, delta)
+	var fight_midpoint := (player.global_position + enemy.global_position) * 0.5
 	if state == State.OBSERVING:
+		velocity = Vector3.ZERO
+		_play_if_changed("ref_idle")
+		_face_position(fight_midpoint, delta)
 		_update_clinch(delta)
+		return
+	if state == State.COUNTING:
+		_move_toward_target(_count_target(), delta)
+	else:
+		velocity = Vector3.ZERO
+	var look_target := _fallen.global_position if state == State.COUNTING and is_instance_valid(_fallen) else fight_midpoint
+	_face_position(look_target, delta)
 
 
 func _observation_target(delta: float) -> Vector3:

@@ -1,0 +1,32 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+[godot_ai game_helper] registered mcp capture (debugger active=false, logger=true)
+BTPlayer
+behavior_tree
+agent_node
+update_mode
+active
+blackboard
+blackboard_plan
+monitor_performance
+Node
+name
+unique_name_in_owner
+scene_file_path
+owner
+multiplayer
+Process
+process_mode
+process_priority
+process_physics_priority
+Thread Group
+process_thread_group
+process_thread_group_order
+process_thread_messages
+Physics Interpolation
+physics_interpolation_mode
+Auto Translate
+auto_translate_mode
+Editor Description
+editor_description
+script

@@ -37,6 +37,8 @@ var enemy_panel: PanelContainer
 var pause_panel: PanelContainer
 var result_panel: PanelContainer
 var debug_label: Label
+var guard_indicator: Label
+var counter_indicator: Label
 
 var _player: BoxerController
 var _enemy: BoxerController
@@ -67,6 +69,8 @@ func setup(player: BoxerController, enemy: BoxerController) -> void:
 	enemy.stats_changed.connect(_on_stats_changed)
 	_on_stats_changed(player)
 	_on_stats_changed(enemy)
+	set_guard_counter_indicators(player)
+	apply_visibility_settings()
 
 
 func set_clock(round_number: int, round_time: float) -> void:
@@ -132,6 +136,35 @@ func show_result(text: String) -> void:
 	tween.tween_property(result_panel, "modulate", Color.WHITE, 0.22)
 
 
+func show_result_from_data(data: Dictionary) -> void:
+	if data.has("presentation_text"):
+		show_result(str(data.presentation_text))
+		return
+	var winner_name := str(data.get("winner_name", "DRAW"))
+	var method := str(data.get("method", "Decision"))
+	var round_number := int(data.get("round", 1))
+	var elapsed := int(data.get("time", 0.0))
+	show_result("WINNER\n%s\n%s\nROUND %d  TIME %d:%02d" % [winner_name, method, round_number, elapsed / 60, elapsed % 60])
+
+
+func show_round_started(round_number: int) -> void:
+	round_label.text = "ROUND %d" % round_number
+	announce("ROUND %d" % round_number, 0.6)
+
+
+func show_between_round_cards(round_number: int, cards: Array) -> void:
+	var lines := ["ROUND %d COMPLETE" % round_number]
+	if not cards.is_empty():
+		for card in cards:
+			var judge_name := str(card.get("judge", card.get("name", "JUDGE")))
+			var player_score := str(card.get("player", "-"))
+			var enemy_score := str(card.get("enemy", "-"))
+			lines.append("%s  %s-%s" % [judge_name, player_score, enemy_score])
+	else:
+		lines.append("CARDS PENDING")
+	announce("\n".join(lines), 1.2)
+
+
 func flash_damage(fighter: BoxerController, damage: float) -> void:
 	var panel := player_panel if fighter == _player else enemy_panel
 	if panel == null:
@@ -145,6 +178,35 @@ func flash_damage(fighter: BoxerController, damage: float) -> void:
 func set_debug(text: String) -> void:
 	debug_label.text = text
 	debug_label.visible = SaveSystem.settings.get("debug", false)
+
+
+func set_guard_counter_indicators(fighter: BoxerController) -> void:
+	if guard_indicator == null or counter_indicator == null:
+		return
+	var guard_value := 0
+	if fighter != null:
+		guard_value = int(round(fighter.guard_stamina))
+	guard_indicator.text = "GUARD %d" % guard_value
+	var counter_active := fighter != null and fighter.counter_window > 0.0
+	counter_indicator.text = "COUNTER"
+	counter_indicator.visible = counter_active
+
+
+func show_counter_window(active: bool) -> void:
+	if counter_indicator != null:
+		counter_indicator.visible = active
+
+
+func apply_visibility_settings() -> void:
+	var show_hud := bool(SaveSystem.settings.get("show_hud", true))
+	if top_bar != null:
+		top_bar.visible = show_hud
+	if debug_label != null:
+		debug_label.visible = show_hud and bool(SaveSystem.settings.get("debug", false))
+	if guard_indicator != null:
+		guard_indicator.visible = show_hud
+	if counter_indicator != null and _player != null:
+		counter_indicator.visible = show_hud and _player.counter_window > 0.0
 
 
 func _on_stats_changed(fighter: BoxerController) -> void:
@@ -238,6 +300,20 @@ func _build_ui() -> void:
 	debug_label.position = Vector2(40, 156)
 	debug_label.size = Vector2(380, 190)
 	_root.add_child(debug_label)
+	var indicator_box := HBoxContainer.new()
+	indicator_box.name = "GuardCounterIndicators"
+	indicator_box.position = Vector2(40, 350)
+	indicator_box.add_theme_constant_override("separation", 8)
+	_root.add_child(indicator_box)
+	guard_indicator = _label("GUARD 100", 16)
+	guard_indicator.custom_minimum_size = Vector2(112, 28)
+	guard_indicator.add_theme_color_override("font_color", Color("d7dca8"))
+	indicator_box.add_child(guard_indicator)
+	counter_indicator = _label("COUNTER", 16)
+	counter_indicator.custom_minimum_size = Vector2(112, 28)
+	counter_indicator.add_theme_color_override("font_color", Color("efb06a"))
+	counter_indicator.visible = false
+	indicator_box.add_child(counter_indicator)
 	_build_pause(_root)
 	_build_result(_root)
 

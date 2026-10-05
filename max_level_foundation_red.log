@@ -1,0 +1,73 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+ERROR: Failed to read the root certificate store.
+   at: get_system_ca_certificates (platform/windows/os_windows.cpp:2582)
+[godot_ai game_helper] registered mcp capture (debugger active=false, logger=true)
+ERROR: Attempt to open script 'res://scripts/sim/fight_sim.gd' resulted in error 'File not found'.
+   at: load_source_code (modules/gdscript/gdscript.cpp:1139)
+   GDScript backtrace (most recent call first):
+       [0] _test_fightsim_is_deterministic_and_node_free (res://tests/max_level_foundation_runner.gd:30)
+       [1] _run (res://tests/max_level_foundation_runner.gd:17)
+ERROR: Failed loading resource: res://scripts/sim/fight_sim.gd.
+   at: _load (core/io/resource_loader.cpp:317)
+   GDScript backtrace (most recent call first):
+       [0] _test_fightsim_is_deterministic_and_node_free (res://tests/max_level_foundation_runner.gd:30)
+       [1] _run (res://tests/max_level_foundation_runner.gd:17)
+ERROR: MAX LEVEL FOUNDATION: FightSim script must exist
+   at: push_error (core/variant/variant_utility.cpp:1023)
+   GDScript backtrace (most recent call first):
+       [0] _expect (res://tests/max_level_foundation_runner.gd:13)
+       [1] _test_fightsim_is_deterministic_and_node_free (res://tests/max_level_foundation_runner.gd:31)
+       [2] _run (res://tests/max_level_foundation_runner.gd:17)
+ERROR: Attempt to open script 'res://scripts/input/low_latency_input_buffer.gd' resulted in error 'File not found'.
+   at: load_source_code (modules/gdscript/gdscript.cpp:1139)
+   GDScript backtrace (most recent call first):
+       [0] _test_low_latency_ring_buffer_consumes_next_tick (res://tests/max_level_foundation_runner.gd:52)
+       [1] _run (res://tests/max_level_foundation_runner.gd:18)
+ERROR: Failed loading resource: res://scripts/input/low_latency_input_buffer.gd.
+   at: _load (core/io/resource_loader.cpp:317)
+   GDScript backtrace (most recent call first):
+       [0] _test_low_latency_ring_buffer_consumes_next_tick (res://tests/max_level_foundation_runner.gd:52)
+       [1] _run (res://tests/max_level_foundation_runner.gd:18)
+ERROR: MAX LEVEL FOUNDATION: low latency input buffer script must exist
+   at: push_error (core/variant/variant_utility.cpp:1023)
+   GDScript backtrace (most recent call first):
+       [0] _expect (res://tests/max_level_foundation_runner.gd:13)
+       [1] _test_low_latency_ring_buffer_consumes_next_tick (res://tests/max_level_foundation_runner.gd:53)
+       [2] _run (res://tests/max_level_foundation_runner.gd:18)
+ERROR: Attempt to open script 'res://scripts/presentation/manual_animation_driver.gd' resulted in error 'File not found'.
+   at: load_source_code (modules/gdscript/gdscript.cpp:1139)
+   GDScript backtrace (most recent call first):
+       [0] _test_manual_animation_driver_freezes_on_hitstop (res://tests/max_level_foundation_runner.gd:68)
+       [1] _run (res://tests/max_level_foundation_runner.gd:19)
+ERROR: Failed loading resource: res://scripts/presentation/manual_animation_driver.gd.
+   at: _load (core/io/resource_loader.cpp:317)
+   GDScript backtrace (most recent call first):
+       [0] _test_manual_animation_driver_freezes_on_hitstop (res://tests/max_level_foundation_runner.gd:68)
+       [1] _run (res://tests/max_level_foundation_runner.gd:19)
+ERROR: MAX LEVEL FOUNDATION: manual animation driver script must exist
+   at: push_error (core/variant/variant_utility.cpp:1023)
+   GDScript backtrace (most recent call first):
+       [0] _expect (res://tests/max_level_foundation_runner.gd:13)
+       [1] _test_manual_animation_driver_freezes_on_hitstop (res://tests/max_level_foundation_runner.gd:69)
+       [2] _run (res://tests/max_level_foundation_runner.gd:19)
+ERROR: Attempt to open script 'res://scripts/combat/hitbox_query.gd' resulted in error 'File not found'.
+   at: load_source_code (modules/gdscript/gdscript.cpp:1139)
+   GDScript backtrace (most recent call first):
+       [0] _test_hitbox_sweep_is_deterministic_and_zone_based (res://tests/max_level_foundation_runner.gd:86)
+       [1] _run (res://tests/max_level_foundation_runner.gd:20)
+ERROR: Failed loading resource: res://scripts/combat/hitbox_query.gd.
+   at: _load (core/io/resource_loader.cpp:317)
+   GDScript backtrace (most recent call first):
+       [0] _test_hitbox_sweep_is_deterministic_and_zone_based (res://tests/max_level_foundation_runner.gd:86)
+       [1] _run (res://tests/max_level_foundation_runner.gd:20)
+ERROR: MAX LEVEL FOUNDATION: hitbox query script must exist
+   at: push_error (core/variant/variant_utility.cpp:1023)
+   GDScript backtrace (most recent call first):
+       [0] _expect (res://tests/max_level_foundation_runner.gd:13)
+       [1] _test_hitbox_sweep_is_deterministic_and_zone_based (res://tests/max_level_foundation_runner.gd:87)
+       [2] _run (res://tests/max_level_foundation_runner.gd:20)
+ERROR: MAX_LEVEL_FOUNDATION_TESTS_FAILED: 4
+   at: push_error (core/variant/variant_utility.cpp:1023)
+   GDScript backtrace (most recent call first):
+       [0] _run (res://tests/max_level_foundation_runner.gd:25)

@@ -1,6 +1,9 @@
 class_name CombatRules
 extends RefCounted
 
+const MoveLibraryScript = preload("res://scripts/combat/move_library.gd")
+const Balance = preload("res://scripts/combat/gameplay_balance.gd")
+
 ## Central tuning for the five real imported punch clips.
 const ATTACKS := {
 	"jab": {"attack_name":"jab", "animation_name":"jab", "hand":"left", "attack_type":"straight", "target_level":"head", "startup":0.12, "active_time":0.09, "recovery":0.23, "damage":6.5, "stamina_cost":5.5, "min_range":0.72, "range":1.58, "power":0.82, "stun":5.5, "counter_bonus":1.18, "movement_allowed":0.78, "tracking_strength":0.72, "step_in":0.16, "hit_stop":0.014, "camera_feedback":0.002, "animation_speed":1.04, "cancel_window":0.11},
@@ -14,8 +17,11 @@ static func fresh_stats() -> Dictionary:
 	return {"max_health":100.0, "health":100.0, "max_stamina":100.0, "stamina":100.0, "head_health":100.0, "body_health":100.0, "stun":0.0, "max_stun":100.0, "damage_multiplier":1.0, "defense":0.12, "movement_speed":2.15, "punch_speed":1.0, "recovery":1.0}
 
 static func attack_data(attack_name: String) -> Dictionary:
-	if not ATTACKS.has(attack_name): return {}
-	var data: Dictionary = ATTACKS[attack_name].duplicate(true)
+	var data: Dictionary = MoveLibraryScript.attack_data(StringName(attack_name))
+	if data.is_empty() and ATTACKS.has(attack_name):
+		data = ATTACKS[attack_name].duplicate(true)
+	if data.is_empty():
+		return {}
 	data["active"] = data.active_time
 	data["cost"] = data.stamina_cost
 	data["zone"] = data.target_level
@@ -23,13 +29,47 @@ static func attack_data(attack_name: String) -> Dictionary:
 
 static func stamina_cost(attack_name: String, missed: bool) -> float:
 	var data := attack_data(attack_name)
-	return 0.0 if data.is_empty() else float(data.stamina_cost) * (1.12 if missed else 1.0)
+	return 0.0 if data.is_empty() else float(data.stamina_cost) * (float(data.get("whiff_stamina_mult", 1.5)) if missed else 1.0)
 
-static func calculate_hit(attack_name: String, zone: String, attacker_stamina: float, defender_defense: float, blocked: bool, counter: bool, impact_quality := 1.0, momentum := 1.0) -> Dictionary:
+
+static func impact_quality_for_distance(attack_name: String, distance: float, active_elapsed: float = 0.0) -> float:
+	var attack := attack_data(attack_name)
+	if attack.is_empty():
+		return 0.0
+	var sweet_min := float(attack.get("sweet_spot_min", attack.min_range))
+	var sweet_max := float(attack.get("sweet_spot_max", attack.range))
+	var active_time := maxf(float(attack.get("active_time", 0.1)), 0.01)
+	var frame_quality := 1.0 - clampf(active_elapsed / active_time, 0.0, 1.0) * 0.28
+	if distance >= sweet_min and distance <= sweet_max:
+		return 1.0 * frame_quality
+	var nearest := clampf(distance, float(attack.min_range), float(attack.range))
+	var span := maxf(float(attack.range) - float(attack.min_range), 0.01)
+	return clampf(1.0 - absf(distance - nearest) / span - 0.35, 0.25, 0.72) * frame_quality
+
+static func zone_group(zone: String) -> String:
+	return "body" if zone.begins_with("body") else "head"
+
+static func stamina_performance_scale(stamina: float, max_stamina := 100.0) -> float:
+	var ratio := clampf(stamina / maxf(max_stamina, 0.01), 0.0, 1.0)
+	if ratio >= 0.60:
+		return 1.0
+	if ratio >= 0.30:
+		return lerpf(0.88, 1.0, (ratio - 0.30) / 0.30)
+	if ratio >= 0.10:
+		return lerpf(0.68, 0.88, (ratio - 0.10) / 0.20)
+	return lerpf(0.55, 0.68, ratio / 0.10)
+
+static func calculate_hit(attack_name: String, zone: String, attacker_stamina: float, defender_defense: float, blocked: bool, counter: bool, impact_quality := 1.0, momentum := 1.0, combo_index := 0) -> Dictionary:
 	var attack := attack_data(attack_name)
 	if attack.is_empty(): return {}
 	var stamina_factor := lerpf(0.72, 1.0, clampf(attacker_stamina / 100.0, 0.0, 1.0))
 	var counter_factor: float = float(attack.counter_bonus) if counter else 1.0
 	var quality_factor := lerpf(0.62, 1.08, clampf(impact_quality, 0.0, 1.0))
-	var damage: float = float(attack.damage) * float(attack.power) * stamina_factor * (1.10 if zone == "head" else 0.86) * counter_factor * quality_factor * clampf(momentum, 0.88, 1.08) * (0.25 if blocked else 1.0) * clampf(1.0 - defender_defense, 0.55, 1.0)
-	return {"result":"BLOCKED" if blocked else ("COUNTER" if counter else ("CLEAN_HIT" if impact_quality >= 0.72 else "GLANCING")), "damage":damage, "stun":float(attack.stun) * stamina_factor * counter_factor * quality_factor * (0.28 if blocked else 1.0), "stamina_damage":float(attack.damage) * (0.72 if blocked else (0.58 if zone == "body" else 0.16)), "counter_bonus":counter_factor, "blocked":blocked, "counter":counter, "impact_quality":impact_quality, "momentum":momentum, "severity":"HEAVY" if (counter or damage >= 14.0) else ("MEDIUM" if damage >= 8.0 else "LIGHT")}
+	var target_group := zone_group(zone)
+	var combo_scale := clampf(1.0 - float(maxi(combo_index, 0)) * 0.08, 0.72, 1.0)
+	if attack.has("counter_mult") and counter:
+		counter_factor = maxf(counter_factor, float(attack.counter_mult))
+	var damage: float = float(attack.damage) * float(attack.power) * stamina_factor * (1.10 if target_group == "head" else 0.86) * counter_factor * quality_factor * clampf(momentum, 0.88, 1.08) * combo_scale * (0.25 if blocked else 1.0) * clampf(1.0 - defender_defense, 0.55, 1.0)
+	var stun := float(attack.stun) * stamina_factor * counter_factor * quality_factor * combo_scale * (0.28 if blocked else 1.0)
+	var stability_loss := float(attack.power) * float(attack.stun) * quality_factor * counter_factor * (1.0 if target_group == "head" else 0.34) * (0.18 if blocked else 1.0)
+	return {"result":"BLOCKED" if blocked else ("COUNTER" if counter else ("CLEAN_HIT" if impact_quality >= 0.72 else "GLANCING")), "damage":damage, "stun":stun, "stamina_damage":float(attack.damage) * (0.72 if blocked else (0.58 if target_group == "body" else 0.16)), "counter_bonus":counter_factor, "blocked":blocked, "counter":counter, "is_counter_hit":counter, "impact_quality":impact_quality, "momentum":momentum, "target_group":target_group, "zone":zone, "combo_scale":combo_scale, "stability_loss":stability_loss, "severity":"HEAVY" if (counter or damage >= 14.0) else ("MEDIUM" if damage >= 8.0 else "LIGHT")}

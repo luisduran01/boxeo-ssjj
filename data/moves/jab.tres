@@ -1,0 +1,28 @@
+[gd_resource type="Resource" script_class="MoveData" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/combat/move_data.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+id = &"jab"
+animation_name = "jab"
+hand = "left"
+attack_type = "straight"
+target_level = "head"
+startup_frames = 7.2
+active_frames = 5.4
+recovery_frames = 13.8
+damage = 6.5
+stamina_cost = 5.5
+min_range = 0.72
+max_range = 1.58
+power = 0.82
+stun = 5.5
+counter_bonus = 1.18
+movement_allowed = 0.78
+tracking_strength = 0.72
+step_in = 0.16
+hitstop_frames = 0.84
+camera_feedback = 0.002
+animation_speed = 1.04
+cancel_window_frames = 6.6

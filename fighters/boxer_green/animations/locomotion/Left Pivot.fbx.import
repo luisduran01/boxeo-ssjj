@@ -43,7 +43,7 @@ _subresources={
 "animations": {
 "mixamo_com": {
 "save_to_file/enabled": true,
-"save_to_file/fallback_path": "res://fighters/boxer_green/animations/pivot_left.res",
+"save_to_file/fallback_path": "res://fighters/boxer_02/animations/pivot_left.res",
 "save_to_file/keep_custom_tracks": "",
 "save_to_file/path": "uid://bq4kl8s81xrem",
 "settings/loop_mode": 0,

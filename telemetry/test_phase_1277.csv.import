@@ -1,0 +1,19 @@
+[remap]
+
+importer="csv_translation"
+type="Translation"
+uid="uid://daurpjunoofgd"
+
+[deps]
+
+files=["res://telemetry/test_phase_1277.fight.translation", "res://telemetry/test_phase_1277.rounds.translation", "res://telemetry/test_phase_1277.punches.translation", "res://telemetry/test_phase_1277.punches.translation", "res://telemetry/test_phase_1277.punches.translation", "res://telemetry/test_phase_1277.punches.translation", "res://telemetry/test_phase_1277.knockdowns.translation", "res://telemetry/test_phase_1277.damage.translation"]
+
+source_file="res://telemetry/test_phase_1277.csv"
+dest_files=["res://telemetry/test_phase_1277.fight.translation", "res://telemetry/test_phase_1277.rounds.translation", "res://telemetry/test_phase_1277.punches.translation", "res://telemetry/test_phase_1277.punches.translation", "res://telemetry/test_phase_1277.punches.translation", "res://telemetry/test_phase_1277.punches.translation", "res://telemetry/test_phase_1277.knockdowns.translation", "res://telemetry/test_phase_1277.damage.translation"]
+
+[params]
+
+compress=1
+delimiter=0
+unescape_keys=false
+unescape_translations=true

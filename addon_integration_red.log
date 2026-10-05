@@ -1,0 +1,177 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+WARNING: res://fighters/boxer_green/boxer_green.tscn:17 - ext_resource, invalid UID: uid://e6h77hr3sjk6 - using text path instead: res://fighters/boxer_green/animations/pivot_left.res
+   at: load (scene/resources/resource_format_text.cpp:501)
+WARNING: res://fighters/boxer_green/boxer_green.tscn:20 - ext_resource, invalid UID: uid://dbrntynco5r8r - using text path instead: res://fighters/boxer_green/animations/step_backward.res
+   at: load (scene/resources/resource_format_text.cpp:501)
+WARNING: res://fighters/boxer_green/boxer_green.tscn:21 - ext_resource, invalid UID: uid://x78gbsjqyo8l - using text path instead: res://fighters/boxer_green/animations/step_forward.res
+   at: load (scene/resources/resource_format_text.cpp:501)
+WARNING: res://fighters/boxer_green/boxer_green.tscn:22 - ext_resource, invalid UID: uid://6k86pn1qy6dl - using text path instead: res://fighters/boxer_green/animations/step_left.res
+   at: load (scene/resources/resource_format_text.cpp:501)
+WARNING: res://fighters/boxer_green/boxer_green.tscn:23 - ext_resource, invalid UID: uid://c1psex6n5r7se - using text path instead: res://fighters/boxer_green/animations/step_right.res
+   at: load (scene/resources/resource_format_text.cpp:501)
+SCRIPT ERROR: Parse Error: Identifier "ControlsRemap" not declared in the current scope.
+   at: GDScript::reload (res://addons/runtime_controls_remap/input_remap_button.gd:23)
+SCRIPT ERROR: Parse Error: Identifier "ControlsRemap" not declared in the current scope.
+   at: GDScript::reload (res://addons/runtime_controls_remap/input_remap_button.gd:30)
+SCRIPT ERROR: Parse Error: Identifier "ControlsRemap" not declared in the current scope.
+   at: GDScript::reload (res://addons/runtime_controls_remap/input_remap_button.gd:38)
+SCRIPT ERROR: Parse Error: Identifier "ControlsRemap" not declared in the current scope.
+   at: GDScript::reload (res://addons/runtime_controls_remap/input_remap_button.gd:55)
+SCRIPT ERROR: Parse Error: Identifier "ControlsRemap" not declared in the current scope.
+   at: GDScript::reload (res://addons/runtime_controls_remap/input_remap_button.gd:73)
+SCRIPT ERROR: Parse Error: Identifier "ControlsRemap" not declared in the current scope.
+   at: GDScript::reload (res://addons/runtime_controls_remap/input_remap_button.gd:74)
+SCRIPT ERROR: Compile Error: Failed to compile depended scripts.
+   at: GDScript::reload (res://tests/addon_integration_runner.gd:0)
+ERROR: Failed to load script "res://tests/addon_integration_runner.gd" with error "Compilation failed".
+   at: load (modules/gdscript/gdscript_resource_format.cpp:46)
+[godot_ai game_helper] registered mcp capture (debugger active=false, logger=true)
+ERROR: ADDON INTEGRATION: Runtime Controls Remap autoload must be enabled
+   at: push_error (core/variant/variant_utility.cpp:1023)
+   GDScript backtrace (most recent call first):
+       [0] _expect (res://tests/addon_integration_runner.gd:17)
+       [1] _assert_project_addon_bootstrap (res://tests/addon_integration_runner.gd:34)
+       [2] _run (res://tests/addon_integration_runner.gd:21)
+ERROR: ADDON INTEGRATION: Phantom Camera manager autoload must be enabled
+   at: push_error (core/variant/variant_utility.cpp:1023)
+   GDScript backtrace (most recent call first):
+       [0] _expect (res://tests/addon_integration_runner.gd:17)
+       [1] _assert_project_addon_bootstrap (res://tests/addon_integration_runner.gd:35)
+       [2] _run (res://tests/addon_integration_runner.gd:21)
+ERROR: ADDON INTEGRATION: controls remap must include move_forward
+   at: push_error (core/variant/variant_utility.cpp:1023)
+   GDScript backtrace (most recent call first):
+       [0] _expect (res://tests/addon_integration_runner.gd:17)
+       [1] _assert_project_addon_bootstrap (res://tests/addon_integration_runner.gd:38)
+       [2] _run (res://tests/addon_integration_runner.gd:21)
+ERROR: ADDON INTEGRATION: controls remap must include move_backward
+   at: push_error (core/variant/variant_utility.cpp:1023)
+   GDScript backtrace (most recent call first):
+       [0] _expect (res://tests/addon_integration_runner.gd:17)
+       [1] _assert_project_addon_bootstrap (res://tests/addon_integration_runner.gd:38)
+       [2] _run (res://tests/addon_integration_runner.gd:21)
+ERROR: ADDON INTEGRATION: controls remap must include move_left
+   at: push_error (core/variant/variant_utility.cpp:1023)
+   GDScript backtrace (most recent call first):
+       [0] _expect (res://tests/addon_integration_runner.gd:17)
+       [1] _assert_project_addon_bootstrap (res://tests/addon_integration_runner.gd:38)
+       [2] _run (res://tests/addon_integration_runner.gd:21)
+ERROR: ADDON INTEGRATION: controls remap must include move_right
+   at: push_error (core/variant/variant_utility.cpp:1023)
+   GDScript backtrace (most recent call first):
+       [0] _expect (res://tests/addon_integration_runner.gd:17)
+       [1] _assert_project_addon_bootstrap (res://tests/addon_integration_runner.gd:38)
+       [2] _run (res://tests/addon_integration_runner.gd:21)
+ERROR: ADDON INTEGRATION: controls remap must include jab
+   at: push_error (core/variant/variant_utility.cpp:1023)
+   GDScript backtrace (most recent call first):
+       [0] _expect (res://tests/addon_integration_runner.gd:17)
+       [1] _assert_project_addon_bootstrap (res://tests/addon_integration_runner.gd:38)
+       [2] _run (res://tests/addon_integration_runner.gd:21)
+ERROR: ADDON INTEGRATION: controls remap must include cross
+   at: push_error (core/variant/variant_utility.cpp:1023)
+   GDScript backtrace (most recent call first):
+       [0] _expect (res://tests/addon_integration_runner.gd:17)
+       [1] _assert_project_addon_bootstrap (res://tests/addon_integration_runner.gd:38)
+       [2] _run (res://tests/addon_integration_runner.gd:21)
+ERROR: ADDON INTEGRATION: controls remap must include left_hook
+   at: push_error (core/variant/variant_utility.cpp:1023)
+   GDScript backtrace (most recent call first):
+       [0] _expect (res://tests/addon_integration_runner.gd:17)
+       [1] _assert_project_addon_bootstrap (res://tests/addon_integration_runner.gd:38)
+       [2] _run (res://tests/addon_integration_runner.gd:21)
+ERROR: ADDON INTEGRATION: controls remap must include right_hook
+   at: push_error (core/variant/variant_utility.cpp:1023)
+   GDScript backtrace (most recent call first):
+       [0] _expect (res://tests/addon_integration_runner.gd:17)
+       [1] _assert_project_addon_bootstrap (res://tests/addon_integration_runner.gd:38)
+       [2] _run (res://tests/addon_integration_runner.gd:21)
+ERROR: ADDON INTEGRATION: controls remap must include uppercut
+   at: push_error (core/variant/variant_utility.cpp:1023)
+   GDScript backtrace (most recent call first):
+       [0] _expect (res://tests/addon_integration_runner.gd:17)
+       [1] _assert_project_addon_bootstrap (res://tests/addon_integration_runner.gd:38)
+       [2] _run (res://tests/addon_integration_runner.gd:21)
+ERROR: ADDON INTEGRATION: controls remap must include block_left
+   at: push_error (core/variant/variant_utility.cpp:1023)
+   GDScript backtrace (most recent call first):
+       [0] _expect (res://tests/addon_integration_runner.gd:17)
+       [1] _assert_project_addon_bootstrap (res://tests/addon_integration_runner.gd:38)
+       [2] _run (res://tests/addon_integration_runner.gd:21)
+ERROR: ADDON INTEGRATION: controls remap must include block_right
+   at: push_error (core/variant/variant_utility.cpp:1023)
+   GDScript backtrace (most recent call first):
+       [0] _expect (res://tests/addon_integration_runner.gd:17)
+       [1] _assert_project_addon_bootstrap (res://tests/addon_integration_runner.gd:38)
+       [2] _run (res://tests/addon_integration_runner.gd:21)
+ERROR: ADDON INTEGRATION: controls remap must include block_body
+   at: push_error (core/variant/variant_utility.cpp:1023)
+   GDScript backtrace (most recent call first):
+       [0] _expect (res://tests/addon_integration_runner.gd:17)
+       [1] _assert_project_addon_bootstrap (res://tests/addon_integration_runner.gd:38)
+       [2] _run (res://tests/addon_integration_runner.gd:21)
+ERROR: ADDON INTEGRATION: controls remap must include slip_left
+   at: push_error (core/variant/variant_utility.cpp:1023)
+   GDScript backtrace (most recent call first):
+       [0] _expect (res://tests/addon_integration_runner.gd:17)
+       [1] _assert_project_addon_bootstrap (res://tests/addon_integration_runner.gd:38)
+       [2] _run (res://tests/addon_integration_runner.gd:21)
+ERROR: ADDON INTEGRATION: controls remap must include slip_right
+   at: push_error (core/variant/variant_utility.cpp:1023)
+   GDScript backtrace (most recent call first):
+       [0] _expect (res://tests/addon_integration_runner.gd:17)
+       [1] _assert_project_addon_bootstrap (res://tests/addon_integration_runner.gd:38)
+       [2] _run (res://tests/addon_integration_runner.gd:21)
+ERROR: ADDON INTEGRATION: controls remap must include duck
+   at: push_error (core/variant/variant_utility.cpp:1023)
+   GDScript backtrace (most recent call first):
+       [0] _expect (res://tests/addon_integration_runner.gd:17)
+       [1] _assert_project_addon_bootstrap (res://tests/addon_integration_runner.gd:38)
+       [2] _run (res://tests/addon_integration_runner.gd:21)
+ERROR: ADDON INTEGRATION: controls remap must include pause
+   at: push_error (core/variant/variant_utility.cpp:1023)
+   GDScript backtrace (most recent call first):
+       [0] _expect (res://tests/addon_integration_runner.gd:17)
+       [1] _assert_project_addon_bootstrap (res://tests/addon_integration_runner.gd:38)
+       [2] _run (res://tests/addon_integration_runner.gd:21)
+ERROR: ADDON INTEGRATION: BoxingCamera must own a PhantomCameraHost
+   at: push_error (core/variant/variant_utility.cpp:1023)
+   GDScript backtrace (most recent call first):
+       [0] _expect (res://tests/addon_integration_runner.gd:17)
+       [1] _assert_phantom_camera_in_fight (res://tests/addon_integration_runner.gd:49)
+ERROR: ADDON INTEGRATION: BoxingCamera must own a combat PhantomCamera3D
+   at: push_error (core/variant/variant_utility.cpp:1023)
+   GDScript backtrace (most recent call first):
+       [0] _expect (res://tests/addon_integration_runner.gd:17)
+       [1] _assert_phantom_camera_in_fight (res://tests/addon_integration_runner.gd:50)
+ERROR: ADDON INTEGRATION: BoxingCamera must expose knockdown focus hook
+   at: push_error (core/variant/variant_utility.cpp:1023)
+   GDScript backtrace (most recent call first):
+       [0] _expect (res://tests/addon_integration_runner.gd:17)
+       [1] _assert_phantom_camera_in_fight (res://tests/addon_integration_runner.gd:51)
+ERROR: ADDON INTEGRATION: AI boxer must create BoxingAIPlanner
+   at: push_error (core/variant/variant_utility.cpp:1023)
+   GDScript backtrace (most recent call first):
+       [0] _expect (res://tests/addon_integration_runner.gd:17)
+       [1] _assert_limbo_ai_planner_contract (res://tests/addon_integration_runner.gd:61)
+ERROR: ADDON INTEGRATION: controls settings must expose keyboard remap buttons
+   at: push_error (core/variant/variant_utility.cpp:1023)
+   GDScript backtrace (most recent call first):
+       [0] _expect (res://tests/addon_integration_runner.gd:17)
+       [1] _assert_runtime_controls_settings_ui (res://tests/addon_integration_runner.gd:81)
+ERROR: ADDON INTEGRATION: controls settings must expose gamepad remap buttons
+   at: push_error (core/variant/variant_utility.cpp:1023)
+   GDScript backtrace (most recent call first):
+       [0] _expect (res://tests/addon_integration_runner.gd:17)
+       [1] _assert_runtime_controls_settings_ui (res://tests/addon_integration_runner.gd:82)
+ERROR: ADDON INTEGRATION: settings menu must expose conflict detection for tests
+   at: push_error (core/variant/variant_utility.cpp:1023)
+   GDScript backtrace (most recent call first):
+       [0] _expect (res://tests/addon_integration_runner.gd:17)
+       [1] _assert_runtime_controls_settings_ui (res://tests/addon_integration_runner.gd:83)
+ERROR: ADDON INTEGRATION TESTS FAILED: 25
+   at: push_error (core/variant/variant_utility.cpp:1023)
+   GDScript backtrace (most recent call first):
+       [0] _run (res://tests/addon_integration_runner.gd:29)
+       [1] _assert_runtime_controls_settings_ui (res://tests/addon_integration_runner.gd:88)

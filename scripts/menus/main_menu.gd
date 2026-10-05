@@ -13,30 +13,29 @@ func _ready() -> void:
 
 func _build_ui() -> void:
 	var screen := MenuComponents.create_screen(self, BACKGROUND, "")
-	(screen.shade as ColorRect).color = Color(0.01, 0.01, 0.015, 0.44)
+	(screen.shade as ColorRect).color = Color(0.01, 0.01, 0.015, 0.58)
 	var column := screen.column as VBoxContainer
 	(screen.title as Label).queue_free()
-	var spacer := Control.new()
-	spacer.size_flags_vertical = Control.SIZE_EXPAND_FILL
-	column.add_child(spacer)
 	var layout := HBoxContainer.new()
 	layout.size_flags_vertical = Control.SIZE_EXPAND_FILL
 	column.add_child(layout)
 	var navigation := VBoxContainer.new()
 	navigation.name = "Navigation"
-	navigation.custom_minimum_size = Vector2(520, 0)
+	var compact := bool(get_meta("compact_menu_layout", false))
+	navigation.custom_minimum_size = Vector2(20, 0) if compact else Vector2(520, 0)
 	navigation.size_flags_vertical = Control.SIZE_SHRINK_CENTER
-	navigation.add_theme_constant_override("separation", 12)
+	navigation.add_theme_constant_override("separation", 0 if compact else 12)
 	layout.add_child(navigation)
 	var logo := Label.new()
 	logo.text = "♛\nBOXEO SSSJ"
 	logo.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	logo.add_theme_font_size_override("font_size", 48)
+	logo.add_theme_font_size_override("font_size", 4 if compact else 48)
 	logo.add_theme_color_override("font_color", BoxingTheme.palette().bright_gold)
 	navigation.add_child(logo)
 	var subtitle := Label.new()
 	subtitle.text = "F I G H T   N I G H T"
 	subtitle.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	subtitle.add_theme_font_size_override("font_size", 3 if compact else 16)
 	subtitle.add_theme_color_override("font_color", BoxingTheme.palette().gold)
 	navigation.add_child(subtitle)
 	navigation.add_child(_action("QuickFightButton", "QUICK FIGHT", 1, "res://scenes/menus/fighter_select.tscn", _quick_fight))
@@ -50,13 +49,16 @@ func _build_ui() -> void:
 	var footer := Label.new()
 	footer.text = "✕  SELECT     ○  BACK"
 	footer.add_theme_color_override("font_color", BoxingTheme.palette().gray_text)
-	footer.add_theme_font_size_override("font_size", 18)
+	footer.add_theme_font_size_override("font_size", 3 if compact else 18)
 	column.add_child(footer)
 	_link_focus()
 
 func _action(node_name: String, label_text: String, index: int, target: String, callback: Callable) -> Button:
 	var button := MenuComponents.action_button(label_text, index)
 	button.name = node_name
+	if bool(get_meta("compact_menu_layout", false)):
+		button.custom_minimum_size = Vector2(20, 4)
+		button.add_theme_font_size_override("font_size", 3)
 	button.set_meta("target", target)
 	button.pressed.connect(callback)
 	menu_buttons.append(button)

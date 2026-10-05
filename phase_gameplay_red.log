@@ -1,0 +1,102 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+WARNING: res://fighters/boxer_green/boxer_green.tscn:17 - ext_resource, invalid UID: uid://e6h77hr3sjk6 - using text path instead: res://fighters/boxer_green/animations/pivot_left.res
+   at: load (scene/resources/resource_format_text.cpp:501)
+WARNING: res://fighters/boxer_green/boxer_green.tscn:20 - ext_resource, invalid UID: uid://dbrntynco5r8r - using text path instead: res://fighters/boxer_green/animations/step_backward.res
+   at: load (scene/resources/resource_format_text.cpp:501)
+WARNING: res://fighters/boxer_green/boxer_green.tscn:21 - ext_resource, invalid UID: uid://x78gbsjqyo8l - using text path instead: res://fighters/boxer_green/animations/step_forward.res
+   at: load (scene/resources/resource_format_text.cpp:501)
+WARNING: res://fighters/boxer_green/boxer_green.tscn:22 - ext_resource, invalid UID: uid://6k86pn1qy6dl - using text path instead: res://fighters/boxer_green/animations/step_left.res
+   at: load (scene/resources/resource_format_text.cpp:501)
+WARNING: res://fighters/boxer_green/boxer_green.tscn:23 - ext_resource, invalid UID: uid://c1psex6n5r7se - using text path instead: res://fighters/boxer_green/animations/step_right.res
+   at: load (scene/resources/resource_format_text.cpp:501)
+ERROR: Failed to read the root certificate store.
+   at: get_system_ca_certificates (platform/windows/os_windows.cpp:2582)
+[godot_ai game_helper] registered mcp capture (debugger active=false, logger=true)
+ERROR: PHASE GAMEPLAY: attack buffer must keep a maximum of three queued actions
+   at: push_error (core/variant/variant_utility.cpp:1023)
+   GDScript backtrace (most recent call first):
+       [0] _expect (res://tests/phase_gameplay_runner.gd:18)
+       [1] _test_input_buffer_replaces_oldest_at_three_actions (res://tests/phase_gameplay_runner.gd:64)
+       [2] _run (res://tests/phase_gameplay_runner.gd:28)
+ERROR: PHASE GAMEPLAY: full attack buffer must replace the oldest queued action
+   at: push_error (core/variant/variant_utility.cpp:1023)
+   GDScript backtrace (most recent call first):
+       [0] _expect (res://tests/phase_gameplay_runner.gd:18)
+       [1] _test_input_buffer_replaces_oldest_at_three_actions (res://tests/phase_gameplay_runner.gd:65)
+       [2] _run (res://tests/phase_gameplay_runner.gd:28)
+ERROR: PHASE GAMEPLAY: MoveData attack data missing feel field pushback
+   at: push_error (core/variant/variant_utility.cpp:1023)
+   GDScript backtrace (most recent call first):
+       [0] _expect (res://tests/phase_gameplay_runner.gd:18)
+       [1] _test_move_data_exposes_feel_fields (res://tests/phase_gameplay_runner.gd:71)
+       [2] _run (res://tests/phase_gameplay_runner.gd:29)
+ERROR: PHASE GAMEPLAY: MoveData attack data missing feel field sweet_spot_min
+   at: push_error (core/variant/variant_utility.cpp:1023)
+   GDScript backtrace (most recent call first):
+       [0] _expect (res://tests/phase_gameplay_runner.gd:18)
+       [1] _test_move_data_exposes_feel_fields (res://tests/phase_gameplay_runner.gd:71)
+       [2] _run (res://tests/phase_gameplay_runner.gd:29)
+ERROR: PHASE GAMEPLAY: MoveData attack data missing feel field sweet_spot_max
+   at: push_error (core/variant/variant_utility.cpp:1023)
+   GDScript backtrace (most recent call first):
+       [0] _expect (res://tests/phase_gameplay_runner.gd:18)
+       [1] _test_move_data_exposes_feel_fields (res://tests/phase_gameplay_runner.gd:71)
+       [2] _run (res://tests/phase_gameplay_runner.gd:29)
+ERROR: PHASE GAMEPLAY: MoveData attack data missing feel field whiff_recovery_extra
+   at: push_error (core/variant/variant_utility.cpp:1023)
+   GDScript backtrace (most recent call first):
+       [0] _expect (res://tests/phase_gameplay_runner.gd:18)
+       [1] _test_move_data_exposes_feel_fields (res://tests/phase_gameplay_runner.gd:71)
+       [2] _run (res://tests/phase_gameplay_runner.gd:29)
+ERROR: PHASE GAMEPLAY: MoveData attack data missing feel field whiff_stamina_mult
+   at: push_error (core/variant/variant_utility.cpp:1023)
+   GDScript backtrace (most recent call first):
+       [0] _expect (res://tests/phase_gameplay_runner.gd:18)
+       [1] _test_move_data_exposes_feel_fields (res://tests/phase_gameplay_runner.gd:71)
+       [2] _run (res://tests/phase_gameplay_runner.gd:29)
+ERROR: PHASE GAMEPLAY: MoveData attack data missing feel field magnetism
+   at: push_error (core/variant/variant_utility.cpp:1023)
+   GDScript backtrace (most recent call first):
+       [0] _expect (res://tests/phase_gameplay_runner.gd:18)
+       [1] _test_move_data_exposes_feel_fields (res://tests/phase_gameplay_runner.gd:71)
+       [2] _run (res://tests/phase_gameplay_runner.gd:29)
+ERROR: PHASE GAMEPLAY: MoveData attack data missing feel field stun_power
+   at: push_error (core/variant/variant_utility.cpp:1023)
+   GDScript backtrace (most recent call first):
+       [0] _expect (res://tests/phase_gameplay_runner.gd:18)
+       [1] _test_move_data_exposes_feel_fields (res://tests/phase_gameplay_runner.gd:71)
+       [2] _run (res://tests/phase_gameplay_runner.gd:29)
+ERROR: PHASE GAMEPLAY: MoveData attack data missing feel field counter_mult
+   at: push_error (core/variant/variant_utility.cpp:1023)
+   GDScript backtrace (most recent call first):
+       [0] _expect (res://tests/phase_gameplay_runner.gd:18)
+       [1] _test_move_data_exposes_feel_fields (res://tests/phase_gameplay_runner.gd:71)
+       [2] _run (res://tests/phase_gameplay_runner.gd:29)
+ERROR: PHASE GAMEPLAY: MoveData attack data missing feel field cancel_start_frame
+   at: push_error (core/variant/variant_utility.cpp:1023)
+   GDScript backtrace (most recent call first):
+       [0] _expect (res://tests/phase_gameplay_runner.gd:18)
+       [1] _test_move_data_exposes_feel_fields (res://tests/phase_gameplay_runner.gd:71)
+       [2] _run (res://tests/phase_gameplay_runner.gd:29)
+ERROR: PHASE GAMEPLAY: MoveData attack data missing feel field cancel_end_frame
+   at: push_error (core/variant/variant_utility.cpp:1023)
+   GDScript backtrace (most recent call first):
+       [0] _expect (res://tests/phase_gameplay_runner.gd:18)
+       [1] _test_move_data_exposes_feel_fields (res://tests/phase_gameplay_runner.gd:71)
+       [2] _run (res://tests/phase_gameplay_runner.gd:29)
+SCRIPT ERROR: Invalid access to property or key 'whiff_stamina_mult' on a base object of type 'Dictionary'.
+   at: _test_move_data_exposes_feel_fields (res://tests/phase_gameplay_runner.gd:72)
+   GDScript backtrace (most recent call first):
+       [0] _test_move_data_exposes_feel_fields (res://tests/phase_gameplay_runner.gd:72)
+       [1] _run (res://tests/phase_gameplay_runner.gd:29)
+ERROR: PHASE GAMEPLAY: missed punches must cost substantially more stamina than landed punches
+   at: push_error (core/variant/variant_utility.cpp:1023)
+   GDScript backtrace (most recent call first):
+       [0] _expect (res://tests/phase_gameplay_runner.gd:18)
+       [1] _test_whiff_cost_is_meaningfully_higher_than_hit_cost (res://tests/phase_gameplay_runner.gd:79)
+       [2] _run (res://tests/phase_gameplay_runner.gd:30)
+ERROR: PHASE_GAMEPLAY_TESTS_FAILED: 13
+   at: push_error (core/variant/variant_utility.cpp:1023)
+   GDScript backtrace (most recent call first):
+       [0] _run (res://tests/phase_gameplay_runner.gd:37)

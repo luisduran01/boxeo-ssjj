@@ -31,15 +31,6 @@ func _build_ui() -> void:
 	var screen := MenuComponents.create_screen(self, BACKGROUND, "CAREER")
 	(screen.shade as ColorRect).color = Color(0.01, 0.015, 0.025, 0.86)
 	var column := screen.column as VBoxContainer
-	var tabs := HBoxContainer.new()
-	tabs.alignment = BoxContainer.ALIGNMENT_CENTER
-	tabs.add_theme_constant_override("separation", 8)
-	column.add_child(tabs)
-	for tab in [["CARRERA", &"summary"], ["ENTRENAMIENTO", &"training"], ["PELEAS", &"calendar"], ["RANKING", &"ranking"], ["CONTRATOS", &"contracts"], ["ESTADÍSTICAS", &"statistics"]]:
-		var button := Button.new()
-		button.text = tab[0]
-		button.pressed.connect(show_section.bind(tab[1]))
-		tabs.add_child(button)
 	var body := HBoxContainer.new()
 	body.size_flags_vertical = Control.SIZE_EXPAND_FILL
 	body.add_theme_constant_override("separation", 22)
