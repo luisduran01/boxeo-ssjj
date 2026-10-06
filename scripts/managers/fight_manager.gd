@@ -5,6 +5,7 @@ const RoundManagerScript := preload("res://scripts/managers/round_manager.gd")
 const FightStatsScript := preload("res://scripts/managers/fight_stats.gd")
 const FightTelemetryScript := preload("res://scripts/managers/fight_telemetry.gd")
 const JudgesScript := preload("res://scripts/managers/judges.gd")
+const CombatPhasePlan := preload("res://scripts/managers/combat_phase_plan.gd")
 
 signal fight_started
 signal round_started(round_number: int)
@@ -54,7 +55,7 @@ func setup(p_player: BoxerController, p_enemy: BoxerController, p_hud: FightHUD,
 	fight_telemetry = FightTelemetryScript.new()
 	fight_telemetry.name = "FightTelemetry"
 	add_child(fight_telemetry)
-	fight_telemetry.start_fight("phase_gameplay_v1")
+	fight_telemetry.start_fight(CombatPhasePlan.telemetry_id_for_phase(1))
 	judges = JudgesScript.new()
 	judges.name = "Judges"
 	add_child(judges)
@@ -167,7 +168,7 @@ func _on_knockdown(fighter: BoxerController) -> void:
 			referee.count(count)
 		count_updated.emit(count)
 		hud.announce(str(count), 0.42)
-		await get_tree().create_timer(0.48).timeout
+		await get_tree().create_timer(0.36).timeout
 		if count >= 7 and FightRules.can_get_up(fighter.knockdowns, fighter.stats.stamina, count):
 			await fighter.recover_from_knockdown()
 			standing.release_from_neutral()
@@ -186,13 +187,13 @@ func _on_knockdown(fighter: BoxerController) -> void:
 func _end_by_decision() -> void:
 	var decision: Dictionary = judges.decide(player, enemy)
 	if decision.winner == null:
-		_end_fight(null, "Draw", decision)
+		_end_fight(null, "DECISIÓN Draw", decision)
 		return
 	_end_fight(decision.winner, "DECISIÓN " + str(decision.method), decision)
 
 
 func _end_fight(winner: BoxerController, method: String, decision: Dictionary = {}) -> void:
-	if state == State.FIGHT_END:
+	if state == State.FIGHT_END and not result.is_empty():
 		Engine.time_scale = 1.0
 		_knockdown_in_progress = false
 		return

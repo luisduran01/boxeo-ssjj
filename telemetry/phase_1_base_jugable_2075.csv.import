@@ -1,0 +1,19 @@
+[remap]
+
+importer="csv_translation"
+type="Translation"
+uid="uid://nykkh5kdv00e"
+
+[deps]
+
+files=["res://telemetry/phase_1_base_jugable_2075.fight.translation", "res://telemetry/phase_1_base_jugable_2075.rounds.translation", "res://telemetry/phase_1_base_jugable_2075.punches.translation", "res://telemetry/phase_1_base_jugable_2075.punches.translation", "res://telemetry/phase_1_base_jugable_2075.punches.translation", "res://telemetry/phase_1_base_jugable_2075.punches.translation", "res://telemetry/phase_1_base_jugable_2075.knockdowns.translation", "res://telemetry/phase_1_base_jugable_2075.damage.translation"]
+
+source_file="res://telemetry/phase_1_base_jugable_2075.csv"
+dest_files=["res://telemetry/phase_1_base_jugable_2075.fight.translation", "res://telemetry/phase_1_base_jugable_2075.rounds.translation", "res://telemetry/phase_1_base_jugable_2075.punches.translation", "res://telemetry/phase_1_base_jugable_2075.punches.translation", "res://telemetry/phase_1_base_jugable_2075.punches.translation", "res://telemetry/phase_1_base_jugable_2075.punches.translation", "res://telemetry/phase_1_base_jugable_2075.knockdowns.translation", "res://telemetry/phase_1_base_jugable_2075.damage.translation"]
+
+[params]
+
+compress=1
+delimiter=0
+unescape_keys=false
+unescape_translations=true

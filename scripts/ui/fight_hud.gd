@@ -58,6 +58,8 @@ func _ready() -> void:
 func _process(_delta: float) -> void:
 	if Input.is_action_just_pressed("pause"):
 		_toggle_pause()
+	if _player != null and _enemy != null:
+		_sync_live_bars()
 
 
 func setup(player: BoxerController, enemy: BoxerController) -> void:
@@ -244,9 +246,18 @@ func _update_smooth_bar(bar: ProgressBar, value: float, duration: float, immedia
 	if immediate:
 		bar.value = value
 		return
+	bar.value = value
+	return
 	var tween := bar.create_tween()
 	_bar_tweens[bar] = tween
 	tween.tween_property(bar, "value", value, duration).set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_OUT)
+
+
+func _sync_live_bars() -> void:
+	player_stamina.value = float(_player.stats.stamina)
+	player_stun.value = float(_player.stats.stun)
+	enemy_stamina.value = float(_enemy.stats.stamina)
+	enemy_stun.value = float(_enemy.stats.stun)
 
 
 func _kill_bar_tween(bar: ProgressBar) -> void:

@@ -33,6 +33,13 @@ extends Resource
 @export var camera_feedback := 0.0
 @export var animation_speed := 1.0
 @export var cancel_window_frames := 0.0
+@export_range(0.0, 1.0, 0.01) var procedural_strength := 0.0
+@export var ctrl_out_1 := Vector3(0.0, 0.03, 0.28)
+@export var ctrl_out_2 := Vector3(0.0, 0.0, -0.10)
+@export var ctrl_back_1 := Vector3(0.0, 0.02, -0.18)
+@export var ctrl_back_2 := Vector3(0.0, 0.0, 0.12)
+@export var weight_transfer := 0.15
+@export var shoulder_guard_bias := 0.22
 
 
 func to_attack_data(fps := 60.0) -> Dictionary:
@@ -87,6 +94,13 @@ func to_attack_data(fps := 60.0) -> Dictionary:
 		"animation_speed": animation_speed,
 		"cancel_window_frames": cancel_window_frames,
 		"cancel_window": cancel_window,
+		"procedural_strength": procedural_strength,
+		"ctrl_out_1": ctrl_out_1,
+		"ctrl_out_2": ctrl_out_2,
+		"ctrl_back_1": ctrl_back_1,
+		"ctrl_back_2": ctrl_back_2,
+		"weight_transfer": weight_transfer,
+		"shoulder_guard_bias": shoulder_guard_bias,
 		"active": active_time,
 		"cost": stamina_cost,
 		"zone": target_level,

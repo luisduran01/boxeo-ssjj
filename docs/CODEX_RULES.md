@@ -2,6 +2,13 @@
 
 Read `docs/ARCHITECTURE.md` and the active plan before changing fight, fighter, animation, or UI flow code.
 
+Every gameplay task must declare its phase:
+- Phase 1: stable Quick Fight base, events, telemetry, fighter selection, MoveData, core presentation.
+- Phase 2: master combat feel, defense, counters, footwork consequences, AI tactics, impact feedback.
+- Phase 3: production polish, career-light flow, practice, settings, accessibility, optimization, export.
+
+Use `scripts/managers/combat_phase_plan.gd` as the source of truth for phase names, telemetry ids, required runners, and exit criteria.
+
 Keep changes small: one behavior per task, with a failing runner first and a passing focused runner before moving on.
 
 Do not rename public nodes, animation names, signals, input actions, or fighter scene paths unless the task explicitly requires the migration and updates all tests.

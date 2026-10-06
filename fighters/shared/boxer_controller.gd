@@ -4,6 +4,9 @@ extends CharacterBody3D
 const FootworkModel = preload("res://scripts/combat/boxing_footwork_model.gd")
 const AIPlanner = preload("res://scripts/ai/boxing_ai_planner.gd")
 const Balance = preload("res://scripts/combat/gameplay_balance.gd")
+const PresentationBridge = preload("res://scripts/presentation/presentation_bridge.gd")
+const ProceduralFighterMotor = preload("res://scripts/presentation/procedural_fighter_motor.gd")
+const CombatEventView = preload("res://scripts/presentation/combat_event_view.gd")
 
 signal stats_changed(fighter: BoxerController)
 signal punch_thrown(fighter: BoxerController, attack_name: String)
@@ -27,6 +30,7 @@ signal boxer_tko_candidate(fighter: BoxerController)
 @export_range(0.04, 0.16, 0.01) var separation_soft_zone := 0.10
 @export var punch_debug_enabled := false
 @export var debug_boxing_movement := false
+@export var procedural_presentation_enabled := true
 @export_group("Boxing Footwork")
 @export_range(0.0, 0.5, 0.01) var input_deadzone := 0.20
 @export_range(0.0, 1.0, 0.01) var short_step_threshold := 0.25
@@ -169,6 +173,11 @@ var _defense_spam_count := 0
 var _last_guard_level := "head"
 var _ai_memory: Array[String] = []
 var ai_planner: BoxingAIPlanner
+var procedural_motor := ProceduralFighterMotor.new()
+var procedural_targets := {}
+var procedural_move_frame := 0
+var _procedural_debug := {}
+var _procedural_bone_rest := {}
 
 @onready var animation_tree: AnimationTree = $AnimationTree
 @onready var animation_player: AnimationPlayer = _resolve_animation_player()
@@ -186,6 +195,7 @@ func _ready() -> void:
 	_normalize_footwork_animations()
 	_configure_body_collider()
 	_configure_combat_areas()
+	_cache_procedural_bone_rest()
 	var playback := animation_tree.get("parameters/playback") as AnimationNodeStateMachinePlayback
 	animation_tree.callback_mode_process = AnimationMixer.ANIMATION_CALLBACK_MODE_PROCESS_MANUAL
 	if playback != null:
@@ -208,6 +218,7 @@ func _physics_process(delta: float) -> void:
 		positional_disadvantage_frames -= 1
 	if guard_switch_frames_left > 0:
 		guard_switch_frames_left -= 1
+	_update_procedural_presentation(delta)
 	if combat_state == "CLINCH":
 		_update_clinch(delta)
 		return
@@ -1064,7 +1075,15 @@ func request_attack(attack_name: String) -> void:
 	stats.stamina = maxf(0.0, stats.stamina - CombatRules.stamina_cost(attack_name, false))
 	animation_tree.active = false
 	animation_player.speed_scale = speed
-	animation_player.play("Boxing/" + str(attack.animation_name), 0.07)
+	procedural_move_frame = 0
+	if _uses_procedural_attack(attack_name, attack):
+		animation_player.play("Boxing/" + str(attack.animation_name), 0.0)
+		animation_tree.active = true
+		var playback = animation_tree.get("parameters/playback")
+		if playback:
+			playback.travel("Footwork")
+	else:
+		animation_player.play("Boxing/" + str(attack.animation_name), 0.07)
 	stats_changed.emit(self)
 
 
@@ -1073,6 +1092,7 @@ func _update_attack(delta: float) -> void:
 	if attack.is_empty():
 		_finish_action()
 		return
+	procedural_move_frame += 1
 	_update_attack_movement(delta, attack)
 	var remaining := delta
 	if combat_state == "STARTUP":
@@ -1081,6 +1101,7 @@ func _update_attack(delta: float) -> void:
 		if _action_time > 0.0: return
 		remaining = -_action_time
 		combat_state = "ACTIVE"
+		procedural_move_frame = int(round(float(attack.get("startup_frames", procedural_move_frame))))
 		_strike_done = true
 		_set_fist_active(true)
 		_attempt_strike()
@@ -1090,6 +1111,7 @@ func _update_attack(delta: float) -> void:
 		remaining = -_active_time
 		_set_fist_active(false)
 		combat_state = "RECOVERY"
+		procedural_move_frame = 0
 	if combat_state != "RECOVERY": return
 	_recovery_time -= remaining
 	if _buffered_attack != "" and _buffer_time > 0.0 and _recovery_time <= float(attack.cancel_window) + 0.12:
@@ -1137,7 +1159,7 @@ func _attempt_strike() -> void:
 	if attack.is_empty(): return
 	var target_area := opponent.get_node_or_null("Hurtboxes/Body" if attack.target_level == "body" else "Hurtboxes/Head") as Area3D
 	var target_position: Vector3 = target_area.global_position if target_area else opponent.global_position
-	var origin: Vector3 = (left_fist if attack.hand == "left" else right_fist).global_position
+	var origin: Vector3 = _procedural_hand_position(str(attack.hand), (left_fist if attack.hand == "left" else right_fist).global_position)
 	var to_target := target_position - origin
 	var planar := Vector3(to_target.x, 0.0, to_target.z)
 	var direction := planar.normalized()
@@ -1149,6 +1171,7 @@ func _attempt_strike() -> void:
 		var counter: bool = str(opponent.combat_state) in ["STARTUP", "RECOVERY"]
 		var result: Dictionary = opponent.receive_hit(_current_attack, attack.target_level, stats.stamina, counter, quality, _attack_momentum, signf(global_basis.x.dot(direction)))
 		if not result.is_empty():
+			result["attack_name"] = _current_attack
 			_hit_targets[opponent.get_instance_id()] = _attack_instance_id
 			_last_hit_result = str(result.result)
 			_last_hit_damage = float(result.damage)
@@ -1253,6 +1276,8 @@ func receive_hit(attack_name: String, zone: String, attacker_stamina: float, cou
 		combat_state = "STUNNED"
 		_play_reaction_animation(reaction)
 		_emit_fighter_event("stunned", [self, null, result])
+	if not result.is_empty():
+		_apply_procedural_hit_reaction(attack_name, result, lateral_direction)
 	return result
 
 
@@ -1374,6 +1399,10 @@ func _move_to_neutral(delta: float) -> void:
 func _finish_action() -> void:
 	_set_fist_active(false)
 	_current_attack = ""
+	procedural_move_frame = 0
+	procedural_targets = {}
+	_procedural_debug = {}
+	_clear_procedural_skeleton_pose()
 	_reaction_time = 0.0
 	combat_state = "IDLE"
 	animation_player.stop()
@@ -1389,6 +1418,175 @@ func _finish_action() -> void:
 func get_punch_debug() -> Dictionary:
 	var data := CombatRules.attack_data(_current_attack)
 	return {"attack":_current_attack if _current_attack != "" else "NONE", "phase":combat_state, "hand":str(data.get("hand", "NONE")), "range":float(data.get("range", 0.0)), "target":str(data.get("target_level", "NONE")), "hitbox_active":left_fist.monitoring or right_fist.monitoring, "hit_result":_last_hit_result, "damage":_last_hit_damage, "stamina_cost":float(data.get("stamina_cost", 0.0)), "counter":_last_counter, "distance":_last_hit_distance}
+
+
+func get_procedural_debug() -> Dictionary:
+	return _procedural_debug.duplicate(true)
+
+
+func _uses_procedural_attack(attack_name: String, attack: Dictionary) -> bool:
+	return procedural_presentation_enabled and attack_name == "jab" and float(attack.get("procedural_strength", 0.0)) > 0.0
+
+
+func _update_procedural_presentation(delta: float) -> void:
+	if procedural_motor == null:
+		return
+	if not procedural_presentation_enabled:
+		_clear_procedural_skeleton_pose()
+		_update_procedural_recovery_only(delta)
+		return
+	var attack := CombatRules.attack_data(_current_attack)
+	var view = PresentationBridge.fighter_view(self, get_instance_id())
+	if attack.is_empty():
+		attack = {"procedural_strength": 0.0}
+	procedural_targets = procedural_motor.tick(view, attack, delta)
+	if not procedural_targets.is_empty():
+		_apply_procedural_pose_offsets()
+		_procedural_debug = {
+			"procedural_strength": procedural_targets.get("procedural_strength", 0.0),
+			"frame": procedural_move_frame,
+			"active": combat_state == "ACTIVE",
+			"punch_target": procedural_targets.get("left_hand", Vector3.ZERO),
+			"curve": procedural_motor.last_curve,
+			"impact_vector": procedural_motor.last_impact_vector,
+			"head_reaction": procedural_targets.get("head_reaction", Vector3.ZERO),
+			"active_contact_error": procedural_targets.get("contact_frame_error", 999.0),
+			"opposite_guard": procedural_targets.get("chin_protected", false),
+			"has_nan": procedural_targets.get("has_nan", false),
+		}
+
+
+func _update_procedural_recovery_only(delta: float) -> void:
+	var view = PresentationBridge.fighter_view(self, get_instance_id())
+	procedural_targets = procedural_motor.tick(view, {"procedural_strength": 0.0}, delta)
+
+
+func _apply_procedural_pose_offsets() -> void:
+	if skeleton == null:
+		return
+	_apply_procedural_hand_pose("left", "left_hand")
+	_apply_procedural_hand_pose("right", "right_hand")
+	_apply_procedural_core_pose()
+	var head_offset: Vector3 = procedural_targets.get("head_reaction", Vector3.ZERO)
+	var neck_offset: Vector3 = procedural_targets.get("neck_reaction", Vector3.ZERO)
+	_apply_bone_rotation(["mixamorig_Head", "Head"], head_offset)
+	_apply_bone_rotation(["mixamorig_Neck", "Neck"], neck_offset)
+
+
+func _procedural_hand_position(hand: String, fallback: Vector3) -> Vector3:
+	if procedural_targets.is_empty():
+		return fallback
+	if hand == "left" and procedural_targets.has("left_hand"):
+		return procedural_targets.left_hand
+	if hand == "right" and procedural_targets.has("right_hand"):
+		return procedural_targets.right_hand
+	return fallback
+
+
+func _apply_procedural_hit_reaction(attack_name: String, result: Dictionary, lateral_direction: float) -> void:
+	if procedural_motor == null or not procedural_presentation_enabled:
+		return
+	var event := CombatEventView.new()
+	event.move_id = StringName(attack_name)
+	event.blocked = bool(result.get("blocked", false))
+	event.counter = bool(result.get("counter", false))
+	event.clean = str(result.get("result", "")) in ["CLEAN_HIT", "COUNTER"]
+	event.power_norm = clampf(float(result.get("damage", 0.0)) / 18.0, 0.0, 1.0)
+	var lateral := global_basis.x * (1.0 if lateral_direction >= 0.0 else -1.0)
+	event.punch_dir = (-global_basis.z * 0.72 + lateral * 0.28).normalized()
+	event.hit_point = global_position + Vector3(0.0, body_height * 0.9, 0.0) + lateral * 0.08
+	procedural_motor.add_impact(event)
+	_update_procedural_presentation(1.0 / 60.0)
+
+
+func _cache_procedural_bone_rest() -> void:
+	if skeleton == null:
+		return
+	for names in [
+		["mixamorig_LeftHand", "LeftHand", "Left_Hand"],
+		["mixamorig_RightHand", "RightHand", "Right_Hand"],
+		["mixamorig_LeftArm", "LeftArm", "LeftUpperArm"],
+		["mixamorig_RightArm", "RightArm", "RightUpperArm"],
+		["mixamorig_Hips", "Hips"],
+		["mixamorig_Spine", "Spine"],
+		["mixamorig_Spine1", "Spine1"],
+		["mixamorig_Spine2", "Spine2"],
+		["mixamorig_Head", "Head"],
+		["mixamorig_Neck", "Neck"],
+	]:
+		var bone := _find_bone_index(names)
+		if bone >= 0 and not _procedural_bone_rest.has(bone):
+			_procedural_bone_rest[bone] = {
+				"position": skeleton.get_bone_pose_position(bone),
+				"rotation": skeleton.get_bone_pose_rotation(bone),
+			}
+
+
+func _apply_procedural_hand_pose(hand: String, target_key: String) -> void:
+	if not procedural_targets.has(target_key):
+		return
+	var names := ["mixamorig_LeftHand", "LeftHand", "Left_Hand"] if hand == "left" else ["mixamorig_RightHand", "RightHand", "Right_Hand"]
+	var bone := _find_bone_index(names)
+	if bone < 0:
+		return
+	var rest: Dictionary = _procedural_bone_rest.get(bone, {"position": skeleton.get_bone_pose_position(bone), "rotation": skeleton.get_bone_pose_rotation(bone)})
+	var current_global := (left_fist if hand == "left" else right_fist).global_position
+	var target: Vector3 = procedural_targets.get(target_key, current_global)
+	var local_delta := skeleton.global_transform.basis.inverse() * (target - current_global)
+	if local_delta.length() > 0.65:
+		local_delta = local_delta.normalized() * 0.65
+	var strength := float(procedural_targets.get("procedural_strength", 0.0))
+	if target_key == "right_hand":
+		strength = maxf(strength, 0.65 if _current_attack == "jab" else 0.0)
+	skeleton.set_bone_pose_position(bone, rest.position + local_delta * strength)
+	var arm_names := ["mixamorig_LeftArm", "LeftArm", "LeftUpperArm"] if hand == "left" else ["mixamorig_RightArm", "RightArm", "RightUpperArm"]
+	var arm := _find_bone_index(arm_names)
+	if arm >= 0:
+		var arm_rest: Dictionary = _procedural_bone_rest.get(arm, {"position": skeleton.get_bone_pose_position(arm), "rotation": skeleton.get_bone_pose_rotation(arm)})
+		var shoulder_turn := Vector3(0.0, -0.16 if hand == "left" else 0.10, 0.12 if hand == "left" else -0.08) * strength
+		skeleton.set_bone_pose_rotation(arm, arm_rest.rotation * Quaternion.from_euler(shoulder_turn))
+
+
+func _apply_procedural_core_pose() -> void:
+	var strength := float(procedural_targets.get("procedural_strength", 0.0))
+	if strength <= 0.0:
+		return
+	var hips := _find_bone_index(["mixamorig_Hips", "Hips"])
+	if hips >= 0:
+		var rest: Dictionary = _procedural_bone_rest.get(hips, {"position": skeleton.get_bone_pose_position(hips), "rotation": skeleton.get_bone_pose_rotation(hips)})
+		skeleton.set_bone_pose_position(hips, rest.position + Vector3(0.0, 0.0, -0.018) * strength)
+		skeleton.set_bone_pose_rotation(hips, rest.rotation * Quaternion.from_euler(Vector3(0.0, 0.04, 0.0) * strength))
+	var spine := _find_bone_index(["mixamorig_Spine2", "Spine2", "mixamorig_Spine1", "Spine1"])
+	if spine >= 0:
+		var spine_rest: Dictionary = _procedural_bone_rest.get(spine, {"position": skeleton.get_bone_pose_position(spine), "rotation": skeleton.get_bone_pose_rotation(spine)})
+		skeleton.set_bone_pose_rotation(spine, spine_rest.rotation * Quaternion.from_euler(Vector3(0.02, -0.08, 0.03) * strength))
+
+
+func _apply_bone_rotation(names: Array, euler: Vector3) -> void:
+	var bone := _find_bone_index(names)
+	if bone < 0:
+		return
+	var rest: Dictionary = _procedural_bone_rest.get(bone, {"position": skeleton.get_bone_pose_position(bone), "rotation": skeleton.get_bone_pose_rotation(bone)})
+	skeleton.set_bone_pose_rotation(bone, rest.rotation * Quaternion.from_euler(euler))
+
+
+func _clear_procedural_skeleton_pose() -> void:
+	if skeleton == null:
+		return
+	for bone in _procedural_bone_rest.keys():
+		var rest: Dictionary = _procedural_bone_rest[bone]
+		skeleton.set_bone_pose_position(int(bone), rest.position)
+		skeleton.set_bone_pose_rotation(int(bone), rest.rotation)
+
+
+func _find_bone_index(names: Array) -> int:
+	if skeleton == null:
+		return -1
+	for name in names:
+		var bone := skeleton.find_bone(str(name))
+		if bone >= 0:
+			return bone
+	return -1
 
 
 func apply_fighter_state(state: Dictionary) -> void:

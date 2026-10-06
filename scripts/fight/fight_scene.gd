@@ -4,6 +4,7 @@ const BOXING_RING_SCENE := preload("res://ring/boxing_ring.tscn")
 const REFEREE_SCENE := preload("res://referee/referee.tscn")
 const FIGHTER_DATABASE := preload("res://scripts/data/fighter_database.gd")
 const HIT_FEEDBACK_SYSTEM := preload("res://scripts/presentation/hit_feedback_system.gd")
+const PROCEDURAL_DEBUG_OVERLAY := preload("res://scripts/ui/procedural_debug_overlay.gd")
 
 var player: BoxerController
 var enemy: BoxerController
@@ -12,6 +13,7 @@ var hud: FightHUD
 var manager: FightManager
 var referee: RefereeController
 var hit_feedback: Node
+var procedural_debug_overlay: Label
 
 
 func _ready() -> void:
@@ -57,6 +59,12 @@ func _ready() -> void:
 	hud.restart_requested.connect(func(): get_tree().reload_current_scene())
 	hud.quit_requested.connect(func(): get_tree().change_scene_to_file("res://scenes/menus/main_menu.tscn"))
 	hud.settings_requested.connect(_open_settings)
+	procedural_debug_overlay = PROCEDURAL_DEBUG_OVERLAY.new()
+	procedural_debug_overlay.name = "ProceduralDebugOverlay"
+	procedural_debug_overlay.position = Vector2(930, 156)
+	procedural_debug_overlay.size = Vector2(330, 210)
+	procedural_debug_overlay.add_theme_font_size_override("font_size", 13)
+	add_child(procedural_debug_overlay)
 	var audio := BoxingAudio.new()
 	add_child(audio)
 	manager = FightManager.new()
@@ -98,3 +106,5 @@ func _process(delta: float) -> void:
 			hud.set_debug("ATTACK %s  PHASE %s  HAND %s\nRANGE %.2f  TARGET %s  ACTIVE %s\nRESULT %s  DAMAGE %.1f  COST %.1f\nCOUNTER %s  DISTANCE %.2f\nAI %s  REF %s" % [punch.attack, punch.phase, punch.hand, punch.range, punch.target, punch.hitbox_active, punch.hit_result, punch.damage, punch.stamina_cost, punch.counter, punch.distance, enemy.ai_state, RefereeController.State.keys()[referee.state]])
 		else:
 			hud.set_debug("")
+		if procedural_debug_overlay != null:
+			procedural_debug_overlay.update_from_debug(player.get_procedural_debug() if SaveSystem.settings.get("debug", false) else {})

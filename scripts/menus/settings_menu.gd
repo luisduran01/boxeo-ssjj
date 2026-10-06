@@ -4,12 +4,24 @@ extends Control
 const BACKGROUND := preload("res://menus/Menú de ajustes de BOXEO SSSJ.png")
 const Rows = preload("res://scripts/ui/settings_sections.gd")
 const RemapButton = preload("res://addons/runtime_controls_remap/input_remap_button.gd")
+const SettingsSlider = preload("res://scripts/ui/settings_slider.gd")
 const CATEGORIES := [[&"general", "GENERAL", "General"], [&"controls", "CONTROLES", "Controls"], [&"sound", "SONIDO", "Sound"], [&"graphics", "GRÁFICOS", "Graphics"], [&"gameplay", "JUGABILIDAD", "Gameplay"], [&"camera", "CÁMARA", "Camera"], [&"language", "IDIOMA", "Language"], [&"accessibility", "ACCESIBILIDAD", "Accessibility"], [&"credits", "CRÉDITOS", "Credits"]]
 const COMBAT_REMAP_ACTIONS := [&"move_forward", &"move_backward", &"move_left", &"move_right", &"jab", &"cross", &"left_hook", &"right_hook", &"uppercut", &"block_left", &"block_right", &"block_body", &"slip_left", &"slip_right", &"duck", &"pause"]
 
 var category_buttons: Array[Button] = []
 var content: VBoxContainer
 var current_category := &"general"
+var _syncing_controls := false
+var _last_control_values := {}
+
+func _process(_delta: float) -> void:
+	if content != null and not _syncing_controls:
+		_watch_visible_settings(content)
+
+func _exit_tree() -> void:
+	if content != null and current_category == &"sound":
+		_collect_sound_settings_by_order()
+		SaveSystem.save_settings()
 
 func _ready() -> void:
 	var screen := MenuComponents.create_screen(self, BACKGROUND, "SETTINGS")
@@ -60,14 +72,19 @@ func show_category(category: StringName) -> void:
 func _add_option(label: String, key: StringName, labels: Array, values: Array = []) -> void:
 	var option := OptionButton.new(); option.name = "%sOption" % str(key).to_pascal_case()
 	for item in labels: option.add_item(str(item))
+	option.set_meta("settings_key", key)
+	option.set_meta("settings_values", values if not values.is_empty() else labels)
 	var source := values if not values.is_empty() else labels; option.select(maxi(0, source.find(SaveSystem.settings.get(key)))); option.item_selected.connect(func(i: int) -> void: SaveSystem.update_setting(key, source[i], false)); content.add_child(Rows.row(label, option))
 
 func _add_slider(label: String, key: StringName, minimum: float, maximum: float, pending := false, live_audio := false) -> void:
 	var slider := MenuComponents.slider_row(label, float(SaveSystem.settings[key]), minimum, maximum, 0.05); slider.name = "%sSlider" % str(key).to_pascal_case()
+	slider.set_script(SettingsSlider)
+	slider.settings_key = key
+	slider.set_meta("settings_key", key)
 	slider.value_changed.connect(func(value: float) -> void: SaveSystem.update_setting(key, value, false); if live_audio: SaveSystem.apply_audio_settings()); content.add_child(Rows.row(label, slider, pending))
 
 func _add_toggle(label: String, key: StringName, pending := false) -> void:
-	var toggle := MenuComponents.toggle_row(label, bool(SaveSystem.settings[key])); toggle.name = "%sToggle" % str(key).to_pascal_case(); toggle.toggled.connect(func(value: bool) -> void: SaveSystem.update_setting(key, value, false)); content.add_child(Rows.row(label, toggle, pending))
+	var toggle := MenuComponents.toggle_row(label, bool(SaveSystem.settings[key])); toggle.name = "%sToggle" % str(key).to_pascal_case(); toggle.set_meta("settings_key", key); toggle.toggled.connect(func(value: bool) -> void: SaveSystem.update_setting(key, value, false)); content.add_child(Rows.row(label, toggle, pending))
 
 func _add_info(label: String, value: String) -> void:
 	var text := Label.new(); text.text = value; content.add_child(Rows.row(label, text))
@@ -162,6 +179,91 @@ func _title(category: StringName) -> String:
 
 func _reset_defaults() -> void: SaveSystem.settings = SaveSystem.default_settings(); SaveSystem.apply_settings(); show_category(current_category)
 func _save_and_return() -> void:
+	_collect_sound_settings_by_order()
+	_collect_visible_settings(content)
 	SaveSystem.save_settings(); var return_scene := str(SaveSystem.session.get("settings_return_scene", "res://scenes/menus/main_menu.tscn")); SaveSystem.session.erase("settings_return_scene"); get_tree().change_scene_to_file(return_scene)
+
+func _collect_sound_settings_by_order() -> void:
+	if current_category != &"sound":
+		return
+	var keys := [&"master", &"music", &"sfx", &"voice", &"crowd", &"ui"]
+	var sliders := _controls_of_type(self, &"HSlider")
+	for index in range(mini(keys.size(), sliders.size())):
+		SaveSystem.update_setting(keys[index], (sliders[index] as HSlider).value, false)
+
+func _controls_of_type(node: Node, type_name: StringName) -> Array[Node]:
+	var result: Array[Node] = []
+	if node.is_class(type_name):
+		result.append(node)
+	for child in node.get_children():
+		result.append_array(_controls_of_type(child, type_name))
+	return result
+
+func _collect_visible_settings(node: Node) -> void:
+	_syncing_controls = true
+	var key := _settings_key_for_control(node)
+	if key != &"":
+		if node is HSlider:
+			SaveSystem.update_setting(key, (node as HSlider).value, false)
+		elif node is CheckButton:
+			SaveSystem.update_setting(key, (node as CheckButton).button_pressed, false)
+		elif node is OptionButton:
+			var values: Array = node.get_meta("settings_values", [])
+			var selected := (node as OptionButton).selected
+			if selected >= 0 and selected < values.size():
+				SaveSystem.update_setting(key, values[selected], false)
+	for child in node.get_children():
+		_collect_visible_settings(child)
+	_syncing_controls = false
+
+func _watch_visible_settings(node: Node) -> void:
+	var key := _settings_key_for_control(node)
+	if key != &"":
+		var value: Variant = null
+		if node is HSlider:
+			value = (node as HSlider).value
+		elif node is CheckButton:
+			value = (node as CheckButton).button_pressed
+		elif node is OptionButton:
+			var values: Array = node.get_meta("settings_values", [])
+			var selected := (node as OptionButton).selected
+			if selected >= 0 and selected < values.size():
+				value = values[selected]
+		if value != null:
+			var id := node.get_instance_id()
+			if not _last_control_values.has(id) or _last_control_values[id] != value:
+				_last_control_values[id] = value
+			SaveSystem.update_setting(key, value, false)
+	for child in node.get_children():
+		_watch_visible_settings(child)
+
+func _settings_key_for_control(node: Node) -> StringName:
+	if node.has_meta("settings_key"):
+		return StringName(str(node.get_meta("settings_key")))
+	var text := ""
+	if node is Control:
+		text = (node as Control).tooltip_text.to_lower()
+	if text.is_empty():
+		text = str(node.name).to_lower()
+	var lookup := {
+		"master": &"master",
+		"música": &"music",
+		"musica": &"music",
+		"music": &"music",
+		"sfx": &"sfx",
+		"voces": &"voice",
+		"voice": &"voice",
+		"público": &"crowd",
+		"publico": &"crowd",
+		"crowd": &"crowd",
+		"interfaz": &"ui",
+		"ui": &"ui",
+	}
+	for fragment in lookup:
+		if text.contains(str(fragment)):
+			return lookup[fragment]
+	if node is HSlider and current_category == &"sound":
+		return &"master"
+	return &""
 func _unhandled_input(event: InputEvent) -> void:
 	if event.is_action_pressed("ui_cancel"): get_viewport().set_input_as_handled(); _save_and_return()
