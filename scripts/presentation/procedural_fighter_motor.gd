@@ -10,6 +10,8 @@ var head_reaction := Vector3.ZERO
 var head_velocity := Vector3.ZERO
 var neck_reaction := Vector3.ZERO
 var neck_velocity := Vector3.ZERO
+var core_reaction := Vector3.ZERO
+var core_velocity := Vector3.ZERO
 var last_targets := {}
 var last_curve: Array = []
 var last_impact_vector := Vector3.ZERO
@@ -20,9 +22,11 @@ func tick(view, move: Dictionary, delta: float) -> Dictionary:
 	var targets := _neutral_targets(view)
 	if procedural_strength > 0.0 and str(view.move_id) == "jab":
 		targets = _jab_targets(view, move)
+	_apply_defensive_targets(targets, view)
 	_integrate_reaction(delta)
 	targets.head_reaction = head_reaction
 	targets.neck_reaction = neck_reaction
+	targets.core_reaction = core_reaction
 	targets.procedural_strength = procedural_strength
 	targets.has_nan = _targets_have_nan(targets)
 	last_targets = targets
@@ -43,6 +47,7 @@ func add_impact(event) -> void:
 		impulse *= 0.25
 	head_velocity += Vector3(-impulse.z, impulse.x, -impulse.x)
 	neck_velocity += Vector3(-impulse.z, impulse.x, -impulse.x) * 0.55
+	core_velocity += Vector3(-impulse.z, impulse.x, 0.0) * (0.16 if event.blocked else 0.28)
 	last_impact_vector = impulse
 
 
@@ -107,6 +112,49 @@ func _jab_targets(view, move: Dictionary) -> Dictionary:
 	return targets
 
 
+func _attack_targets(view, move: Dictionary) -> Dictionary:
+	var targets := _neutral_targets(view)
+	var attack_type := str(move.get("attack_type", "straight"))
+	var hand := str(move.get("hand", "left"))
+	var right: Vector3 = view.facing.cross(Vector3.UP).normalized()
+	if right.length_squared() < 0.0001:
+		right = Vector3.RIGHT
+	var guard: Vector3 = targets.right_guard if hand == "right" else targets.left_guard
+	var target := _impact_target(view, move)
+	var startup := maxf(float(move.get("startup_frames", 6.0)), 1.0)
+	var active := maxf(float(move.get("active_frames", 5.0)), 1.0)
+	var recovery := maxf(float(move.get("recovery_frames", 14.0)), 1.0)
+	var frame := float(view.move_frame)
+	var phase := str(view.phase)
+	var progress := clampf(frame / startup, 0.0, 1.0)
+	if phase == "ACTIVE":
+		progress = 1.0
+	elif phase == "RECOVERY":
+		progress = 1.0 - clampf(frame / recovery, 0.0, 1.0)
+	var destination := target
+	if attack_type == "hook":
+		destination = target + right * (-0.16 if hand == "left" else 0.16) + Vector3(0.0, 0.02, 0.0)
+	elif attack_type == "uppercut":
+		destination = target + Vector3(0.0, -0.12, 0.0)
+	elif str(move.get("target_level", "head")) == "body":
+		destination = view.opp_body_pos
+	var control := guard.lerp(destination, _ease_out_quad(progress))
+	if attack_type == "hook":
+		control += right * (0.18 if hand == "left" else -0.18) * sin(progress * PI)
+	if attack_type == "uppercut":
+		control.y += 0.18 * sin(progress * PI)
+	var key := "right_hand" if hand == "right" else "left_hand"
+	targets[key] = control
+	targets.left_shoulder = targets.left_guard.lerp(targets[key], 0.35)
+	targets.right_shoulder = targets.right_guard.lerp(targets[key], 0.35)
+	targets.torso += right * (0.08 if attack_type == "hook" else 0.035) * sin(progress * PI)
+	targets.pelvis += view.facing * float(move.get("step_in", 0.0)) * 0.18 * sin(progress * PI)
+	targets.com += view.facing * float(move.get("step_in", 0.0)) * 0.22 * sin(progress * PI)
+	targets.contact_frame_error = 0.0 if phase == "ACTIVE" else 999.0
+	targets.impact_target = target
+	return targets
+
+
 func _impact_target(view, move: Dictionary) -> Vector3:
 	var base: Vector3 = view.opp_body_pos if str(move.get("target_level", "head")) == "body" else view.opp_head_pos
 	var distance: float = view.pos.distance_to(base)
@@ -120,6 +168,35 @@ func _integrate_reaction(delta: float) -> void:
 	head_velocity = _spring_velocity(head_reaction, head_velocity, delta, 180.0, 16.0)
 	neck_reaction = _spring_step(neck_reaction, neck_velocity, delta, 140.0, 15.0, "Neck")
 	neck_velocity = _spring_velocity(neck_reaction, neck_velocity, delta, 140.0, 15.0)
+	core_reaction = _spring_step(core_reaction, core_velocity, delta, 95.0, 13.0, "Spine")
+	core_velocity = _spring_velocity(core_reaction, core_velocity, delta, 95.0, 13.0)
+
+
+func _apply_defensive_targets(targets: Dictionary, view) -> void:
+	var action := str(view.defense_action)
+	var right: Vector3 = view.facing.cross(Vector3.UP).normalized()
+	if right.length_squared() < 0.0001:
+		right = Vector3.RIGHT
+	if action == "slip_left" or action == "slip_right":
+		var side := -1.0 if action == "slip_left" else 1.0
+		var shift := right * side * 0.16
+		targets.head += shift + Vector3(0.0, 0.025, 0.0)
+		targets.neck += shift * 0.78
+		targets.torso += shift * 0.52
+		targets.pelvis += shift * 0.16
+		targets.com += shift * 0.20
+	elif action == "duck":
+		targets.head += Vector3(0.0, -0.20, 0.0)
+		targets.neck += Vector3(0.0, -0.14, 0.0)
+		targets.torso += Vector3(0.0, -0.08, 0.0)
+		targets.pelvis += Vector3(0.0, -0.035, 0.0)
+		targets.com += Vector3(0.0, -0.045, 0.0)
+	if str(view.guard_state) == "body":
+		targets.left_guard += Vector3(0.0, -0.16, 0.0)
+		targets.right_guard += Vector3(0.0, -0.16, 0.0)
+		targets.left_hand = targets.left_guard
+		targets.right_hand = targets.right_guard
+	targets.head_reaction = targets.get("head_reaction", Vector3.ZERO)
 
 
 func _spring_step(value: Vector3, velocity: Vector3, delta: float, k: float, c: float, bone_name: String) -> Vector3:

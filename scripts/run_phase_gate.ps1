@@ -4,6 +4,8 @@ param(
 
     [string] $GodotExe = "Godot.exe",
 
+    [string] $GodotPath = "",
+
     [switch] $ListOnly
 )
 
@@ -50,16 +52,32 @@ if ($ListOnly) {
     exit 0
 }
 
-$godotCommand = Get-Command $GodotExe -ErrorAction SilentlyContinue
+$godotCandidates = @()
+if ($GodotPath) { $godotCandidates += $GodotPath }
+$godotCandidates += @(
+    (Join-Path $PSScriptRoot "..\.godot-bin\Godot_v4.7.2-stable_win64_console.exe"),
+    "C:\Users\sistemas\Desktop\Godot_v4.7.2-stable_win64.exe\Godot_v4.7.2-stable_win64_console.exe",
+    $GodotExe
+)
+$godotCommand = $null
+foreach ($candidate in $godotCandidates) {
+    if (Test-Path -LiteralPath $candidate) {
+        $godotCommand = Get-Item -LiteralPath $candidate
+        break
+    }
+    $resolved = Get-Command $candidate -ErrorAction SilentlyContinue
+    if ($resolved) { $godotCommand = $resolved; break }
+}
 if ($null -eq $godotCommand) {
-    Write-Error "Godot executable not found: $GodotExe. Pass -GodotExe with the full path or use -ListOnly."
+    Write-Error "Godot executable not found. Pass -GodotPath with the full path or use -ListOnly."
     exit 127
 }
 
 $failed = @()
+$godotExecutable = if ($godotCommand.PSObject.Properties.Name -contains "FullName") { $godotCommand.FullName } else { $godotCommand.Source }
 foreach ($runner in $phaseRunners[$Phase]) {
     Write-Host "Running $runner"
-    & $godotCommand.Source --headless --path . --script $runner
+    & $godotExecutable --headless --path . --script $runner
     if ($LASTEXITCODE -ne 0) {
         $failed += $runner
     }

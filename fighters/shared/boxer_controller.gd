@@ -1469,8 +1469,11 @@ func _apply_procedural_pose_offsets() -> void:
 	_apply_procedural_core_pose()
 	var head_offset: Vector3 = procedural_targets.get("head_reaction", Vector3.ZERO)
 	var neck_offset: Vector3 = procedural_targets.get("neck_reaction", Vector3.ZERO)
+	var core_offset: Vector3 = procedural_targets.get("core_reaction", Vector3.ZERO)
 	_apply_bone_rotation(["mixamorig_Head", "Head"], head_offset)
 	_apply_bone_rotation(["mixamorig_Neck", "Neck"], neck_offset)
+	_apply_bone_rotation(["mixamorig_Spine2", "Spine2", "mixamorig_Spine1", "Spine1"], core_offset * 0.7)
+	_apply_bone_rotation(["mixamorig_Hips", "Hips"], core_offset * 0.25)
 
 
 func _procedural_hand_position(hand: String, fallback: Vector3) -> Vector3:
@@ -1536,6 +1539,12 @@ func _apply_procedural_hand_pose(hand: String, target_key: String) -> void:
 	if local_delta.length() > 0.65:
 		local_delta = local_delta.normalized() * 0.65
 	var strength := float(procedural_targets.get("procedural_strength", 0.0))
+	var defense_strength := 0.0
+	if block_state != "":
+		defense_strength = 0.72
+	elif evasion_state != "":
+		defense_strength = 0.82
+	strength = maxf(strength, defense_strength)
 	if target_key == "right_hand":
 		strength = maxf(strength, 0.65 if _current_attack == "jab" else 0.0)
 	skeleton.set_bone_pose_position(bone, rest.position + local_delta * strength)

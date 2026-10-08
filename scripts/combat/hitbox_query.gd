@@ -5,6 +5,33 @@ var hurtboxes: Array[Dictionary] = []
 var environment_bodies: Array[Dictionary] = []
 var _active_hits := {}
 
+func sync_from_fighter(fighter: Node3D) -> void:
+	## Snapshot the final Area3D pose for this fixed simulation tick.
+	hurtboxes.clear()
+	var areas := fighter.get_node_or_null("Hurtboxes")
+	if areas == null:
+		return
+	var id := 1
+	for area in areas.get_children():
+		if not area is Area3D:
+			continue
+		var shape_node := area.get_child(0) as CollisionShape3D
+		if shape_node == null or shape_node.shape == null:
+			continue
+		var shape := shape_node.shape
+		var radius := 0.22
+		if shape is CapsuleShape3D:
+			radius = float((shape as CapsuleShape3D).radius)
+		elif shape is SphereShape3D:
+			radius = float((shape as SphereShape3D).radius)
+		var zone := "body" if str(area.name).to_lower().contains("body") else "head"
+		add_hurtbox(id, zone, area.global_position, radius, str(area.name))
+		id += 1
+
+func query_fighter(fighter: Node3D, previous: Vector3, current: Vector3, glove_radius := 0.16, substeps := 3) -> Array[Dictionary]:
+	sync_from_fighter(fighter)
+	return sweep_hit(previous, current, glove_radius, substeps)
+
 
 func add_hurtbox(zone_id: int, zone: String, center: Vector3, radius: float, bone := "") -> void:
 	hurtboxes.append({
